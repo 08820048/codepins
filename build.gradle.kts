@@ -22,7 +22,7 @@ java {
 
 tasks {
     patchPluginXml {
-        sinceBuild.set("241")
-        untilBuild.set("241.*")
+        sinceBuild.set("231") // 支持 IntelliJ 2023.1 起
+        untilBuild.set("252.*")
     }
 }

@@ -4,7 +4,7 @@
     <vendor email="ilikexff@gmail.com">ilikexff</vendor>
 
     <description>
-        A lightweight plugin to pin any line of code and revisit it later.
+        A lightweight plugin to pin any line of code and revisit it later.轻量图钉插件：可将任意代码行 📌 添加为图钉，支持备注、跳转、搜索、删除、清空，持久化保存。
     </description>
 
     <depends>com.intellij.modules.platform</depends>
