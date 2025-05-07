@@ -10,25 +10,30 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
+import java.util.List;
+import java.util.stream.Collectors;
 
-/**
- * 插件侧边栏窗口，用于展示图钉列表和清空操作
- */
 public class PinsToolWindow implements ToolWindowFactory {
+
+    private DefaultListModel<PinEntry> model;
+    private List<PinEntry> allPins; // 原始数据用于过滤
+    private JList<PinEntry> list;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        DefaultListModel<PinEntry> model = new DefaultListModel<>();
-        JList<PinEntry> list = new JList<>(model);
+        model = new DefaultListModel<>();
+        list = new JList<>(model);
         PinStorage.setModel(model);
 
-        // 启动时加载持久化图钉
+        // 初始化加载数据
         PinStorage.initFromSaved();
+        allPins = PinStorage.getPins();
 
-        // 双击跳转到文件行
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -41,46 +46,55 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // 右键菜单：删除单个图钉
         list.setComponentPopupMenu(createListPopupMenu(list));
 
-        // 图钉列表 + 滚动容器
         JBScrollPane scrollPane = new JBScrollPane(list);
 
-        // ✅ 工具栏按钮（目前仅添加：清空图钉）
-        ActionToolbar toolbar = createToolbar();
+        // ✅ 顶部组件：搜索输入框 + 清空按钮工具栏
+        JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.add(createSearchField(), BorderLayout.CENTER);
+        topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
 
-        // 布局组件
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(toolbar.getComponent(), BorderLayout.NORTH); // 工具栏置顶
-        panel.add(scrollPane, BorderLayout.CENTER);            // 列表居中显示
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.add(topPanel, BorderLayout.NORTH);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // 注册到 ToolWindow
-        ContentFactory contentFactory = ContentFactory.getInstance();
-        Content content = contentFactory.createContent(panel, "", false);
+        Content content = ContentFactory.getInstance().createContent(mainPanel, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
     /**
-     * 创建右键菜单：删除当前图钉
+     * 创建搜索输入框，支持备注和路径模糊匹配
      */
-    private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
-        JPopupMenu menu = new JPopupMenu();
-        JMenuItem deleteItem = new JMenuItem("🗑 删除该图钉");
+    private JTextField createSearchField() {
+        JTextField searchField = new JTextField();
+        searchField.setToolTipText("搜索图钉（支持备注与路径）");
 
-        deleteItem.addActionListener(e -> {
-            PinEntry selected = list.getSelectedValue();
-            if (selected != null) {
-                PinStorage.removePin(selected);
+        searchField.getDocument().addDocumentListener(new DocumentListener() {
+            void filter() {
+                String keyword = searchField.getText().trim().toLowerCase();
+                model.clear();
+
+                List<PinEntry> filtered = allPins.stream()
+                        .filter(p -> p.filePath.toLowerCase().contains(keyword) ||
+                                (p.note != null && p.note.toLowerCase().contains(keyword)))
+                        .collect(Collectors.toList());
+
+                for (PinEntry pin : filtered) {
+                    model.addElement(pin);
+                }
             }
+
+            public void insertUpdate(DocumentEvent e) { filter(); }
+            public void removeUpdate(DocumentEvent e) { filter(); }
+            public void changedUpdate(DocumentEvent e) { filter(); }
         });
 
-        menu.add(deleteItem);
-        return menu;
+        return searchField;
     }
 
     /**
-     * 创建顶部工具栏，添加“清空全部图钉”按钮
+     * 创建清空按钮工具栏
      */
     private ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
@@ -90,13 +104,44 @@ public class PinsToolWindow implements ToolWindowFactory {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 int confirm = JOptionPane.showConfirmDialog(null,
                         "确定要清空所有图钉吗？", "确认清空", JOptionPane.YES_NO_OPTION);
-
                 if (confirm == JOptionPane.YES_OPTION) {
                     PinStorage.clearAll();
+                    allPins = PinStorage.getPins(); // 同步原始数据
                 }
             }
         });
 
         return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
+    }
+
+    /**
+     * 创建图钉右键菜单：编辑备注、删除
+     */
+    private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
+        JPopupMenu menu = new JPopupMenu();
+
+        JMenuItem editItem = new JMenuItem("✏️ 修改备注");
+        editItem.addActionListener(e -> {
+            PinEntry selected = list.getSelectedValue();
+            if (selected != null) {
+                String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
+                if (newNote != null) {
+                    PinStorage.updateNote(selected, newNote.trim());
+                }
+            }
+        });
+
+        JMenuItem deleteItem = new JMenuItem("🗑 删除该图钉");
+        deleteItem.addActionListener(e -> {
+            PinEntry selected = list.getSelectedValue();
+            if (selected != null) {
+                PinStorage.removePin(selected);
+                allPins = PinStorage.getPins(); // 同步源数据
+            }
+        });
+
+        menu.add(editItem);
+        menu.add(deleteItem);
+        return menu;
     }
 }

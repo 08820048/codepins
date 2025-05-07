@@ -12,7 +12,7 @@ public class PinEntry {
 
     public final String filePath; // 文件路径（绝对路径）
     public final int line;        // 行号（从 0 开始）
-    public final String note;     // 用户备注
+    public  String note;     // 用户备注
 
     public PinEntry(String filePath, int line, String note) {
         this.filePath = filePath;

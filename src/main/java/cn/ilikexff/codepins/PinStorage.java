@@ -66,4 +66,21 @@ public class PinStorage {
             }
         }
     }
+
+    /**
+     * 修改图钉备注内容，并刷新列表与持久化
+     */
+    public static void updateNote(PinEntry entry, String newNote) {
+        entry.note = newNote;
+
+        // 更新持久化存储中的对应 PinState
+        for (PinState p : PinStateService.getInstance().getPins()) {
+            if (p.filePath.equals(entry.filePath) && p.line == entry.line) {
+                p.note = newNote;
+                break;
+            }
+        }
+
+        refreshModel();
+    }
 }
