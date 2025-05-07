@@ -12,7 +12,10 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow id="CodePins"
                     anchor="left"
-                    factoryClass="cn.ilikexff.codepins.PinsToolWindow" />
+                    factoryClass="cn.ilikexff.codepins.PinsToolWindow"/>
+
+        <!-- ✅ 正确位置，注册服务类 -->
+        <applicationService serviceImplementation="cn.ilikexff.codepins.PinStateService"/>
     </extensions>
 
     <actions>

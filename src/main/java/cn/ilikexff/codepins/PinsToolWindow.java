@@ -24,6 +24,7 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     @Override
     public void createToolWindowContent(Project project, ToolWindow toolWindow) {
+        PinStorage.initFromSaved(); // 恢复历史图钉
         // 从 PinStorage 获取图钉数据
         List<PinEntry> pins = PinStorage.getPins();
 
