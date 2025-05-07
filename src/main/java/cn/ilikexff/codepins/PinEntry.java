@@ -15,11 +15,15 @@ public class PinEntry {
     public final String filePath;       // 文件路径（绝对路径）
     public final RangeMarker marker;    // 可变行位置追踪
     public String note;                 // 用户备注
+    public final long timestamp;  // 创建时间（毫秒）
+    public final String author;   // 创建者（可选）
 
-    public PinEntry(String filePath, RangeMarker marker, String note) {
+    public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author) {
         this.filePath = filePath;
         this.marker = marker;
         this.note = note;
+        this.timestamp = timestamp;
+        this.author = author;
     }
 
     /**

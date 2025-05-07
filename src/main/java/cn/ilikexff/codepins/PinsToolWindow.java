@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins;
 
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
@@ -16,7 +17,10 @@ import javax.swing.event.DocumentListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class PinsToolWindow implements ToolWindowFactory {
@@ -55,7 +59,10 @@ public class PinsToolWindow implements ToolWindowFactory {
                     Icon icon = IconLoader.getIcon("/icons/logo.svg", getClass());
                     label.setIcon(icon);
                     label.setText(display);
-                    label.setToolTipText(entry.filePath + (entry.note != null ? " · " + entry.note : ""));
+//                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(entry.timestamp));
+                    Document doc = entry.marker.getDocument();  // 获取 Document
+                    String html = PinTooltipUtil.buildTooltip(entry, doc, Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
+                    label.setToolTipText(html);
                 }
                 return label;
             }

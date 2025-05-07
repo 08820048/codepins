@@ -41,7 +41,9 @@ public class PinStorage {
         int currentLine = entry.getCurrentLine(doc);
 
         // 存入持久化服务中（静态快照）
-        PinStateService.getInstance().addPin(new PinState(entry.filePath, currentLine, entry.note));
+        PinStateService.getInstance().addPin(
+                new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author)
+        );
 
         refreshModel();
     }
@@ -100,8 +102,14 @@ public class PinStorage {
             int offset = doc.getLineStartOffset(line);
             RangeMarker marker = doc.createRangeMarker(offset, offset);
 
-            // 添加为 PinEntry
-            pins.add(new PinEntry(state.filePath, marker, state.note));
+            PinEntry entry = new PinEntry(
+                    state.filePath,
+                    marker,
+                    state.note,
+                    state.timestamp,
+                    state.author
+            );
+            pins.add(entry);
         }
 
         refreshModel();

@@ -53,11 +53,10 @@ public class PinStateService implements PersistentStateComponent<PinStateService
      * 添加图钉：将 PinEntry 转换为 PinState（持久化结构），并记录当前行号
      */
     public void addPin(PinEntry entry) {
-        // 获取当前文档对象
         Document doc = entry.marker.getDocument();
         int currentLine = doc.getLineNumber(entry.marker.getStartOffset());
 
-        state.pins.add(new PinState(entry.filePath, currentLine, entry.note));
+        state.pins.add(new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author));
     }
 
     /**

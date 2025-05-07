@@ -56,7 +56,9 @@ public class PinAction extends AnAction {
                 RangeMarker marker = document.createRangeMarker(start, end);
 
                 // 添加图钉（动态位置）
-                PinStorage.addPin(new PinEntry(file.getPath(), marker, note));
+                long now = System.currentTimeMillis();
+                String author = System.getProperty("user.name");
+                PinStorage.addPin(new PinEntry(file.getPath(), marker, note, now, author));
                 System.out.printf("[CodePins] Pin added: %s @ line %d - %s%n", file.getPath(), line + 1, note);
 
                 // 状态栏提示 ✅
