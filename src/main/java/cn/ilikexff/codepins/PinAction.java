@@ -10,7 +10,7 @@ import com.intellij.openapi.vfs.VirtualFile;
 
 public class PinAction extends AnAction {
     public PinAction() {
-        super("📌 Pin This Line");
+//        super("📌 Pin This Line");
         System.out.println("[CodePins] PinAction registered");
     }
 

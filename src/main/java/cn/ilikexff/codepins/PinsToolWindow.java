@@ -2,6 +2,7 @@ package cn.ilikexff.codepins;
 
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.components.JBScrollPane;
@@ -30,10 +31,45 @@ public class PinsToolWindow implements ToolWindowFactory {
         list = new JList<>(model);
         PinStorage.setModel(model);
 
-        // 初始化加载数据
+        // 初始化数据
         PinStorage.initFromSaved();
         allPins = PinStorage.getPins();
 
+        // ✅ 设置图钉列表的美化渲染器
+        list.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
+                                                          boolean isSelected, boolean cellHasFocus) {
+                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                if (value instanceof PinEntry entry) {
+                    String display = "<html><body style='width:1000px; white-space:nowrap;'>"
+                            + "<b>" + getFileName(entry.filePath) + "</b> "
+                            + "<font color='gray'>@ Line " + (entry.line + 1) + "</font>";
+
+                    if (entry.note != null && !entry.note.isEmpty()) {
+                        display += " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>";
+                    }
+
+                    display += "</body></html>";
+                    Icon icon = IconLoader.getIcon("/icons/logo.svg", getClass());
+                    label.setIcon(icon);
+                    label.setText(display);
+                    label.setToolTipText(entry.filePath + (entry.note != null ? " · " + entry.note : ""));
+                }
+                return label;
+            }
+
+            private String getFileName(String path) {
+                int slash = path.lastIndexOf('/');
+                return slash >= 0 ? path.substring(slash + 1) : path;
+            }
+
+            private String escapeHtml(String s) {
+                return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+            }
+        });
+
+        // ✅ 双击跳转
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -46,11 +82,13 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
+        // ✅ 右键菜单（含你之前的“修改备注”和“删除”）
         list.setComponentPopupMenu(createListPopupMenu(list));
 
+        // ✅ 滚动面板
         JBScrollPane scrollPane = new JBScrollPane(list);
 
-        // ✅ 顶部组件：搜索输入框 + 清空按钮工具栏
+        // ✅ 顶部搜索 + 清空按钮（如有）
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(createSearchField(), BorderLayout.CENTER);
         topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
@@ -62,7 +100,6 @@ public class PinsToolWindow implements ToolWindowFactory {
         Content content = ContentFactory.getInstance().createContent(mainPanel, "", false);
         toolWindow.getContentManager().addContent(content);
     }
-
     /**
      * 创建搜索输入框，支持备注和路径模糊匹配
      */
@@ -98,8 +135,8 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     private ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
-
-        group.add(new AnAction("🧹 清空图钉", "清除所有图钉记录", null) {
+        Icon clearIcon = IconLoader.getIcon("/icons/x-octagon.svg", getClass());
+        group.add(new AnAction("清空图钉", "清除所有图钉记录", clearIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 int confirm = JOptionPane.showConfirmDialog(null,
@@ -120,7 +157,9 @@ public class PinsToolWindow implements ToolWindowFactory {
     private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
         JPopupMenu menu = new JPopupMenu();
 
-        JMenuItem editItem = new JMenuItem("✏️ 修改备注");
+//        JMenuItem editItem = new JMenuItem("✏️ 修改备注");
+        Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
+        JMenuItem editItem = new JMenuItem("修改备注", editIcon);
         editItem.addActionListener(e -> {
             PinEntry selected = list.getSelectedValue();
             if (selected != null) {
@@ -131,7 +170,9 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        JMenuItem deleteItem = new JMenuItem("🗑 删除该图钉");
+//        JMenuItem deleteItem = new JMenuItem("🗑 删除该图钉");
+        Icon delIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
+        JMenuItem deleteItem = new JMenuItem("删除本钉", delIcon);
         deleteItem.addActionListener(e -> {
             PinEntry selected = list.getSelectedValue();
             if (selected != null) {
