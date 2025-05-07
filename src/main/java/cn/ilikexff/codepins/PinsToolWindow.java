@@ -35,16 +35,17 @@ public class PinsToolWindow implements ToolWindowFactory {
         PinStorage.initFromSaved();
         allPins = PinStorage.getPins();
 
-        // ✅ 设置图钉列表的美化渲染器
+        // ✅ 设置图钉列表的美化渲染器（基于 RangeMarker 获取最新行号）
         list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
                                                           boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof PinEntry entry) {
+                    int line = entry.getCurrentLine(entry.marker.getDocument());
                     String display = "<html><body style='width:1000px; white-space:nowrap;'>"
                             + "<b>" + getFileName(entry.filePath) + "</b> "
-                            + "<font color='gray'>@ Line " + (entry.line + 1) + "</font>";
+                            + "<font color='gray'>@ Line " + (line + 1) + "</font>";
 
                     if (entry.note != null && !entry.note.isEmpty()) {
                         display += " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>";
@@ -82,13 +83,13 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // ✅ 右键菜单（含你之前的“修改备注”和“删除”）
+        // ✅ 右键菜单（含“修改备注”和“删除”）
         list.setComponentPopupMenu(createListPopupMenu(list));
 
         // ✅ 滚动面板
         JBScrollPane scrollPane = new JBScrollPane(list);
 
-        // ✅ 顶部搜索 + 清空按钮（如有）
+        // ✅ 顶部搜索 + 清空按钮
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(createSearchField(), BorderLayout.CENTER);
         topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
@@ -100,9 +101,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         Content content = ContentFactory.getInstance().createContent(mainPanel, "", false);
         toolWindow.getContentManager().addContent(content);
     }
-    /**
-     * 创建搜索输入框，支持备注和路径模糊匹配
-     */
+
     private JTextField createSearchField() {
         JTextField searchField = new JTextField();
         searchField.setToolTipText("搜索图钉（支持备注与路径）");
@@ -130,9 +129,6 @@ public class PinsToolWindow implements ToolWindowFactory {
         return searchField;
     }
 
-    /**
-     * 创建清空按钮工具栏
-     */
     private ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
         Icon clearIcon = IconLoader.getIcon("/icons/x-octagon.svg", getClass());
@@ -143,7 +139,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                         "确定要清空所有图钉吗？", "确认清空", JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     PinStorage.clearAll();
-                    allPins = PinStorage.getPins(); // 同步原始数据
+                    allPins = PinStorage.getPins();
                 }
             }
         });
@@ -151,13 +147,9 @@ public class PinsToolWindow implements ToolWindowFactory {
         return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
     }
 
-    /**
-     * 创建图钉右键菜单：编辑备注、删除
-     */
     private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
         JPopupMenu menu = new JPopupMenu();
 
-//        JMenuItem editItem = new JMenuItem("✏️ 修改备注");
         Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
         JMenuItem editItem = new JMenuItem("修改备注", editIcon);
         editItem.addActionListener(e -> {
@@ -170,14 +162,13 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-//        JMenuItem deleteItem = new JMenuItem("🗑 删除该图钉");
         Icon delIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
         JMenuItem deleteItem = new JMenuItem("删除本钉", delIcon);
         deleteItem.addActionListener(e -> {
             PinEntry selected = list.getSelectedValue();
             if (selected != null) {
                 PinStorage.removePin(selected);
-                allPins = PinStorage.getPins(); // 同步源数据
+                allPins = PinStorage.getPins();
             }
         });
 

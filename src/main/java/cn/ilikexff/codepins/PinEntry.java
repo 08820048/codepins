@@ -1,23 +1,32 @@
 package cn.ilikexff.codepins;
 
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 
 /**
- * 图钉数据模型类，包含文件路径、行号和备注信息。
+ * 图钉数据模型类，使用 RangeMarker 实时追踪代码行位置。
  */
 public class PinEntry {
 
-    public final String filePath; // 文件路径（绝对路径）
-    public final int line;        // 行号（从 0 开始）
-    public  String note;     // 用户备注
+    public final String filePath;       // 文件路径（绝对路径）
+    public final RangeMarker marker;    // 可变行位置追踪
+    public String note;                 // 用户备注
 
-    public PinEntry(String filePath, int line, String note) {
+    public PinEntry(String filePath, RangeMarker marker, String note) {
         this.filePath = filePath;
-        this.line = line;
+        this.marker = marker;
         this.note = note;
+    }
+
+    /**
+     * 获取当前行号（从 0 开始），会随代码变化动态更新。
+     */
+    public int getCurrentLine(Document document) {
+        return document.getLineNumber(marker.getStartOffset());
     }
 
     /**
@@ -25,29 +34,32 @@ public class PinEntry {
      */
     @Override
     public String toString() {
+        int line = getCurrentLine(marker.getDocument());
         return filePath + " @ Line " + (line + 1) + (note != null && !note.isEmpty() ? " - " + note : "");
     }
 
     /**
-     * 用于比较图钉是否相等（路径和行号）
+     * 判断是否为同一个图钉（基于路径和初始偏移）
      */
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof PinEntry other)) return false;
-        return filePath.equals(other.filePath) && line == other.line;
+        return filePath.equals(other.filePath)
+                && marker.getStartOffset() == other.marker.getStartOffset();
     }
 
     @Override
     public int hashCode() {
-        return filePath.hashCode() * 31 + line;
+        return filePath.hashCode() * 31 + marker.getStartOffset();
     }
 
     /**
-     * 执行跳转：打开文件并定位到指定行
+     * 执行跳转：打开文件并定位到当前行号
      */
     public void navigate(Project project) {
         VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
         if (file != null) {
+            int line = getCurrentLine(marker.getDocument());
             OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line);
             if (descriptor.canNavigate()) {
                 descriptor.navigate(true);
