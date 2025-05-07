@@ -1,8 +1,10 @@
 package cn.ilikexff.codepins;
 
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
@@ -10,9 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.*;
 
 /**
- * 图钉侧边栏窗口，负责展示图钉列表与交互
+ * 插件侧边栏窗口，用于展示图钉列表和清空操作
  */
 public class PinsToolWindow implements ToolWindowFactory {
 
@@ -22,10 +25,10 @@ public class PinsToolWindow implements ToolWindowFactory {
         JList<PinEntry> list = new JList<>(model);
         PinStorage.setModel(model);
 
-        // 加载持久化数据（初始化时）
+        // 启动时加载持久化图钉
         PinStorage.initFromSaved();
 
-        // 鼠标双击跳转
+        // 双击跳转到文件行
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -38,17 +41,28 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // ✅ 添加右键菜单用于删除图钉
+        // 右键菜单：删除单个图钉
         list.setComponentPopupMenu(createListPopupMenu(list));
 
-        JScrollPane scrollPane = new JScrollPane(list);
+        // 图钉列表 + 滚动容器
+        JBScrollPane scrollPane = new JBScrollPane(list);
+
+        // ✅ 工具栏按钮（目前仅添加：清空图钉）
+        ActionToolbar toolbar = createToolbar();
+
+        // 布局组件
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.add(toolbar.getComponent(), BorderLayout.NORTH); // 工具栏置顶
+        panel.add(scrollPane, BorderLayout.CENTER);            // 列表居中显示
+
+        // 注册到 ToolWindow
         ContentFactory contentFactory = ContentFactory.getInstance();
-        Content content = contentFactory.createContent(scrollPane, "", false);
+        Content content = contentFactory.createContent(panel, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
     /**
-     * 创建右键菜单，用于删除选中的图钉
+     * 创建右键菜单：删除当前图钉
      */
     private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
         JPopupMenu menu = new JPopupMenu();
@@ -63,5 +77,26 @@ public class PinsToolWindow implements ToolWindowFactory {
 
         menu.add(deleteItem);
         return menu;
+    }
+
+    /**
+     * 创建顶部工具栏，添加“清空全部图钉”按钮
+     */
+    private ActionToolbar createToolbar() {
+        DefaultActionGroup group = new DefaultActionGroup();
+
+        group.add(new AnAction("🧹 清空图钉", "清除所有图钉记录", null) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "确定要清空所有图钉吗？", "确认清空", JOptionPane.YES_NO_OPTION);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    PinStorage.clearAll();
+                }
+            }
+        });
+
+        return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
     }
 }
