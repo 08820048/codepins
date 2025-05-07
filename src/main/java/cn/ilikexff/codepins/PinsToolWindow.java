@@ -14,11 +14,9 @@ import org.jetbrains.annotations.NotNull;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -39,7 +37,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         PinStorage.initFromSaved();
         allPins = PinStorage.getPins();
 
-        // ✅ 设置图钉列表的美化渲染器（基于 RangeMarker 获取最新行号）
+        // 设置图钉列表渲染器（含 Tooltip）
         list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -59,8 +57,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     Icon icon = IconLoader.getIcon("/icons/logo.svg", getClass());
                     label.setIcon(icon);
                     label.setText(display);
-//                    String time = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date(entry.timestamp));
-                    Document doc = entry.marker.getDocument();  // 获取 Document
+
+                    Document doc = entry.marker.getDocument();
                     String html = PinTooltipUtil.buildTooltip(entry, doc, Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
                     label.setToolTipText(html);
                 }
@@ -77,7 +75,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // ✅ 双击跳转
+        // 双击跳转
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -90,13 +88,13 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // ✅ 右键菜单（含“修改备注”和“删除”）
-        list.setComponentPopupMenu(createListPopupMenu(list));
+        // 右键菜单（修改备注、删除、查看上下文代码）
+        list.setComponentPopupMenu(createListPopupMenu(list, project));
 
-        // ✅ 滚动面板
+        // 滚动面板
         JBScrollPane scrollPane = new JBScrollPane(list);
 
-        // ✅ 顶部搜索 + 清空按钮
+        // 顶部搜索 + 工具栏
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(createSearchField(), BorderLayout.CENTER);
         topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
@@ -154,7 +152,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
     }
 
-    private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
+    private JPopupMenu createListPopupMenu(JList<PinEntry> list, Project project) {
         JPopupMenu menu = new JPopupMenu();
 
         Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
@@ -179,6 +177,16 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
+        Icon codeIcon = IconLoader.getIcon("/icons/code.svg", getClass());
+        JMenuItem previewItem = new JMenuItem("查看上下文代码", codeIcon);
+        previewItem.addActionListener(e -> {
+            PinEntry selected = list.getSelectedValue();
+            if (selected != null) {
+                CodePreviewUtil.showPreviewPopup(project, selected);
+            }
+        });
+
+        menu.add(previewItem);
         menu.add(editItem);
         menu.add(deleteItem);
         return menu;
