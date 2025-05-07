@@ -1,0 +1,26 @@
+<idea-plugin>
+    <id>cn.ilikexff.codepins</id>
+    <name>CodePins</name>
+    <vendor email="ilikexff@gmail.com">ilikexff</vendor>
+
+    <description>
+        A lightweight plugin to pin any line of code and revisit it later.
+    </description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow id="CodePins"
+                    anchor="left"
+                    factoryClass="cn.ilikexff.codepins.PinsToolWindow" />
+    </extensions>
+
+    <actions>
+        <action id="CodePins.PinAction"
+                class="cn.ilikexff.codepins.PinAction"
+                text="📌 Pin This Line"
+                description="Pin current line for later reference">
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
+        </action>
+    </actions>
+</idea-plugin>
