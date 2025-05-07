@@ -1,79 +1,67 @@
 package cn.ilikexff.codepins;
 
-import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.vfs.LocalFileSystem;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import java.awt.*;
-import java.io.File;
-import java.util.List;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 /**
- * 插件侧边栏面板的工厂类，用于展示所有图钉信息，并支持点击跳转
+ * 图钉侧边栏窗口，负责展示图钉列表与交互
  */
 public class PinsToolWindow implements ToolWindowFactory {
 
-    /**
-     * 创建侧边栏 ToolWindow 的 UI 内容
-     */
     @Override
-    public void createToolWindowContent(Project project, ToolWindow toolWindow) {
-        PinStorage.initFromSaved(); // 恢复历史图钉
-        // 从 PinStorage 获取图钉数据
-        List<PinEntry> pins = PinStorage.getPins();
-
-        // 创建一个 Swing 列表模型，用于存储并展示图钉项
+    public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
         DefaultListModel<PinEntry> model = new DefaultListModel<>();
-        for (PinEntry pin : pins) {
-            model.addElement(pin);
-        }
-
-        // 将模型注册到 PinStorage，便于后续添加图钉时能刷新 UI
+        JList<PinEntry> list = new JList<>(model);
         PinStorage.setModel(model);
 
-        // 使用 JList 显示模型数据
-        JList<PinEntry> pinList = new JList<>(model);
-        pinList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // 只允许单选
+        // 加载持久化数据（初始化时）
+        PinStorage.initFromSaved();
 
-        // 添加双击事件监听器：双击某项时跳转对应代码位置
-        pinList.addMouseListener(new java.awt.event.MouseAdapter() {
+        // 鼠标双击跳转
+        list.addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
+            public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
-                    int index = pinList.locationToIndex(e.getPoint()); // 获取点击项索引
-                    if (index >= 0) {
-                        PinEntry entry = model.get(index); // 获取对应的图钉对象
-                        openFileAtLine(project, entry.filePath, entry.line); // 执行跳转
+                    PinEntry selected = list.getSelectedValue();
+                    if (selected != null) {
+                        selected.navigate(project);
                     }
                 }
             }
         });
 
-        // 将 JList 放入滚动面板
-        JScrollPane scrollPane = new JScrollPane(pinList);
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.add(scrollPane, BorderLayout.CENTER);
+        // ✅ 添加右键菜单用于删除图钉
+        list.setComponentPopupMenu(createListPopupMenu(list));
 
-        // 创建插件工具窗口内容并添加
-        Content content = ContentFactory.getInstance().createContent(panel, "", false);
+        JScrollPane scrollPane = new JScrollPane(list);
+        ContentFactory contentFactory = ContentFactory.getInstance();
+        Content content = contentFactory.createContent(scrollPane, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
     /**
-     * 执行跳转操作：打开指定文件并跳转到指定行号
+     * 创建右键菜单，用于删除选中的图钉
      */
-    private void openFileAtLine(Project project, String filePath, int line) {
-        VirtualFile file = LocalFileSystem.getInstance().findFileByIoFile(new File(filePath));
-        if (file != null) {
-            new OpenFileDescriptor(project, file, line, 0).navigate(true);
-        } else {
-            System.out.println("[CodePins] Failed to open file: " + filePath);
-        }
+    private JPopupMenu createListPopupMenu(JList<PinEntry> list) {
+        JPopupMenu menu = new JPopupMenu();
+        JMenuItem deleteItem = new JMenuItem("🗑 删除该图钉");
+
+        deleteItem.addActionListener(e -> {
+            PinEntry selected = list.getSelectedValue();
+            if (selected != null) {
+                PinStorage.removePin(selected);
+            }
+        });
+
+        menu.add(deleteItem);
+        return menu;
     }
 }
