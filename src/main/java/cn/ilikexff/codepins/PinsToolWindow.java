@@ -111,10 +111,16 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 创建菜单
                     JPopupMenu menu = new JPopupMenu();
 
+                    // 加载图标
+                    Icon codeIcon = IconLoader.getIcon("/icons/view.svg", getClass());
+                    Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
+                    Icon deleteIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
+                    Icon refreshIcon = IconLoader.getIcon("/icons/refresh.svg", getClass());
+
                     // 根据图钉类型添加不同的菜单项
                     if (selected.isBlock) {
                         // 如果是代码块图钉，添加代码预览项
-                        JMenuItem codeItem = new JMenuItem("查看代码块");
+                        JMenuItem codeItem = new JMenuItem("查看代码块", codeIcon);
                         codeItem.addActionListener(event -> {
                             CodePreviewUtil.showPreviewPopup(project, selected);
                         });
@@ -122,7 +128,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     }
 
                     // 添加编辑项
-                    JMenuItem editItem = new JMenuItem("修改备注");
+                    JMenuItem editItem = new JMenuItem("修改备注", editIcon);
                     editItem.addActionListener(event -> {
                         String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
                         if (newNote != null) {
@@ -132,12 +138,25 @@ public class PinsToolWindow implements ToolWindowFactory {
                     menu.add(editItem);
 
                     // 添加删除项
-                    JMenuItem deleteItem = new JMenuItem("删除本钉");
+                    JMenuItem deleteItem = new JMenuItem("删除本钉", deleteIcon);
                     deleteItem.addActionListener(event -> {
                         PinStorage.removePin(selected);
                         allPins = PinStorage.getPins();
                     });
                     menu.add(deleteItem);
+
+                    // 添加刷新项
+                    JMenuItem refreshItem = new JMenuItem("刷新", refreshIcon);
+                    refreshItem.addActionListener(event -> {
+                        // 重新加载所有图钉
+                        allPins = PinStorage.getPins();
+                        model.clear();
+                        for (PinEntry pin : allPins) {
+                            model.addElement(pin);
+                        }
+                        list.repaint();
+                    });
+                    menu.add(refreshItem);
 
                     // 显示菜单
                     menu.show(list, e.getX(), e.getY());

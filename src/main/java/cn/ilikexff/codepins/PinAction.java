@@ -41,7 +41,16 @@ public class PinAction extends AnAction {
                 "添加图钉",
                 Messages.getQuestionIcon()
         );
-        if (note == null) note = "";
+
+        // 如果用户点击“取消”按钮，则中止添加图钉
+        if (note == null) {
+            return; // 用户取消了操作，直接返回
+        }
+
+        // 如果用户没有输入备注，则使用空字符串
+        if (note.trim().isEmpty()) {
+            note = "";
+        }
 
         boolean isBlock = caret.hasSelection();
 

@@ -42,9 +42,28 @@ public class PinEntry {
      */
     @Override
     public String toString() {
-        int line = getCurrentLine(marker.getDocument());
+        Document doc = marker.getDocument();
+        String lineInfo;
+
+        if (isBlock) {
+            // 如果是代码块，显示起始行号到结束行号
+            int startLine = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
+            int endLine = doc.getLineNumber(marker.getEndOffset()) + 1;     // 转为从1开始的行号
+
+            // 如果起始行和结束行相同，则只显示一个行号
+            if (startLine == endLine) {
+                lineInfo = "Line " + startLine;
+            } else {
+                lineInfo = "Line " + startLine + "-" + endLine;
+            }
+        } else {
+            // 如果是单行图钉，只显示当前行号
+            int line = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
+            lineInfo = "Line " + line;
+        }
+
         String typeLabel = isBlock ? "[代码块]" : "[单行]";
-        return typeLabel + " " + filePath + " @ Line " + (line + 1)
+        return typeLabel + " " + filePath + " @ " + lineInfo
                 + (note != null && !note.isEmpty() ? " - " + note : "");
     }
 
@@ -65,14 +84,29 @@ public class PinEntry {
 
     /**
      * 执行跳转：打开文件并定位到当前行号
+     * 如果是代码块，则定位到起始行并选中整个代码块
      */
     public void navigate(Project project) {
         VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
         if (file != null) {
-            int line = getCurrentLine(marker.getDocument());
-            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line);
-            if (descriptor.canNavigate()) {
-                descriptor.navigate(true);
+            if (isBlock && marker.getStartOffset() != marker.getEndOffset()) {
+                // 如果是代码块图钉，则定位到起始位置并选中整个代码块
+                OpenFileDescriptor descriptor = new OpenFileDescriptor(
+                        project,
+                        file,
+                        marker.getStartOffset(),
+                        marker.getEndOffset() - marker.getStartOffset()
+                );
+                if (descriptor.canNavigate()) {
+                    descriptor.navigate(true);
+                }
+            } else {
+                // 如果是单行图钉，则只定位到当前行
+                int line = getCurrentLine(marker.getDocument());
+                OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line);
+                if (descriptor.canNavigate()) {
+                    descriptor.navigate(true);
+                }
             }
         }
     }
