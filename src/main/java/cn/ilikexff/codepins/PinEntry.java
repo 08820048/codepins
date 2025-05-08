@@ -7,27 +7,31 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 
+import java.util.Objects;
+
 /**
- * 图钉数据模型类，使用 RangeMarker 实时追踪代码行位置。
+ * 图钉数据模型类，支持单行与代码块图钉类型区分，使用 RangeMarker 动态追踪代码位置。
  */
 public class PinEntry {
 
     public final String filePath;       // 文件路径（绝对路径）
     public final RangeMarker marker;    // 可变行位置追踪
     public String note;                 // 用户备注
-    public final long timestamp;  // 创建时间（毫秒）
-    public final String author;   // 创建者（可选）
+    public final long timestamp;        // 创建时间戳
+    public final String author;         // 创建者（可用于团队协作）
+    public final boolean isBlock;       // 是否为代码块图钉
 
-    public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author) {
+    public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author, boolean isBlock) {
         this.filePath = filePath;
         this.marker = marker;
         this.note = note;
         this.timestamp = timestamp;
         this.author = author;
+        this.isBlock = isBlock;
     }
 
     /**
-     * 获取当前行号（从 0 开始），会随代码变化动态更新。
+     * 获取当前行号（从 0 开始），可随代码变化自动更新。
      */
     public int getCurrentLine(Document document) {
         return document.getLineNumber(marker.getStartOffset());
@@ -39,7 +43,9 @@ public class PinEntry {
     @Override
     public String toString() {
         int line = getCurrentLine(marker.getDocument());
-        return filePath + " @ Line " + (line + 1) + (note != null && !note.isEmpty() ? " - " + note : "");
+        String typeLabel = isBlock ? "[代码块]" : "[单行]";
+        return typeLabel + " " + filePath + " @ Line " + (line + 1)
+                + (note != null && !note.isEmpty() ? " - " + note : "");
     }
 
     /**
@@ -54,7 +60,7 @@ public class PinEntry {
 
     @Override
     public int hashCode() {
-        return filePath.hashCode() * 31 + marker.getStartOffset();
+        return Objects.hash(filePath, marker.getStartOffset());
     }
 
     /**

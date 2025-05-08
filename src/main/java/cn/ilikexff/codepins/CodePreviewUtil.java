@@ -2,80 +2,138 @@ package cn.ilikexff.codepins;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
-import com.intellij.openapi.editor.EditorSettings;
-import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
 import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.EditorTextField;
+import com.intellij.openapi.editor.ex.EditorEx;
+import com.intellij.openapi.editor.EditorSettings;
 
 import javax.swing.*;
 import java.awt.*;
 
 /**
- * 工具类：用于显示代码预览弹窗（上下文片段）
+ * 工具类：用于显示代码预览弹窗（支持代码块内容）
  */
 public class CodePreviewUtil {
 
     /**
-     * 显示代码片段弹窗（基于上下文行号提取代码）
+     * 展示代码块图钉的上下文代码（直接从 RangeMarker 获取选中片段）
      */
-    public static void showPreviewPopup(Project project, PinEntry entry) {
-        Document doc = entry.marker.getDocument();
-        int line = entry.getCurrentLine(doc);
+    public static void showPreviewPopup(Project project, PinEntry pin) {
+        // 添加调试信息
+        System.out.println("[CodePins] 尝试预览代码，图钉信息: " +
+                          (pin != null ? (pin.filePath + ", isBlock=" + pin.isBlock) : "null"));
 
-        // 提取目标行 ±2 行的上下文片段
-        String codeSnippet = extractContextCode(doc, line, 2);
-        String filePath = entry.filePath;
-        FileType fileType = FileTypeManager.getInstance().getFileTypeByFileName(filePath);
-        String title = new java.io.File(filePath).getName();
-
-        // 创建 Document 和 Editor 视图
-        Document previewDoc = EditorFactory.getInstance().createDocument(codeSnippet);
-        EditorTextField editorField = new EditorTextField(previewDoc, project, fileType, true, false);
-        editorField.setOneLineMode(false);
-        editorField.setPreferredSize(new Dimension(520, 160));
-
-        // 设置语法高亮与显示参数（延迟确保 editor 不为 null）
-        SwingUtilities.invokeLater(() -> {
-            EditorEx editor = (EditorEx) editorField.getEditor();
-            if (editor != null) {
-                EditorSettings settings = editor.getSettings();
-                settings.setLineNumbersShown(true);
-                settings.setLineMarkerAreaShown(true);
-                settings.setFoldingOutlineShown(false);
-                editor.setHorizontalScrollbarVisible(true);
-            }
-        });
-
-        // 构建弹出窗口
-        JBPopup popup = JBPopupFactory.getInstance()
-                .createComponentPopupBuilder(editorField, null)
-                .setTitle("🪄 上下文代码预览 - " + title)
-                .setResizable(true)
-                .setMovable(true)
-                .setRequestFocus(true)
-                .createPopup();
-
-        popup.showInFocusCenter(); // 或 .showUnderneathOf(parentComponent)
-    }
-
-    /**
-     * 提取指定行上下 contextRadius 行的代码片段
-     */
-    public static String extractContextCode(Document doc, int targetLine, int contextRadius) {
-        int startLine = Math.max(0, targetLine - contextRadius);
-        int endLine = Math.min(doc.getLineCount() - 1, targetLine + contextRadius);
-
-        StringBuilder snippet = new StringBuilder();
-        for (int line = startLine; line <= endLine; line++) {
-            int startOffset = doc.getLineStartOffset(line);
-            int endOffset = doc.getLineEndOffset(line);
-            String lineText = doc.getText().substring(startOffset, endOffset);
-            snippet.append(lineText).append("\n");
+        if (pin == null || pin.marker == null || !pin.marker.isValid()) {
+            System.out.println("[CodePins] 无法预览代码：图钉或标记无效");
+            JOptionPane.showMessageDialog(null,
+                "无法预览代码：图钉或标记无效",
+                "预览错误",
+                JOptionPane.ERROR_MESSAGE);
+            return;
         }
-        return snippet.toString();
+
+        Document document = pin.marker.getDocument();
+        FileType fileType = FileTypeManager.getInstance().getFileTypeByFileName(pin.filePath);
+
+        try {
+            int startOffset, endOffset;
+            // 定义行号变量，用于标题显示
+            int startLine, endLine;
+
+            if (pin.isBlock && pin.marker.getStartOffset() != pin.marker.getEndOffset()) {
+                // 如果是代码块图钉，并且有有效范围，则直接使用该范围
+                startOffset = pin.marker.getStartOffset();
+                endOffset = pin.marker.getEndOffset();
+                // 计算行号范围
+                startLine = document.getLineNumber(startOffset);
+                endLine = document.getLineNumber(endOffset);
+                System.out.println("[CodePins] 使用代码块范围预览: " + startOffset + "-" + endOffset);
+            } else {
+                // 否则，显示当前行及前后共3行
+                int line = document.getLineNumber(pin.marker.getStartOffset());
+                int contextLines = 3;
+                startLine = Math.max(0, line - contextLines);
+                endLine = Math.min(document.getLineCount() - 1, line + contextLines);
+
+                startOffset = document.getLineStartOffset(startLine);
+                endOffset = document.getLineEndOffset(endLine);
+                System.out.println("[CodePins] 使用上下文范围预览: " + startOffset + "-" + endOffset);
+            }
+
+            // 确保偏移量在文档范围内
+            int docLength = document.getTextLength();
+            startOffset = Math.max(0, Math.min(startOffset, docLength));
+            endOffset = Math.max(0, Math.min(endOffset, docLength));
+
+            if (startOffset >= endOffset) {
+                System.out.println("[CodePins] 无法预览代码：选区范围无效 " + startOffset + "-" + endOffset);
+                JOptionPane.showMessageDialog(null,
+                    "无法预览代码：选区范围无效",
+                    "预览错误",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            String codeSnippet = document.getText().substring(startOffset, endOffset);
+            if (codeSnippet.trim().isEmpty()) {
+                System.out.println("[CodePins] 无法预览代码：代码片段为空");
+                JOptionPane.showMessageDialog(null,
+                    "无法预览代码：代码片段为空",
+                    "预览错误",
+                    JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // 创建一个新的文档来显示代码片段
+            Document snippetDoc = EditorFactory.getInstance().createDocument(codeSnippet);
+            EditorTextField editorField = new EditorTextField(snippetDoc, project, fileType, true, false);
+
+            editorField.setOneLineMode(false);
+            editorField.setPreferredSize(new Dimension(600, 300));
+
+            SwingUtilities.invokeLater(() -> {
+                EditorEx editor = (EditorEx) editorField.getEditor();
+                if (editor != null) {
+                    EditorSettings settings = editor.getSettings();
+                    settings.setLineNumbersShown(true);
+                    settings.setLineMarkerAreaShown(true);
+                    settings.setFoldingOutlineShown(false);
+                    editor.setHorizontalScrollbarVisible(true);
+                    editor.setVerticalScrollbarVisible(true);
+                }
+            });
+
+            // 创建带有文件名和行号的标题
+            String fileName = pin.filePath;
+            int lastSlash = Math.max(pin.filePath.lastIndexOf('/'), pin.filePath.lastIndexOf('\\'));
+            if (lastSlash >= 0) {
+                fileName = pin.filePath.substring(lastSlash + 1);
+            }
+            String title = String.format("🪄 代码预览: %s (第 %d-%d 行)", fileName, startLine + 1, endLine + 1);
+
+            JBPopup popup = JBPopupFactory.getInstance()
+                    .createComponentPopupBuilder(editorField, null)
+                    .setTitle(title)
+                    .setResizable(true)
+                    .setMovable(true)
+                    .setRequestFocus(true)
+                    // 移除 setDimensionServiceKey 调用，因为参数不匹配
+                    .createPopup();
+
+            popup.showInFocusCenter();
+            System.out.println("[CodePins] 成功显示代码预览，长度: " + codeSnippet.length());
+        } catch (Exception e) {
+            System.out.println("[CodePins] 预览代码时出错: " + e.getMessage());
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,
+                "预览代码时出错: " + e.getMessage(),
+                "预览错误",
+                JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

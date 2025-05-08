@@ -4,8 +4,6 @@ import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.fileEditor.FileDocumentManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,48 +22,62 @@ public class PinStateService implements PersistentStateComponent<PinStateService
 
     /**
      * 内部状态类：用于表示插件需要保存的所有数据结构。
+     * 在这里，pins 保存了所有的图钉。
      */
     public static class State {
         public List<PinState> pins = new ArrayList<>();
     }
 
+    // 当前插件的持久化状态
     private final State state = new State();
 
+    /**
+     * 返回当前的持久化状态（保存数据）
+     */
     @Override
     public @Nullable State getState() {
         return state;
     }
 
+    /**
+     * 加载已保存的状态（恢复数据）
+     */
     @Override
     public void loadState(@NotNull State loadedState) {
         state.pins = loadedState.pins;
     }
 
+    /**
+     * 获取插件服务的全局单例实例
+     */
     public static PinStateService getInstance() {
         return ApplicationManager.getApplication().getService(PinStateService.class);
     }
 
+    /**
+     * 获取当前所有保存的图钉状态
+     */
     public List<PinState> getPins() {
         return state.pins;
     }
 
     /**
-     * 添加图钉：将 PinEntry 转换为 PinState（持久化结构），并记录当前行号
+     * 添加图钉（支持 PinEntry 格式，会转换为 PinState）
      */
     public void addPin(PinEntry entry) {
-        Document doc = entry.marker.getDocument();
-        int currentLine = doc.getLineNumber(entry.marker.getStartOffset());
-
-        state.pins.add(new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author));
+        state.pins.add(new PinState(entry.filePath, entry.getCurrentLine(entry.marker.getDocument()), entry.note, entry.timestamp, entry.author, entry.isBlock));
     }
 
     /**
-     * 添加图钉：直接存储 PinState 结构
+     * 添加图钉（直接使用 PinState 格式，适合更灵活调用）
      */
     public void addPin(PinState pin) {
         state.pins.add(pin);
     }
 
+    /**
+     * 清除所有图钉
+     */
     public void clear() {
         state.pins.clear();
     }

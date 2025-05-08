@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class PinsToolWindow implements ToolWindowFactory {
 
     private DefaultListModel<PinEntry> model;
-    private List<PinEntry> allPins; // 原始数据用于过滤
+    private List<PinEntry> allPins;
     private JList<PinEntry> list;
 
     @Override
@@ -33,11 +33,9 @@ public class PinsToolWindow implements ToolWindowFactory {
         list = new JList<>(model);
         PinStorage.setModel(model);
 
-        // 初始化数据
         PinStorage.initFromSaved();
         allPins = PinStorage.getPins();
 
-        // 设置图钉列表渲染器（含 Tooltip）
         list.setCellRenderer(new DefaultListCellRenderer() {
             @Override
             public Component getListCellRendererComponent(JList<?> list, Object value, int index,
@@ -45,22 +43,22 @@ public class PinsToolWindow implements ToolWindowFactory {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof PinEntry entry) {
                     int line = entry.getCurrentLine(entry.marker.getDocument());
-                    String display = "<html><body style='width:1000px; white-space:nowrap;'>"
-                            + "<b>" + getFileName(entry.filePath) + "</b> "
-                            + "<font color='gray'>@ Line " + (line + 1) + "</font>";
+                    String fileName = getFileName(entry.filePath);
+                    String typeTag = entry.isBlock ? "<font color='#f78c6c'>[Block]</font>" : "<font color='#c3e88d'>[Line]</font>";
+                    String notePart = (entry.note != null && !entry.note.isEmpty())
+                            ? " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>" : "";
 
-                    if (entry.note != null && !entry.note.isEmpty()) {
-                        display += " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>";
-                    }
+                    String display = "<html><body style='white-space:nowrap;'>"
+                            + "<b>" + fileName + "</b> "
+                            + "<font color='gray'>@ Line " + (line + 1) + "</font> "
+                            + typeTag + notePart + "</body></html>";
 
-                    display += "</body></html>";
-                    Icon icon = IconLoader.getIcon("/icons/logo.svg", getClass());
-                    label.setIcon(icon);
+                    label.setIcon(IconLoader.getIcon(entry.isBlock ? "/icons/code.svg" : "/icons/bookmark.svg", getClass()));
                     label.setText(display);
 
-                    Document doc = entry.marker.getDocument();
-                    String html = PinTooltipUtil.buildTooltip(entry, doc, Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
-                    label.setToolTipText(html);
+                    String tooltip = PinTooltipUtil.buildTooltip(entry, entry.marker.getDocument(),
+                            Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
+                    label.setToolTipText(tooltip);
                 }
                 return label;
             }
@@ -75,7 +73,6 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // 双击跳转
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -88,13 +85,67 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // 右键菜单（修改备注、删除、查看上下文代码）
-        list.setComponentPopupMenu(createListPopupMenu(list, project));
+        // 使用 JPopupMenu.Listener 来动态创建菜单
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showPopup(e);
+                }
+            }
 
-        // 滚动面板
+            @Override
+            public void mouseReleased(MouseEvent e) {
+                if (e.isPopupTrigger()) {
+                    showPopup(e);
+                }
+            }
+
+            private void showPopup(MouseEvent e) {
+                // 获取鼠标位置的项
+                int index = list.locationToIndex(e.getPoint());
+                if (index >= 0) {
+                    list.setSelectedIndex(index);
+                    PinEntry selected = list.getSelectedValue();
+
+                    // 创建菜单
+                    JPopupMenu menu = new JPopupMenu();
+
+                    // 根据图钉类型添加不同的菜单项
+                    if (selected.isBlock) {
+                        // 如果是代码块图钉，添加代码预览项
+                        JMenuItem codeItem = new JMenuItem("查看代码块");
+                        codeItem.addActionListener(event -> {
+                            CodePreviewUtil.showPreviewPopup(project, selected);
+                        });
+                        menu.add(codeItem);
+                    }
+
+                    // 添加编辑项
+                    JMenuItem editItem = new JMenuItem("修改备注");
+                    editItem.addActionListener(event -> {
+                        String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
+                        if (newNote != null) {
+                            PinStorage.updateNote(selected, newNote.trim());
+                        }
+                    });
+                    menu.add(editItem);
+
+                    // 添加删除项
+                    JMenuItem deleteItem = new JMenuItem("删除本钉");
+                    deleteItem.addActionListener(event -> {
+                        PinStorage.removePin(selected);
+                        allPins = PinStorage.getPins();
+                    });
+                    menu.add(deleteItem);
+
+                    // 显示菜单
+                    menu.show(list, e.getX(), e.getY());
+                }
+            }
+        });
+
         JBScrollPane scrollPane = new JBScrollPane(list);
-
-        // 顶部搜索 + 工具栏
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(createSearchField(), BorderLayout.CENTER);
         topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
@@ -152,43 +203,5 @@ public class PinsToolWindow implements ToolWindowFactory {
         return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
     }
 
-    private JPopupMenu createListPopupMenu(JList<PinEntry> list, Project project) {
-        JPopupMenu menu = new JPopupMenu();
-
-        Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
-        JMenuItem editItem = new JMenuItem("修改备注", editIcon);
-        editItem.addActionListener(e -> {
-            PinEntry selected = list.getSelectedValue();
-            if (selected != null) {
-                String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
-                if (newNote != null) {
-                    PinStorage.updateNote(selected, newNote.trim());
-                }
-            }
-        });
-
-        Icon delIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
-        JMenuItem deleteItem = new JMenuItem("删除本钉", delIcon);
-        deleteItem.addActionListener(e -> {
-            PinEntry selected = list.getSelectedValue();
-            if (selected != null) {
-                PinStorage.removePin(selected);
-                allPins = PinStorage.getPins();
-            }
-        });
-
-        Icon codeIcon = IconLoader.getIcon("/icons/code.svg", getClass());
-        JMenuItem previewItem = new JMenuItem("查看上下文代码", codeIcon);
-        previewItem.addActionListener(e -> {
-            PinEntry selected = list.getSelectedValue();
-            if (selected != null) {
-                CodePreviewUtil.showPreviewPopup(project, selected);
-            }
-        });
-
-        menu.add(previewItem);
-        menu.add(editItem);
-        menu.add(deleteItem);
-        return menu;
-    }
+    // 已移除 createListPopupMenu 方法，改为使用 MouseAdapter 动态创建菜单
 }

@@ -1,16 +1,12 @@
 package cn.ilikexff.codepins;
 
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.editor.event.DocumentEvent;
-import com.intellij.openapi.editor.event.DocumentListener;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,9 +37,27 @@ public class PinStorage {
         int currentLine = entry.getCurrentLine(doc);
 
         // 存入持久化服务中（静态快照）
-        PinStateService.getInstance().addPin(
-                new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author)
-        );
+        if (entry.isBlock) {
+            // 如果是代码块图钉，保存偏移量范围
+            PinStateService.getInstance().addPin(
+                    new PinState(
+                            entry.filePath,
+                            currentLine,
+                            entry.note,
+                            entry.timestamp,
+                            entry.author,
+                            entry.isBlock,
+                            entry.marker.getStartOffset(),
+                            entry.marker.getEndOffset()
+                    )
+            );
+            System.out.println("[CodePins] 保存代码块图钉，范围: " + entry.marker.getStartOffset() + "-" + entry.marker.getEndOffset());
+        } else {
+            // 如果是单行图钉，使用简化的构造函数
+            PinStateService.getInstance().addPin(
+                    new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author, entry.isBlock)
+            );
+        }
 
         refreshModel();
     }
@@ -97,17 +111,43 @@ public class PinStorage {
             Document doc = FileDocumentManager.getInstance().getDocument(vFile);
             if (doc == null) continue;
 
-            // 将行号转换为 offset 并创建 RangeMarker（保持在该行起始位置）
+            // 创建 RangeMarker
             int line = Math.min(state.line, doc.getLineCount() - 1); // 防止越界
-            int offset = doc.getLineStartOffset(line);
-            RangeMarker marker = doc.createRangeMarker(offset, offset);
+            int startOffset, endOffset;
+            int docLength = doc.getTextLength();
+
+            if (state.isBlock && state.startOffset >= 0 && state.endOffset >= 0) {
+                // 如果是代码块图钉，并且有保存的偏移量范围，则使用保存的范围
+                startOffset = Math.max(0, Math.min(state.startOffset, docLength));
+                endOffset = Math.max(0, Math.min(state.endOffset, docLength));
+                System.out.println("[CodePins] 恢复代码块图钉，使用保存的范围: " + startOffset + "-" + endOffset);
+            } else if (state.isBlock) {
+                // 如果是代码块图钉，但没有保存范围，则使用整行作为范围
+                startOffset = doc.getLineStartOffset(line);
+                endOffset = doc.getLineEndOffset(line);
+                System.out.println("[CodePins] 恢复代码块图钉，使用行范围: " + startOffset + "-" + endOffset);
+            } else {
+                // 如果是单行图钉，则使用行起始位置
+                startOffset = doc.getLineStartOffset(line);
+                endOffset = startOffset;
+            }
+
+            // 确保范围有效
+            if (startOffset > endOffset) {
+                startOffset = endOffset;
+            }
+
+            RangeMarker marker = doc.createRangeMarker(startOffset, endOffset);
+            marker.setGreedyToLeft(true);
+            marker.setGreedyToRight(true);
 
             PinEntry entry = new PinEntry(
                     state.filePath,
                     marker,
                     state.note,
                     state.timestamp,
-                    state.author
+                    state.author,
+                    state.isBlock
             );
             pins.add(entry);
         }
