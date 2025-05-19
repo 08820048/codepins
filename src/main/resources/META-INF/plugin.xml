@@ -6,7 +6,7 @@
     <version>1.1.1</version>
     
     <!-- 插件兼容性信息 -->
-    <idea-version since-build="231" until-build="241.*"/>
+    <idea-version since-build="241" until-build="241.*"/>
     
     <!-- 插件分类标签 -->
     <category>Navigation</category>
@@ -14,55 +14,37 @@
     
     <!-- 插件描述 -->
     <!-- 注意：Marketplace要求插件描述必须使用拉丁字符（英文），并且长度至少为40个字符 -->
-    <description>A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects. Pin any line or code block, add notes, search, and preview code without leaving your current editing position.</description>
+    <description><![CDATA[
+        A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects. Pin any line or code block, add notes, search, and preview code without leaving your current editing position.
+        
+        Key Features:
+        - Code Bookmarking: Pin any line or code block for quick reference and navigation
+        - Add Notes: Attach custom notes to each pin to record important information
+        - Quick Search: Quickly find pins by filename, path, or note content
+        - Code Preview: Hover to view pin details without leaving your current position
+        - Auto-Update: Pin positions automatically update as you edit code
+        - Persistent Storage: Pin information is preserved after IDE restart
+    ]]></description>
     
-    <!-- 详细描述（在插件页面显示） -->
-    
-    <!-- HTML格式的详细描述 -->
-    <pluginDescription><![CDATA[
-        <h2>CodePins - Smart Code Bookmarks</h2>
-        <p>A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects.</p>
-        
-        <h3>Key Features</h3>
-        <ul>
-            <li><b>📌 Code Bookmarking</b>: Pin any line or code block for quick reference and navigation</li>
-            <li><b>📝 Add Notes</b>: Attach custom notes to each pin to record important information</li>
-            <li><b>🔍 Quick Search</b>: Quickly find pins by filename, path, or note content</li>
-            <li><b>👁️ Code Preview</b>: Hover to view pin details without leaving your current position</li>
-            <li><b>🔄 Auto-Update</b>: Pin positions automatically update as you edit code</li>
-            <li><b>💾 Persistent Storage</b>: Pin information is preserved after IDE restart</li>
-        </ul>
-        
-        <h3>How to Use</h3>
-        <ol>
-            <li>Right-click on a code line in the editor and select "Pin This Line"</li>
-            <li>View and manage all pins in the left tool window</li>
-            <li>Double-click a pin to quickly jump to the corresponding code location</li>
-            <li>Right-click a pin to see more options</li>
-        </ol>
-        
-        <p><b>CodePins</b> makes navigation in complex codebases effortless and efficient, a must-have productivity tool for developers!</p>
-    ]]></pluginDescription>
+    <!-- 详细描述已包含在 description 标签中 -->
+    <!-- 注意：pluginDescription 不是标准标签，已移除 -->
     
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
-        <h3>Version 1.1.1</h3>
-        <ul>
-            <li>Improved hover preview functionality, resolving thread safety issues</li>
-            <li>Enhanced code preview UI with dynamic height adjustment based on code length</li>
-            <li>Completely redesigned pin list items with modern card-style design</li>
-            <li>Added empty state view with friendly guidance information</li>
-            <li>Improved search field with enhanced visual feedback and user experience</li>
-        </ul>
+        Version 1.1.1:
+        - Improved hover preview functionality, resolving thread safety issues
+        - Enhanced code preview UI with dynamic height adjustment based on code length
+        - Completely redesigned pin list items with modern card-style design
+        - Added empty state view with friendly guidance information
+        - Improved search field with enhanced visual feedback and user experience
+        - Added tag system for better organization and filtering of pins
         
-        <h3>Version 1.0.0</h3>
-        <ul>
-            <li>Initial release</li>
-            <li>Support for adding, deleting, searching, and managing code pins</li>
-            <li>Support for code blocks and single line code marking</li>
-            <li>Modern UI design and user experience optimization</li>
-            <li>Support for pin notes and quick preview functionality</li>
-        </ul>
+        Version 1.0.0:
+        - Initial release
+        - Support for adding, deleting, searching, and managing code pins
+        - Support for code blocks and single line code marking
+        - Modern UI design and user experience optimization
+        - Support for pin notes and quick preview functionality
     ]]></change-notes>
     
     <depends>com.intellij.modules.platform</depends>
