@@ -4,61 +4,67 @@
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins-intellij-plugin">ilikexff</vendor>
     <version>1.1.1</version>
-    
+
     <!-- 插件兼容性信息 -->
     <idea-version since-build="231" until-build="241.*"/>
-    
+
     <!-- 插件分类标签 -->
     <category>Navigation</category>
     <category>Code Tools</category>
-    
-    <!-- 简短描述 -->
-    <description><![CDATA[
-        <h2>CodePins - 智能代码图钉</h2>
-        <p>一款现代化的代码标记工具，帮助您在复杂项目中快速定位和管理重要代码位置。</p>
-        
-        <h3>主要功能</h3>
+
+    <!-- 插件描述 -->
+    <!-- 注意：Marketplace要求插件描述必须使用拉丁字符（英文），并且长度至少为40个字符 -->
+    <description>A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects. Pin any line or code block, add notes, search, and preview code without leaving your current editing position.</description>
+
+    <!-- 详细描述（在插件页面显示） -->
+
+    <!-- HTML格式的详细描述 -->
+    <pluginDescription><![CDATA[
+        <h2>CodePins - Smart Code Bookmarks</h2>
+        <p>A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects.</p>
+
+        <h3>Key Features</h3>
         <ul>
-            <li><b>📌 代码标记</b>：将任意代码行或代码块添加为图钉，随时快速返回查看</li>
-            <li><b>📝 添加备注</b>：为每个图钉添加自定义备注，记录重要信息</li>
-            <li><b>🔍 快速搜索</b>：通过文件名、路径或备注内容快速查找图钉</li>
-            <li><b>👁️ 代码预览</b>：悬停查看图钉详情，无需离开当前编辑位置</li>
-            <li><b>🔄 自动更新</b>：图钉位置会随着代码编辑自动更新，始终保持准确</li>
-            <li><b>💾 持久化保存</b>：图钉信息在IDE重启后依然保留</li>
+            <li><b>📌 Code Bookmarking</b>: Pin any line or code block for quick reference and navigation</li>
+            <li><b>📝 Add Notes</b>: Attach custom notes to each pin to record important information</li>
+            <li><b>🔍 Quick Search</b>: Quickly find pins by filename, path, or note content</li>
+            <li><b>👁️ Code Preview</b>: Hover to view pin details without leaving your current position</li>
+            <li><b>🔄 Auto-Update</b>: Pin positions automatically update as you edit code</li>
+            <li><b>💾 Persistent Storage</b>: Pin information is preserved after IDE restart</li>
         </ul>
-        
-        <h3>使用方法</h3>
+
+        <h3>How to Use</h3>
         <ol>
-            <li>在编辑器中右键点击代码行，选择 "Pin This Line"</li>
-            <li>在左侧工具窗口中查看和管理所有图钉</li>
-            <li>双击图钉可快速跳转到对应代码位置</li>
-            <li>右键点击图钉可查看更多操作选项</li>
+            <li>Right-click on a code line in the editor and select "Pin This Line"</li>
+            <li>View and manage all pins in the left tool window</li>
+            <li>Double-click a pin to quickly jump to the corresponding code location</li>
+            <li>Right-click a pin to see more options</li>
         </ol>
-        
-        <p><b>CodePins</b> 让您在复杂代码库中的导航变得轻松高效，是开发者必备的生产力工具！</p>
-    ]]></description>
-    
-    <!-- 插件更新日志 -->
+
+        <p><b>CodePins</b> makes navigation in complex codebases effortless and efficient, a must-have productivity tool for developers!</p>
+    ]]></pluginDescription>
+
+    <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
-        <h3>版本 1.1.1</h3>
+        <h3>Version 1.1.1</h3>
         <ul>
-            <li>改进悬浮预览功能，解决线程安全问题</li>
-            <li>优化代码预览UI，动态调整高度适应代码行数</li>
-            <li>全面美化图钉列表项，采用现代卡片式设计</li>
-            <li>添加空状态视图，提供友好的引导信息</li>
-            <li>改进搜索框，增强视觉反馈和用户体验</li>
+            <li>Improved hover preview functionality, resolving thread safety issues</li>
+            <li>Enhanced code preview UI with dynamic height adjustment based on code length</li>
+            <li>Completely redesigned pin list items with modern card-style design</li>
+            <li>Added empty state view with friendly guidance information</li>
+            <li>Improved search field with enhanced visual feedback and user experience</li>
         </ul>
-        
-        <h3>版本 1.0.0</h3>
+
+        <h3>Version 1.0.0</h3>
         <ul>
-            <li>初始版本发布</li>
-            <li>支持添加、删除、搜索和管理代码图钉</li>
-            <li>支持代码块和单行代码的标记</li>
-            <li>添加现代化UI设计和用户体验优化</li>
-            <li>支持图钉备注和快速预览功能</li>
+            <li>Initial release</li>
+            <li>Support for adding, deleting, searching, and managing code pins</li>
+            <li>Support for code blocks and single line code marking</li>
+            <li>Modern UI design and user experience optimization</li>
+            <li>Support for pin notes and quick preview functionality</li>
         </ul>
     ]]></change-notes>
-    
+
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
