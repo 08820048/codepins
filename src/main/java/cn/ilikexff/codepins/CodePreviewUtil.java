@@ -28,17 +28,64 @@ public class CodePreviewUtil {
         System.out.println("[CodePins] 尝试预览代码，图钉信息: " +
                           (pin != null ? (pin.filePath + ", isBlock=" + pin.isBlock) : "null"));
 
-        if (pin == null || pin.marker == null || !pin.marker.isValid()) {
-            System.out.println("[CodePins] 无法预览代码：图钉或标记无效");
-            JOptionPane.showMessageDialog(null,
-                "无法预览代码：图钉或标记无效",
-                "预览错误",
-                JOptionPane.ERROR_MESSAGE);
-            return;
-        }
+        // 使用 ReadAction 包装文档访问操作，确保线程安全
+        com.intellij.openapi.application.ReadAction.run(() -> {
+            try {
+                if (pin == null) {
+                    System.out.println("[CodePins] 无法预览代码：图钉为空");
+                    showErrorMessage("无法预览代码：图钉为空");
+                    return;
+                }
 
-        Document document = pin.marker.getDocument();
-        FileType fileType = FileTypeManager.getInstance().getFileTypeByFileName(pin.filePath);
+                if (pin.marker == null) {
+                    System.out.println("[CodePins] 无法预览代码：图钉标记为空");
+                    showErrorMessage("无法预览代码：图钉标记为空");
+                    return;
+                }
+
+                if (!pin.marker.isValid()) {
+                    System.out.println("[CodePins] 无法预览代码：图钉标记无效");
+                    showErrorMessage("无法预览代码：图钉标记无效");
+                    return;
+                }
+
+                Document document = pin.marker.getDocument();
+                if (document == null) {
+                    System.out.println("[CodePins] 无法预览代码：无法获取文档");
+                    showErrorMessage("无法预览代码：无法获取文档");
+                    return;
+                }
+
+                FileType fileType = FileTypeManager.getInstance().getFileTypeByFileName(pin.filePath);
+                if (fileType == null) {
+                    System.out.println("[CodePins] 无法预览代码：无法确定文件类型");
+                    showErrorMessage("无法预览代码：无法确定文件类型");
+                    return;
+                }
+
+                // 继续处理预览逻辑
+                processPreview(project, pin, document, fileType);
+            } catch (Exception e) {
+                System.out.println("[CodePins] ReadAction 中预览代码时出错: " + e.getMessage());
+                e.printStackTrace();
+                showErrorMessage("预览代码时出错: " + e.getMessage());
+            }
+        });
+    }
+
+    /**
+     * 显示错误消息对话框
+     */
+    private static void showErrorMessage(String message) {
+        SwingUtilities.invokeLater(() -> {
+            JOptionPane.showMessageDialog(null, message, "预览错误", JOptionPane.ERROR_MESSAGE);
+        });
+    }
+
+    /**
+     * 处理预览逻辑（在 ReadAction 中调用）
+     */
+    private static void processPreview(Project project, PinEntry pin, Document document, FileType fileType) {
 
         try {
             int startOffset, endOffset;

@@ -34,12 +34,38 @@ public class PinEntry {
      * 获取当前行号（从 0 开始），可随代码变化自动更新。
      */
     public int getCurrentLine(Document document) {
+        // 验证参数
+        if (document == null) {
+            System.out.println("[CodePins] getCurrentLine 失败: document 为空");
+            return 0;
+        }
+
+        if (marker == null) {
+            System.out.println("[CodePins] getCurrentLine 失败: marker 为空");
+            return 0;
+        }
+
+        if (!marker.isValid()) {
+            System.out.println("[CodePins] getCurrentLine 失败: marker 无效");
+            return 0;
+        }
+
         // 使用 ReadAction 包装文档访问操作，确保线程安全
         return com.intellij.openapi.application.ReadAction.compute(() -> {
             try {
-                return document.getLineNumber(marker.getStartOffset());
+                int startOffset = marker.getStartOffset();
+                if (startOffset < 0 || startOffset >= document.getTextLength()) {
+                    System.out.println("[CodePins] getCurrentLine 失败: 偏移量超出范围 " + startOffset + ", 文档长度: " + document.getTextLength());
+                    return 0;
+                }
+
+                int line = document.getLineNumber(startOffset);
+                System.out.println("[CodePins] getCurrentLine 成功: " + (line + 1) + ", 文件: " + filePath);
+                return line;
             } catch (Exception e) {
-                // 如果发生异常，返回 0
+                // 如果发生异常，记录错误并返回 0
+                System.out.println("[CodePins] getCurrentLine 异常: " + e.getMessage());
+                e.printStackTrace();
                 return 0;
             }
         });

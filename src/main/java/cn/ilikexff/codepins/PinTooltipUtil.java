@@ -40,16 +40,50 @@ public class PinTooltipUtil {
      */
     public static String buildTooltip(PinEntry entry, Document doc, Locale locale, PinType type, Theme theme) {
         try {
+            System.out.println("[CodePins] 开始构建工具提示，图钉路径: " + entry.filePath);
+
+            // 验证参数
+            if (entry == null) {
+                System.out.println("[CodePins] 工具提示构建失败: entry 为空");
+                return createErrorTooltip("图钉对象为空");
+            }
+
+            if (doc == null) {
+                System.out.println("[CodePins] 工具提示构建失败: doc 为空");
+                return createErrorTooltip("文档对象为空");
+            }
+
+            if (theme == null) {
+                theme = new Theme(); // 使用默认主题
+                System.out.println("[CodePins] 使用默认主题");
+            }
+
+            // 加载语言包
             ResourceBundle bundle = null;
             try {
                 bundle = ResourceBundle.getBundle("messages.CodePinsBundle", locale);
-            } catch (Exception ignored) {}
+                System.out.println("[CodePins] 成功加载语言包");
+            } catch (Exception e) {
+                System.out.println("[CodePins] 加载语言包失败: " + e.getMessage());
+            }
 
+            // 准备数据
             String note = entry.note != null ? escapeHtml(entry.note) : "-";
-            int line = entry.getCurrentLine(doc);
-            String time = formatTimestamp(entry.timestamp);
-            String author = entry.author != null ? entry.author : "-";
 
+            // 安全获取行号
+            int line;
+            try {
+                line = entry.getCurrentLine(doc);
+                System.out.println("[CodePins] 获取当前行号成功: " + (line + 1));
+            } catch (Exception e) {
+                System.out.println("[CodePins] 获取行号失败: " + e.getMessage());
+                line = 0; // 默认值
+            }
+
+            String time = formatTimestamp(entry.timestamp);
+            String author = entry.author != null ? escapeHtml(entry.author) : "-";
+
+            // 构建 HTML
             StringBuilder html = new StringBuilder();
             html.append("<html><div style='background:")
                     .append(theme.bgColor)
@@ -60,7 +94,7 @@ public class PinTooltipUtil {
             html.append("<span><b style='color:")
                     .append(theme.pathColor).append(";'>")
                     .append(get(bundle, "tooltip.path", "Path")).append(":</b> ")
-                    .append(entry.filePath).append("</span><br/>");
+                    .append(escapeHtml(entry.filePath)).append("</span><br/>");
 
             html.append("<span><b style='color:")
                     .append(theme.lineColor).append(";'>")
@@ -89,11 +123,25 @@ public class PinTooltipUtil {
             }
 
             html.append("</div></html>");
-            return html.toString();
+            String result = html.toString();
+            System.out.println("[CodePins] 工具提示构建成功，长度: " + result.length());
+            return result;
         } catch (Exception e) {
-            // 如果发生异常，返回一个简化的提示
-            return "<html><div style='padding:5px; background-color:#f8f8f8; color:#333;'>图钉信息加载失败</div></html>";
+            // 如果发生异常，记录详细错误并返回一个简化的提示
+            System.out.println("[CodePins] 工具提示构建异常: " + e.getMessage());
+            e.printStackTrace();
+            return createErrorTooltip(e.getMessage());
         }
+    }
+
+    /**
+     * 创建错误提示
+     */
+    private static String createErrorTooltip(String errorMessage) {
+        return "<html><div style='padding:8px; background-color:#f8f8f8; color:#333; border:1px solid #ccc; border-radius:4px;'>"
+                + "图钉信息加载失败"
+                + (errorMessage != null && !errorMessage.isEmpty() ? ": " + escapeHtml(errorMessage) : "")
+                + "</div></html>";
     }
 
     /** 获取多语言内容（若不存在则回退） */

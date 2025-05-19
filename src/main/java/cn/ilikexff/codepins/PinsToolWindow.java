@@ -71,18 +71,9 @@ public class PinsToolWindow implements ToolWindowFactory {
                     label.setIcon(IconLoader.getIcon(entry.isBlock ? "/icons/code.svg" : "/icons/bookmark.svg", getClass()));
                     label.setText(display);
 
-                    // 使用 ReadAction 包装文档访问操作，确保线程安全
-                    String tooltip = com.intellij.openapi.application.ReadAction.compute(() -> {
-                        try {
-                            Document doc = entry.marker.getDocument();
-                            return PinTooltipUtil.buildTooltip(entry, doc,
-                                    Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
-                        } catch (Exception e) {
-                            // 如果发生异常，返回一个简化的提示
-                            return "<html><div style='padding:5px;'>图钉信息加载失败</div></html>";
-                        }
-                    });
-                    label.setToolTipText(tooltip);
+                    // 不再使用标准工具提示，而是使用自定义悬浮预览
+                    // 清除原有工具提示
+                    label.setToolTipText(null);
                 }
                 return label;
             }
@@ -97,6 +88,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
+        // 添加鼠标监听器，处理双击导航和悬停预览
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -105,6 +97,51 @@ public class PinsToolWindow implements ToolWindowFactory {
                     if (selected != null) {
                         selected.navigate(project);
                     }
+                }
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // 鼠标离开列表时隐藏预览
+                PinHoverPreview.hidePreview();
+            }
+        });
+
+        // 添加鼠标移动监听器，处理悬停预览
+        list.addMouseMotionListener(new MouseAdapter() {
+            // 使用节流控制，减少鼠标移动事件的处理频率
+            private long lastProcessTime = 0;
+            private static final long THROTTLE_MS = 200; // 200毫秒节流
+
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                // 节流控制，减少鼠标移动事件的处理频率
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastProcessTime < THROTTLE_MS) {
+                    return; // 如果距离上次处理时间小于节流时间，则跳过
+                }
+                lastProcessTime = currentTime;
+
+                try {
+                    // 获取鼠标位置的项
+                    int index = list.locationToIndex(e.getPoint());
+                    if (index >= 0) {
+                        Rectangle cellBounds = list.getCellBounds(index, index);
+                        if (cellBounds != null && cellBounds.contains(e.getPoint())) {
+                            PinEntry entry = list.getModel().getElementAt(index);
+                            if (entry != null) {
+                                // 显示自定义悬浮预览
+                                PinHoverPreview.showPreview(entry, project, list, e.getXOnScreen(), e.getYOnScreen() + 20);
+                            }
+                        }
+                    } else {
+                        // 鼠标不在任何项上，隐藏预览
+                        PinHoverPreview.hidePreview();
+                    }
+                } catch (Exception ex) {
+                    // 捕获并记录任何异常
+                    System.out.println("[CodePins] 鼠标移动处理异常: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
             }
         });
