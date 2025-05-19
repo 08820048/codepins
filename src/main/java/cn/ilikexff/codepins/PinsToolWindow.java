@@ -3,6 +3,8 @@ package cn.ilikexff.codepins;
 import cn.ilikexff.codepins.ui.EmptyStatePanel;
 import cn.ilikexff.codepins.ui.PinListCellRenderer;
 import cn.ilikexff.codepins.ui.SearchTextField;
+import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
+import cn.ilikexff.codepins.ui.TagFilterPanel;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -30,6 +32,7 @@ public class PinsToolWindow implements ToolWindowFactory {
     private DefaultListModel<PinEntry> model;
     private List<PinEntry> allPins;
     private JList<PinEntry> list;
+    private final TagFilterPanel[] tagFilterPanelRef = new TagFilterPanel[1]; // 使用数组引用来解决前向引用问题
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -155,6 +158,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 加载图标
                     Icon codeIcon = IconLoader.getIcon("/icons/view.svg", getClass());
                     Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
+                    Icon tagIcon = IconLoader.getIcon("/icons/tag.svg", getClass());
                     Icon deleteIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
                     Icon refreshIcon = IconLoader.getIcon("/icons/refresh.svg", getClass());
 
@@ -168,7 +172,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                         menu.add(codeItem);
                     }
 
-                    // 添加编辑项
+                    // 添加编辑备注项
                     JMenuItem editItem = new JMenuItem("修改备注", editIcon);
                     editItem.addActionListener(event -> {
                         String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
@@ -177,6 +181,17 @@ public class PinsToolWindow implements ToolWindowFactory {
                         }
                     });
                     menu.add(editItem);
+
+                    // 添加编辑标签项
+                    JMenuItem tagItem = new JMenuItem("编辑标签", tagIcon);
+                    tagItem.addActionListener(event -> {
+                        SimpleTagEditorDialog dialog = new SimpleTagEditorDialog(project, selected);
+                        if (dialog.showAndGet()) {
+                            // 如果用户点击了确定，更新标签
+                            PinStorage.updateTags(selected, dialog.getTags());
+                        }
+                    });
+                    menu.add(tagItem);
 
                     // 添加删除项
                     JMenuItem deleteItem = new JMenuItem("删除本钉", deleteIcon);
@@ -196,6 +211,14 @@ public class PinsToolWindow implements ToolWindowFactory {
                             model.addElement(pin);
                         }
                         list.repaint();
+
+                        // 刷新标签筛选面板
+                        // 注意：标签面板在下面初始化，这里使用延迟执行
+                        SwingUtilities.invokeLater(() -> {
+                            if (tagFilterPanelRef[0] != null) {
+                                tagFilterPanelRef[0].refreshTagsView();
+                            }
+                        });
                     });
                     menu.add(refreshItem);
 
@@ -205,6 +228,12 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
+        // 创建标签筛选面板
+        tagFilterPanelRef[0] = new TagFilterPanel(selectedTags -> {
+            // 当标签选择变化时，更新图钉列表
+            updatePinsList(selectedTags);
+        });
+
         // 创建空状态面板
         EmptyStatePanel emptyStatePanel = new EmptyStatePanel();
 
@@ -212,9 +241,15 @@ public class PinsToolWindow implements ToolWindowFactory {
         CardLayout cardLayout = new CardLayout();
         JPanel contentPanel = new JPanel(cardLayout);
 
-        // 添加列表和空状态面板
+        // 创建列表面板（包含标签筛选和列表）
+        JPanel listPanel = new JPanel(new BorderLayout());
+        listPanel.add(tagFilterPanelRef[0], BorderLayout.NORTH);
+
         JBScrollPane scrollPane = new JBScrollPane(list);
-        contentPanel.add(scrollPane, "LIST");
+        listPanel.add(scrollPane, BorderLayout.CENTER);
+
+        // 添加列表面板和空状态面板
+        contentPanel.add(listPanel, "LIST");
         contentPanel.add(emptyStatePanel, "EMPTY");
 
         // 根据图钉数量显示适当的面板
@@ -290,6 +325,26 @@ public class PinsToolWindow implements ToolWindowFactory {
             cardLayout.show(contentPanel, "EMPTY");
         } else {
             cardLayout.show(contentPanel, "LIST");
+        }
+    }
+
+    /**
+     * 根据选中的标签更新图钉列表
+     */
+    private void updatePinsList(List<String> selectedTags) {
+        model.clear();
+
+        if (selectedTags == null || selectedTags.isEmpty()) {
+            // 如果没有选中标签，显示所有图钉
+            for (PinEntry pin : allPins) {
+                model.addElement(pin);
+            }
+        } else {
+            // 如果有选中标签，显示匹配的图钉
+            List<PinEntry> filteredPins = PinStorage.filterByTags(selectedTags);
+            for (PinEntry pin : filteredPins) {
+                model.addElement(pin);
+            }
         }
     }
 

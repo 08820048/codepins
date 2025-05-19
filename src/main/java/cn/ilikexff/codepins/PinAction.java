@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -17,6 +18,9 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 动作：在当前行或选区添加一个图钉，并可附加备注。
@@ -52,6 +56,23 @@ public class PinAction extends AnAction {
             note = "";
         }
 
+        // 创建标签对话框，请求用户输入标签
+        List<String> tags = new ArrayList<>();
+        SimpleTagEditorDialog tagDialog = new SimpleTagEditorDialog(project, new PinEntry(
+                file.getPath(),
+                document.createRangeMarker(0, 0), // 临时标记，仅用于对话框
+                note,
+                System.currentTimeMillis(),
+                System.getProperty("user.name"),
+                false,
+                tags
+        ));
+
+        if (tagDialog.showAndGet()) {
+            // 如果用户点击了确定，获取标签
+            tags = tagDialog.getTags();
+        }
+
         boolean isBlock = caret.hasSelection();
 
         // 记录调试信息
@@ -77,7 +98,8 @@ public class PinAction extends AnAction {
                 note,
                 System.currentTimeMillis(),
                 System.getProperty("user.name"),
-                isBlock
+                isBlock,
+                tags
         );
 
         PinStorage.addPin(pin);
