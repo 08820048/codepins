@@ -36,58 +36,64 @@ public class PinTooltipUtil {
 
     /**
      * 构建 Tooltip 文本
+     * 注意：调用此方法前必须确保在 ReadAction 中
      */
     public static String buildTooltip(PinEntry entry, Document doc, Locale locale, PinType type, Theme theme) {
-        ResourceBundle bundle = null;
         try {
-            bundle = ResourceBundle.getBundle("messages.CodePinsBundle", locale);
-        } catch (Exception ignored) {}
+            ResourceBundle bundle = null;
+            try {
+                bundle = ResourceBundle.getBundle("messages.CodePinsBundle", locale);
+            } catch (Exception ignored) {}
 
-        String note = entry.note != null ? escapeHtml(entry.note) : "-";
-        int line = entry.getCurrentLine(doc);
-        String time = formatTimestamp(entry.timestamp);
-        String author = entry.author != null ? entry.author : "-";
+            String note = entry.note != null ? escapeHtml(entry.note) : "-";
+            int line = entry.getCurrentLine(doc);
+            String time = formatTimestamp(entry.timestamp);
+            String author = entry.author != null ? entry.author : "-";
 
-        StringBuilder html = new StringBuilder();
-        html.append("<html><div style='background:")
-                .append(theme.bgColor)
-                .append("; padding:10px; border-radius:80px; font-family:monospace; font-size:10px; color:")
-                .append(theme.valueColor)
-                .append("; line-height:1.7;'>");
+            StringBuilder html = new StringBuilder();
+            html.append("<html><div style='background:")
+                    .append(theme.bgColor)
+                    .append("; padding:10px; border-radius:8px; font-family:monospace; font-size:12px; color:")
+                    .append(theme.valueColor)
+                    .append("; line-height:1.5;'>");
 
-        html.append("<span><b style='color:")
-                .append(theme.pathColor).append(";'>")
-                .append(get(bundle, "tooltip.path", "Path")).append(":</b> ")
-                .append(entry.filePath).append("</span><br/>");
+            html.append("<span><b style='color:")
+                    .append(theme.pathColor).append(";'>")
+                    .append(get(bundle, "tooltip.path", "Path")).append(":</b> ")
+                    .append(entry.filePath).append("</span><br/>");
 
-        html.append("<span><b style='color:")
-                .append(theme.lineColor).append(";'>")
-                .append(get(bundle, "tooltip.line", "Line")).append(":</b> ")
-                .append(line + 1).append("</span><br/>");
+            html.append("<span><b style='color:")
+                    .append(theme.lineColor).append(";'>")
+                    .append(get(bundle, "tooltip.line", "Line")).append(":</b> ")
+                    .append(line + 1).append("</span><br/>");
 
-        html.append("<span><b style='color:")
-                .append(theme.noteColor).append(";'>")
-                .append(get(bundle, "tooltip.note", "Note")).append(":</b> ")
-                .append(note).append("</span><br/>");
+            html.append("<span><b style='color:")
+                    .append(theme.noteColor).append(";'>")
+                    .append(get(bundle, "tooltip.note", "Note")).append(":</b> ")
+                    .append(note).append("</span><br/>");
 
-        html.append("<span><b style='color:")
-                .append(theme.timeColor).append(";'>")
-                .append(get(bundle, "tooltip.createdAt", "Created At")).append(":</b> ")
-                .append(time).append("</span><br/>");
+            html.append("<span><b style='color:")
+                    .append(theme.timeColor).append(";'>")
+                    .append(get(bundle, "tooltip.createdAt", "Created At")).append(":</b> ")
+                    .append(time).append("</span><br/>");
 
-        html.append("<span><b style='color:")
-                .append(theme.authorColor).append(";'>")
-                .append(get(bundle, "tooltip.author", "Author")).append(":</b> ")
-                .append(author).append("</span><br/>");
+            html.append("<span><b style='color:")
+                    .append(theme.authorColor).append(";'>")
+                    .append(get(bundle, "tooltip.author", "Author")).append(":</b> ")
+                    .append(author).append("</span><br/>");
 
-        // ✅ 仅非 DEFAULT 类型时添加类型说明
-        if (type != PinType.DEFAULT) {
-            html.append("<div style='margin-top:6px;'><i style='opacity:0.5;'>[")
-                    .append(type.name()).append("]</i></div>");
+            // ✅ 仅非 DEFAULT 类型时添加类型说明
+            if (type != PinType.DEFAULT) {
+                html.append("<div style='margin-top:6px;'><i style='opacity:0.5;'>[")
+                        .append(type.name()).append("]</i></div>");
+            }
+
+            html.append("</div></html>");
+            return html.toString();
+        } catch (Exception e) {
+            // 如果发生异常，返回一个简化的提示
+            return "<html><div style='padding:5px; background-color:#f8f8f8; color:#333;'>图钉信息加载失败</div></html>";
         }
-
-        html.append("</div></html>");
-        return html.toString();
     }
 
     /** 获取多语言内容（若不存在则回退） */

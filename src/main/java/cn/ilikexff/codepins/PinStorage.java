@@ -132,7 +132,7 @@ public class PinStorage {
                 endOffset = startOffset;
             }
 
-            // 确保范围有效
+            // 确保范围有效0
             if (startOffset > endOffset) {
                 startOffset = endOffset;
             }

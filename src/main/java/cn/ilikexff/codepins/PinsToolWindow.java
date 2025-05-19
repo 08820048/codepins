@@ -42,22 +42,46 @@ public class PinsToolWindow implements ToolWindowFactory {
                                                           boolean isSelected, boolean cellHasFocus) {
                 JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                 if (value instanceof PinEntry entry) {
-                    int line = entry.getCurrentLine(entry.marker.getDocument());
-                    String fileName = getFileName(entry.filePath);
-                    String typeTag = entry.isBlock ? "<font color='#f78c6c'>[Block]</font>" : "<font color='#c3e88d'>[Line]</font>";
-                    String notePart = (entry.note != null && !entry.note.isEmpty())
-                            ? " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>" : "";
+                    // 使用 ReadAction 包装文档访问操作，确保线程安全
+                    String display = com.intellij.openapi.application.ReadAction.compute(() -> {
+                        try {
+                            int line = entry.getCurrentLine(entry.marker.getDocument());
+                            String fileName = getFileName(entry.filePath);
+                            String typeTag = entry.isBlock ? "<font color='#f78c6c'>[Block]</font>" : "<font color='#c3e88d'>[Line]</font>";
+                            String notePart = (entry.note != null && !entry.note.isEmpty())
+                                    ? " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>" : "";
 
-                    String display = "<html><body style='white-space:nowrap;'>"
-                            + "<b>" + fileName + "</b> "
-                            + "<font color='gray'>@ Line " + (line + 1) + "</font> "
-                            + typeTag + notePart + "</body></html>";
+                            return "<html><body style='white-space:nowrap;'>"
+                                    + "<b>" + fileName + "</b> "
+                                    + "<font color='gray'>@ Line " + (line + 1) + "</font> "
+                                    + typeTag + notePart + "</body></html>";
+                        } catch (Exception e) {
+                            // 如果发生异常，返回一个简化的显示
+                            String fileName = getFileName(entry.filePath);
+                            String typeTag = entry.isBlock ? "<font color='#f78c6c'>[Block]</font>" : "<font color='#c3e88d'>[Line]</font>";
+                            String notePart = (entry.note != null && !entry.note.isEmpty())
+                                    ? " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>" : "";
+
+                            return "<html><body style='white-space:nowrap;'>"
+                                    + "<b>" + fileName + "</b> "
+                                    + typeTag + notePart + "</body></html>";
+                        }
+                    });
 
                     label.setIcon(IconLoader.getIcon(entry.isBlock ? "/icons/code.svg" : "/icons/bookmark.svg", getClass()));
                     label.setText(display);
 
-                    String tooltip = PinTooltipUtil.buildTooltip(entry, entry.marker.getDocument(),
-                            Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
+                    // 使用 ReadAction 包装文档访问操作，确保线程安全
+                    String tooltip = com.intellij.openapi.application.ReadAction.compute(() -> {
+                        try {
+                            Document doc = entry.marker.getDocument();
+                            return PinTooltipUtil.buildTooltip(entry, doc,
+                                    Locale.getDefault(), PinTooltipUtil.PinType.DEFAULT, new PinTooltipUtil.Theme());
+                        } catch (Exception e) {
+                            // 如果发生异常，返回一个简化的提示
+                            return "<html><div style='padding:5px;'>图钉信息加载失败</div></html>";
+                        }
+                    });
                     label.setToolTipText(tooltip);
                 }
                 return label;

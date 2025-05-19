@@ -34,7 +34,15 @@ public class PinEntry {
      * 获取当前行号（从 0 开始），可随代码变化自动更新。
      */
     public int getCurrentLine(Document document) {
-        return document.getLineNumber(marker.getStartOffset());
+        // 使用 ReadAction 包装文档访问操作，确保线程安全
+        return com.intellij.openapi.application.ReadAction.compute(() -> {
+            try {
+                return document.getLineNumber(marker.getStartOffset());
+            } catch (Exception e) {
+                // 如果发生异常，返回 0
+                return 0;
+            }
+        });
     }
 
     /**
@@ -42,29 +50,39 @@ public class PinEntry {
      */
     @Override
     public String toString() {
-        Document doc = marker.getDocument();
-        String lineInfo;
+        // 使用 ReadAction 包装文档访问操作，确保线程安全
+        return com.intellij.openapi.application.ReadAction.compute(() -> {
+            try {
+                Document doc = marker.getDocument();
+                String lineInfo;
 
-        if (isBlock) {
-            // 如果是代码块，显示起始行号到结束行号
-            int startLine = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
-            int endLine = doc.getLineNumber(marker.getEndOffset()) + 1;     // 转为从1开始的行号
+                if (isBlock) {
+                    // 如果是代码块，显示起始行号到结束行号
+                    int startLine = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
+                    int endLine = doc.getLineNumber(marker.getEndOffset()) + 1;     // 转为从1开始的行号
 
-            // 如果起始行和结束行相同，则只显示一个行号
-            if (startLine == endLine) {
-                lineInfo = "Line " + startLine;
-            } else {
-                lineInfo = "Line " + startLine + "-" + endLine;
+                    // 如果起始行和结束行相同，则只显示一个行号
+                    if (startLine == endLine) {
+                        lineInfo = "Line " + startLine;
+                    } else {
+                        lineInfo = "Line " + startLine + "-" + endLine;
+                    }
+                } else {
+                    // 如果是单行图钉，只显示当前行号
+                    int line = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
+                    lineInfo = "Line " + line;
+                }
+
+                String typeLabel = isBlock ? "[代码块]" : "[单行]";
+                return typeLabel + " " + filePath + " @ " + lineInfo
+                        + (note != null && !note.isEmpty() ? " - " + note : "");
+            } catch (Exception e) {
+                // 如果发生异常，返回一个简单的字符串
+                String typeLabel = isBlock ? "[代码块]" : "[单行]";
+                return typeLabel + " " + filePath +
+                       (note != null && !note.isEmpty() ? " - " + note : "");
             }
-        } else {
-            // 如果是单行图钉，只显示当前行号
-            int line = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
-            lineInfo = "Line " + line;
-        }
-
-        String typeLabel = isBlock ? "[代码块]" : "[单行]";
-        return typeLabel + " " + filePath + " @ " + lineInfo
-                + (note != null && !note.isEmpty() ? " - " + note : "");
+        });
     }
 
     /**
@@ -87,27 +105,45 @@ public class PinEntry {
      * 如果是代码块，则定位到起始行并选中整个代码块
      */
     public void navigate(Project project) {
-        VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
-        if (file != null) {
-            if (isBlock && marker.getStartOffset() != marker.getEndOffset()) {
-                // 如果是代码块图钉，则定位到起始位置并选中整个代码块
-                OpenFileDescriptor descriptor = new OpenFileDescriptor(
-                        project,
-                        file,
-                        marker.getStartOffset(),
-                        marker.getEndOffset() - marker.getStartOffset()
-                );
-                if (descriptor.canNavigate()) {
-                    descriptor.navigate(true);
+        // 使用 ReadAction 包装文档访问操作，确保线程安全
+        com.intellij.openapi.application.ReadAction.run(() -> {
+            try {
+                VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
+                if (file != null) {
+                    if (isBlock && marker.getStartOffset() != marker.getEndOffset()) {
+                        // 如果是代码块图钉，则定位到起始位置并选中整个代码块
+                        final int startOffset = marker.getStartOffset();
+                        final int endOffset = marker.getEndOffset();
+
+                        // 在 EDT 线程上执行导航操作
+                        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                            OpenFileDescriptor descriptor = new OpenFileDescriptor(
+                                    project,
+                                    file,
+                                    startOffset,
+                                    endOffset - startOffset
+                            );
+                            if (descriptor.canNavigate()) {
+                                descriptor.navigate(true);
+                            }
+                        });
+                    } else {
+                        // 如果是单行图钉，则只定位到当前行
+                        final int line = getCurrentLine(marker.getDocument());
+
+                        // 在 EDT 线程上执行导航操作
+                        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                            OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line);
+                            if (descriptor.canNavigate()) {
+                                descriptor.navigate(true);
+                            }
+                        });
+                    }
                 }
-            } else {
-                // 如果是单行图钉，则只定位到当前行
-                int line = getCurrentLine(marker.getDocument());
-                OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line);
-                if (descriptor.canNavigate()) {
-                    descriptor.navigate(true);
-                }
+            } catch (Exception e) {
+                // 如果发生异常，记录错误
+                System.out.println("[CodePins] 导航失败: " + e.getMessage());
             }
-        }
+        });
     }
 }
