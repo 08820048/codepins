@@ -65,7 +65,29 @@ public class PinStateService implements PersistentStateComponent<PinStateService
      * 添加图钉（支持 PinEntry 格式，会转换为 PinState）
      */
     public void addPin(PinEntry entry) {
-        state.pins.add(new PinState(entry.filePath, entry.getCurrentLine(entry.marker.getDocument()), entry.note, entry.timestamp, entry.author, entry.isBlock));
+        if (entry.isBlock) {
+            state.pins.add(new PinState(
+                    entry.filePath,
+                    entry.getCurrentLine(entry.marker.getDocument()),
+                    entry.note,
+                    entry.timestamp,
+                    entry.author,
+                    entry.isBlock,
+                    entry.marker.getStartOffset(),
+                    entry.marker.getEndOffset(),
+                    entry.getTags()
+            ));
+        } else {
+            state.pins.add(new PinState(
+                    entry.filePath,
+                    entry.getCurrentLine(entry.marker.getDocument()),
+                    entry.note,
+                    entry.timestamp,
+                    entry.author,
+                    entry.isBlock,
+                    entry.getTags()
+            ));
+        }
     }
 
     /**
