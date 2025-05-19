@@ -1,5 +1,8 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.ui.EmptyStatePanel;
+import cn.ilikexff.codepins.ui.PinListCellRenderer;
+import cn.ilikexff.codepins.ui.SearchTextField;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
@@ -17,6 +20,7 @@ import javax.swing.event.DocumentListener;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -36,55 +40,31 @@ public class PinsToolWindow implements ToolWindowFactory {
         PinStorage.initFromSaved();
         allPins = PinStorage.getPins();
 
-        list.setCellRenderer(new DefaultListCellRenderer() {
+        // 使用自定义的现代卡片式渲染器
+        PinListCellRenderer cellRenderer = new PinListCellRenderer();
+        list.setCellRenderer(cellRenderer);
+
+        // 添加鼠标移动监听器，实现悬停效果
+        list.addMouseMotionListener(new MouseMotionAdapter() {
             @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index,
-                                                          boolean isSelected, boolean cellHasFocus) {
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                if (value instanceof PinEntry entry) {
-                    // 使用 ReadAction 包装文档访问操作，确保线程安全
-                    String display = com.intellij.openapi.application.ReadAction.compute(() -> {
-                        try {
-                            int line = entry.getCurrentLine(entry.marker.getDocument());
-                            String fileName = getFileName(entry.filePath);
-                            String typeTag = entry.isBlock ? "<font color='#f78c6c'>[Block]</font>" : "<font color='#c3e88d'>[Line]</font>";
-                            String notePart = (entry.note != null && !entry.note.isEmpty())
-                                    ? " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>" : "";
-
-                            return "<html><body style='white-space:nowrap;'>"
-                                    + "<b>" + fileName + "</b> "
-                                    + "<font color='gray'>@ Line " + (line + 1) + "</font> "
-                                    + typeTag + notePart + "</body></html>";
-                        } catch (Exception e) {
-                            // 如果发生异常，返回一个简化的显示
-                            String fileName = getFileName(entry.filePath);
-                            String typeTag = entry.isBlock ? "<font color='#f78c6c'>[Block]</font>" : "<font color='#c3e88d'>[Line]</font>";
-                            String notePart = (entry.note != null && !entry.note.isEmpty())
-                                    ? " - <i><font color='#1ad320'>" + escapeHtml(entry.note) + "</font></i>" : "";
-
-                            return "<html><body style='white-space:nowrap;'>"
-                                    + "<b>" + fileName + "</b> "
-                                    + typeTag + notePart + "</body></html>";
-                        }
-                    });
-
-                    label.setIcon(IconLoader.getIcon(entry.isBlock ? "/icons/code.svg" : "/icons/bookmark.svg", getClass()));
-                    label.setText(display);
-
-                    // 不再使用标准工具提示，而是使用自定义悬浮预览
-                    // 清除原有工具提示
-                    label.setToolTipText(null);
+            public void mouseMoved(MouseEvent e) {
+                int index = list.locationToIndex(e.getPoint());
+                if (index >= 0) {
+                    Rectangle cellBounds = list.getCellBounds(index, index);
+                    if (cellBounds != null && cellBounds.contains(e.getPoint())) {
+                        cellRenderer.setHoverIndex(index);
+                        list.repaint();
+                    }
                 }
-                return label;
             }
+        });
 
-            private String getFileName(String path) {
-                int slash = path.lastIndexOf('/');
-                return slash >= 0 ? path.substring(slash + 1) : path;
-            }
-
-            private String escapeHtml(String s) {
-                return s.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
+        // 鼠标离开列表时清除悬停效果
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseExited(MouseEvent e) {
+                cellRenderer.setHoverIndex(-1);
+                list.repaint();
             }
         });
 
@@ -225,24 +205,61 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
+        // 创建空状态面板
+        EmptyStatePanel emptyStatePanel = new EmptyStatePanel();
+
+        // 创建卡片布局，用于切换显示列表或空状态
+        CardLayout cardLayout = new CardLayout();
+        JPanel contentPanel = new JPanel(cardLayout);
+
+        // 添加列表和空状态面板
         JBScrollPane scrollPane = new JBScrollPane(list);
+        contentPanel.add(scrollPane, "LIST");
+        contentPanel.add(emptyStatePanel, "EMPTY");
+
+        // 根据图钉数量显示适当的面板
+        updateContentView(cardLayout, contentPanel);
+
+        // 添加模型监听器，当图钉数量变化时更新视图
+        model.addListDataListener(new javax.swing.event.ListDataListener() {
+            @Override
+            public void intervalAdded(javax.swing.event.ListDataEvent e) {
+                updateContentView(cardLayout, contentPanel);
+            }
+
+            @Override
+            public void intervalRemoved(javax.swing.event.ListDataEvent e) {
+                updateContentView(cardLayout, contentPanel);
+            }
+
+            @Override
+            public void contentsChanged(javax.swing.event.ListDataEvent e) {
+                updateContentView(cardLayout, contentPanel);
+            }
+        });
+
+        // 创建顶部面板（搜索和工具栏）
         JPanel topPanel = new JPanel(new BorderLayout());
         topPanel.add(createSearchField(), BorderLayout.CENTER);
         topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
 
+        // 创建主面板
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(scrollPane, BorderLayout.CENTER);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
 
+        // 添加到工具窗口
         Content content = ContentFactory.getInstance().createContent(mainPanel, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
-    private JTextField createSearchField() {
-        JTextField searchField = new JTextField();
-        searchField.setToolTipText("搜索图钉（支持备注与路径）");
+    /**
+     * 创建现代化搜索框
+     */
+    private JComponent createSearchField() {
+        SearchTextField searchField = new SearchTextField("搜索图钉（支持备注与路径）");
 
-        searchField.getDocument().addDocumentListener(new DocumentListener() {
+        searchField.addDocumentListener(new DocumentListener() {
             void filter() {
                 String keyword = searchField.getText().trim().toLowerCase();
                 model.clear();
@@ -265,6 +282,20 @@ public class PinsToolWindow implements ToolWindowFactory {
         return searchField;
     }
 
+    /**
+     * 更新内容视图，根据图钉数量显示列表或空状态
+     */
+    private void updateContentView(CardLayout cardLayout, JPanel contentPanel) {
+        if (model.isEmpty()) {
+            cardLayout.show(contentPanel, "EMPTY");
+        } else {
+            cardLayout.show(contentPanel, "LIST");
+        }
+    }
+
+    /**
+     * 创建工具栏
+     */
     private ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
         Icon clearIcon = IconLoader.getIcon("/icons/x-octagon.svg", getClass());
