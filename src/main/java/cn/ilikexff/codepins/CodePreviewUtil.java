@@ -11,6 +11,7 @@ import com.intellij.openapi.ui.popup.JBPopupFactory;
 import com.intellij.ui.EditorTextField;
 import com.intellij.openapi.editor.ex.EditorEx;
 import com.intellij.openapi.editor.EditorSettings;
+import com.intellij.ui.JBColor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -78,7 +79,73 @@ public class CodePreviewUtil {
      */
     private static void showErrorMessage(String message) {
         SwingUtilities.invokeLater(() -> {
-            JOptionPane.showMessageDialog(null, message, "预览错误", JOptionPane.ERROR_MESSAGE);
+            // 创建自定义错误面板
+            JPanel errorPanel = new JPanel();
+            errorPanel.setLayout(new BoxLayout(errorPanel, BoxLayout.Y_AXIS));
+            errorPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+            errorPanel.setBackground(new JBColor(new Color(50, 40, 40, 245), new Color(50, 40, 40, 245)));
+
+            // 添加错误图标和标题
+            JPanel headerPanel = new JPanel();
+            headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.X_AXIS));
+            headerPanel.setOpaque(false);
+            headerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JLabel iconLabel = new JLabel("⚠️"); // 警告图标
+            iconLabel.setFont(iconLabel.getFont().deriveFont(18.0f));
+            headerPanel.add(iconLabel);
+            headerPanel.add(Box.createHorizontalStrut(10));
+
+            JLabel titleLabel = new JLabel("代码预览错误");
+            titleLabel.setForeground(new JBColor(new Color(255, 180, 180), new Color(255, 180, 180)));
+            titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 14.0f));
+            headerPanel.add(titleLabel);
+            headerPanel.add(Box.createHorizontalGlue());
+
+            errorPanel.add(headerPanel);
+            errorPanel.add(Box.createVerticalStrut(10));
+
+            // 添加分隔线
+            JSeparator separator = new JSeparator();
+            separator.setForeground(new JBColor(new Color(100, 70, 70), new Color(100, 70, 70)));
+            separator.setAlignmentX(Component.LEFT_ALIGNMENT);
+            errorPanel.add(separator);
+            errorPanel.add(Box.createVerticalStrut(10));
+
+            // 添加错误信息
+            JLabel errorLabel = new JLabel(message);
+            errorLabel.setForeground(new JBColor(new Color(255, 255, 255), new Color(255, 255, 255)));
+            errorLabel.setFont(errorLabel.getFont().deriveFont(13.0f));
+            errorLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+            errorPanel.add(errorLabel);
+
+            // 添加确定按钮
+            JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+            buttonPanel.setOpaque(false);
+            buttonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+            JButton okButton = new JButton("确定");
+            okButton.setFocusPainted(false);
+            buttonPanel.add(okButton);
+
+            errorPanel.add(Box.createVerticalStrut(15));
+            errorPanel.add(buttonPanel);
+
+            // 创建弹窗
+            JBPopup popup = JBPopupFactory.getInstance()
+                    .createComponentPopupBuilder(errorPanel, null)
+                    .setResizable(false)
+                    .setMovable(true)
+                    .setRequestFocus(true)
+                    .setCancelOnClickOutside(true)
+                    .setCancelOnWindowDeactivation(true)
+                    .createPopup();
+
+            // 添加按钮点击事件
+            okButton.addActionListener(e -> popup.cancel());
+
+            // 显示弹窗
+            popup.showInFocusCenter();
         });
     }
 
@@ -119,30 +186,84 @@ public class CodePreviewUtil {
 
             if (startOffset >= endOffset) {
                 System.out.println("[CodePins] 无法预览代码：选区范围无效 " + startOffset + "-" + endOffset);
-                JOptionPane.showMessageDialog(null,
-                    "无法预览代码：选区范围无效",
-                    "预览错误",
-                    JOptionPane.ERROR_MESSAGE);
+                showErrorMessage("无法预览代码：选区范围无效");
                 return;
             }
 
             String codeSnippet = document.getText().substring(startOffset, endOffset);
             if (codeSnippet.trim().isEmpty()) {
                 System.out.println("[CodePins] 无法预览代码：代码片段为空");
-                JOptionPane.showMessageDialog(null,
-                    "无法预览代码：代码片段为空",
-                    "预览错误",
-                    JOptionPane.ERROR_MESSAGE);
+                showErrorMessage("无法预览代码：代码片段为空");
                 return;
             }
+
+            // 计算代码行数，用于动态调整面板高度
+            int lineCount = 0;
+            for (int i = 0; i < codeSnippet.length(); i++) {
+                if (codeSnippet.charAt(i) == '\n') {
+                    lineCount++;
+                }
+            }
+            // 最后一行可能没有\n
+            if (codeSnippet.length() > 0 && codeSnippet.charAt(codeSnippet.length() - 1) != '\n') {
+                lineCount++;
+            }
+
+            // 确保至少显示1行
+            lineCount = Math.max(1, lineCount);
+            System.out.println("[CodePins] 代码片段行数: " + lineCount);
 
             // 创建一个新的文档来显示代码片段
             Document snippetDoc = EditorFactory.getInstance().createDocument(codeSnippet);
             EditorTextField editorField = new EditorTextField(snippetDoc, project, fileType, true, false);
 
             editorField.setOneLineMode(false);
-            editorField.setPreferredSize(new Dimension(600, 300));
 
+            // 动态计算面板高度，每行大约20像素，加上边距
+            int editorHeight = Math.min(500, Math.max(100, lineCount * 22 + 30)); // 限制最小和最大高度
+            editorField.setPreferredSize(new Dimension(650, editorHeight));
+
+            // 创建包装面板，使用现代化设计
+            JPanel mainPanel = new JPanel(new BorderLayout());
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+
+            // 创建标题面板
+            JPanel titlePanel = new JPanel();
+            titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
+            titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+            titlePanel.setBackground(new JBColor(new Color(40, 44, 52, 245), new Color(40, 44, 52, 245)));
+
+            // 文件名和行号信息
+            String fileName = pin.filePath;
+            int lastSlash = Math.max(pin.filePath.lastIndexOf('/'), pin.filePath.lastIndexOf('\\'));
+            if (lastSlash >= 0) {
+                fileName = pin.filePath.substring(lastSlash + 1);
+            }
+
+            // 创建文件名标签
+            JLabel fileLabel = new JLabel("📄 " + fileName);
+            fileLabel.setFont(fileLabel.getFont().deriveFont(Font.BOLD, 14.0f));
+            fileLabel.setForeground(new JBColor(new Color(255, 203, 107), new Color(255, 203, 107)));
+
+            // 创建行号标签
+            JLabel lineLabel = new JLabel(String.format(" (第 %d-%d 行)", startLine + 1, endLine + 1));
+            lineLabel.setFont(lineLabel.getFont().deriveFont(13.0f));
+            lineLabel.setForeground(new JBColor(new Color(247, 140, 108), new Color(247, 140, 108)));
+
+            titlePanel.add(fileLabel);
+            titlePanel.add(lineLabel);
+            titlePanel.add(Box.createHorizontalGlue());
+
+            // 添加标题面板
+            mainPanel.add(titlePanel, BorderLayout.NORTH);
+
+            // 创建代码编辑器面板
+            JPanel editorPanel = new JPanel(new BorderLayout());
+            editorPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            editorPanel.add(editorField, BorderLayout.CENTER);
+            mainPanel.add(editorPanel, BorderLayout.CENTER);
+
+            // 设置编辑器属性
             SwingUtilities.invokeLater(() -> {
                 EditorEx editor = (EditorEx) editorField.getEditor();
                 if (editor != null) {
@@ -150,26 +271,24 @@ public class CodePreviewUtil {
                     settings.setLineNumbersShown(true);
                     settings.setLineMarkerAreaShown(true);
                     settings.setFoldingOutlineShown(false);
+                    settings.setAdditionalLinesCount(0); // 减少底部空白
+                    settings.setAdditionalColumnsCount(0); // 减少右侧空白
                     editor.setHorizontalScrollbarVisible(true);
                     editor.setVerticalScrollbarVisible(true);
+
+                    // 设置背景颜色
+                    editor.setBackgroundColor(new JBColor(new Color(43, 43, 46), new Color(43, 43, 46)));
                 }
             });
 
-            // 创建带有文件名和行号的标题
-            String fileName = pin.filePath;
-            int lastSlash = Math.max(pin.filePath.lastIndexOf('/'), pin.filePath.lastIndexOf('\\'));
-            if (lastSlash >= 0) {
-                fileName = pin.filePath.substring(lastSlash + 1);
-            }
-            String title = String.format("🪄 代码预览: %s (第 %d-%d 行)", fileName, startLine + 1, endLine + 1);
-
+            // 创建弹窗
             JBPopup popup = JBPopupFactory.getInstance()
-                    .createComponentPopupBuilder(editorField, null)
-                    .setTitle(title)
+                    .createComponentPopupBuilder(mainPanel, null)
                     .setResizable(true)
                     .setMovable(true)
                     .setRequestFocus(true)
-                    // 移除 setDimensionServiceKey 调用，因为参数不匹配
+                    .setCancelOnClickOutside(true)
+                    .setCancelOnWindowDeactivation(true)
                     .createPopup();
 
             popup.showInFocusCenter();
@@ -177,10 +296,7 @@ public class CodePreviewUtil {
         } catch (Exception e) {
             System.out.println("[CodePins] 预览代码时出错: " + e.getMessage());
             e.printStackTrace();
-            JOptionPane.showMessageDialog(null,
-                "预览代码时出错: " + e.getMessage(),
-                "预览错误",
-                JOptionPane.ERROR_MESSAGE);
+            showErrorMessage("预览代码时出错: " + e.getMessage());
         }
     }
 }
