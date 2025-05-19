@@ -2,8 +2,10 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
 import cn.ilikexff.codepins.PinStorage;
+import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -19,57 +21,76 @@ import java.util.function.Consumer;
  * 用于显示和选择标签进行筛选
  */
 public class TagFilterPanel extends JPanel {
-    
+
     private final List<String> selectedTags = new ArrayList<>();
     private final Consumer<List<String>> onTagSelectionChanged;
     private final JPanel tagsContainer;
-    
+
     public TagFilterPanel(Consumer<List<String>> onTagSelectionChanged) {
         this.onTagSelectionChanged = onTagSelectionChanged;
-        
+
         setLayout(new BorderLayout());
-        setBorder(JBUI.Borders.empty(5, 10));
-        
-        // 创建标题
-        JLabel titleLabel = new JLabel("按标签筛选:");
-        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-        add(titleLabel, BorderLayout.NORTH);
-        
-        // 创建标签容器
-        tagsContainer = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
-        tagsContainer.setOpaque(false);
-        
-        JScrollPane scrollPane = new JScrollPane(tagsContainer);
-        scrollPane.setBorder(BorderFactory.createEmptyBorder());
-        scrollPane.setOpaque(false);
-        scrollPane.getViewport().setOpaque(false);
-        
-        add(scrollPane, BorderLayout.CENTER);
-        
-        // 添加清除按钮
+        setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createMatteBorder(0, 0, 1, 0, JBColor.border()),
+                JBUI.Borders.empty(8, 10, 10, 10)
+        ));
+
+        // 创建标题和清除按钮的顶部面板
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setOpaque(false);
+        headerPanel.setBorder(JBUI.Borders.emptyBottom(8));
+
+        // 标题带图标
+        JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        titlePanel.setOpaque(false);
+
+        JLabel iconLabel = new JLabel(IconLoader.getIcon("/icons/filter.svg", getClass()));
+        JLabel titleLabel = new JLabel("标签筛选");
+        titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 13f));
+
+        titlePanel.add(iconLabel);
+        titlePanel.add(titleLabel);
+
+        // 清除按钮
         JButton clearButton = new JButton("清除筛选");
+        clearButton.setFont(clearButton.getFont().deriveFont(11f));
+        clearButton.setBorder(JBUI.Borders.empty(2, 8));
+        clearButton.setFocusPainted(false);
         clearButton.addActionListener(e -> {
             selectedTags.clear();
             refreshTagsView();
             onTagSelectionChanged.accept(selectedTags);
         });
-        
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        buttonPanel.setOpaque(false);
-        buttonPanel.add(clearButton);
-        
-        add(buttonPanel, BorderLayout.SOUTH);
-        
+
+        headerPanel.add(titlePanel, BorderLayout.WEST);
+        headerPanel.add(clearButton, BorderLayout.EAST);
+
+        add(headerPanel, BorderLayout.NORTH);
+
+        // 创建标签容器
+        tagsContainer = new JPanel();
+        tagsContainer.setLayout(new WrapLayout(FlowLayout.LEFT, 6, 6));
+        tagsContainer.setOpaque(false);
+
+        JScrollPane scrollPane = new JScrollPane(tagsContainer);
+        scrollPane.setBorder(BorderFactory.createEmptyBorder());
+        scrollPane.setOpaque(false);
+        scrollPane.getViewport().setOpaque(false);
+        scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+
+        add(scrollPane, BorderLayout.CENTER);
+
         // 初始化标签视图
         refreshTagsView();
     }
-    
+
     /**
      * 刷新标签视图
      */
     public void refreshTagsView() {
         tagsContainer.removeAll();
-        
+
         Set<String> allTags = PinStorage.getAllTags();
         if (allTags.isEmpty()) {
             JLabel emptyLabel = new JLabel("暂无标签");
@@ -81,34 +102,44 @@ public class TagFilterPanel extends JPanel {
                 tagsContainer.add(tagLabel);
             }
         }
-        
+
         tagsContainer.revalidate();
         tagsContainer.repaint();
     }
-    
+
     /**
      * 创建标签标签
      */
     private JLabel createTagLabel(String tag, boolean selected) {
         JLabel tagLabel = new JLabel(tag);
-        tagLabel.setFont(tagLabel.getFont().deriveFont(Font.PLAIN, 12f));
-        
-        // 设置颜色和样式
-        Color bgColor = selected ? getSelectedTagColor(tag) : getTagColor(tag);
-        Color fgColor = selected ? 
-                new JBColor(new Color(255, 255, 255), new Color(255, 255, 255)) : 
-                new JBColor(new Color(50, 50, 50), new Color(200, 200, 200));
-        
-        tagLabel.setForeground(fgColor);
-        tagLabel.setBackground(bgColor);
+        tagLabel.setFont(tagLabel.getFont().deriveFont(selected ? Font.BOLD : Font.PLAIN, 12f));
+
+        // 生成标签颜色
+        Color tagColor = selected ? getSelectedTagColor(tag) : getTagColor(tag);
+
+        // 根据背景色决定文本颜色
+        boolean isDark = ColorUtil.isDark(tagColor);
+        Color textColor = isDark ? new JBColor(Color.WHITE, Color.WHITE) : new JBColor(new Color(50, 50, 50), new Color(50, 50, 50));
+
+        tagLabel.setForeground(textColor);
+        tagLabel.setBackground(tagColor);
         tagLabel.setOpaque(true);
-        
-        // 设置边框和内边距
+
+        // 添加标签图标
+        tagLabel.setIcon(IconLoader.getIcon("/icons/tag-small.svg", getClass()));
+        tagLabel.setIconTextGap(6);
+
+        // 设置圆角边框
+        Color borderColor = new JBColor(
+                new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), selected ? 150 : 100),
+                new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), selected ? 150 : 100)
+        );
+
         tagLabel.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new JBColor(new Color(100, 100, 100, 50), new Color(100, 100, 100, 50)), 1),
-                JBUI.Borders.empty(3, 8)
+                BorderFactory.createLineBorder(borderColor, 1),
+                JBUI.Borders.empty(4, 8)
         ));
-        
+
         // 添加鼠标点击事件
         tagLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -121,85 +152,111 @@ public class TagFilterPanel extends JPanel {
                 refreshTagsView();
                 onTagSelectionChanged.accept(selectedTags);
             }
-            
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 tagLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                // 鼠标悬停效果
+                if (!selected) {
+                    tagLabel.setBackground(tagColor.brighter());
+                }
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 tagLabel.setCursor(Cursor.getDefaultCursor());
+                // 鼠标离开恢复原样式
+                if (!selected) {
+                    tagLabel.setBackground(tagColor);
+                }
             }
         });
-        
+
         return tagLabel;
     }
-    
+
     /**
      * 获取标签颜色
      */
     private Color getTagColor(String tag) {
         // 使用标签的哈希值生成颜色，确保相同标签有相同颜色
         int hash = tag.hashCode();
-        
-        // 预定义的淡色调色板
+
+        // 现代感强的色调
         Color[] lightPalette = {
-                new Color(230, 240, 255), // 淡蓝
-                new Color(230, 255, 230), // 淡绿
-                new Color(255, 240, 230), // 淡橙
-                new Color(255, 230, 240), // 淡红
-                new Color(240, 230, 255), // 淡紫
-                new Color(255, 255, 230), // 淡黄
-                new Color(230, 255, 255)  // 淡青
+                new Color(79, 195, 247),  // 浅蓝
+                new Color(129, 199, 132), // 浅绿
+                new Color(255, 183, 77),  // 浅橙
+                new Color(240, 98, 146),  // 浅红
+                new Color(149, 117, 205), // 浅紫
+                new Color(224, 224, 224), // 浅灰
+                new Color(77, 208, 225),  // 浅青
+                new Color(174, 213, 129)  // 浅黄绿
         };
-        
+
         Color[] darkPalette = {
-                new Color(40, 50, 70),    // 深蓝
-                new Color(40, 70, 50),    // 深绿
-                new Color(70, 50, 40),    // 深橙
-                new Color(70, 40, 50),    // 深红
-                new Color(50, 40, 70),    // 深紫
-                new Color(70, 70, 40),    // 深黄
-                new Color(40, 70, 70)     // 深青
+                new Color(41, 121, 255),  // 深蓝
+                new Color(67, 160, 71),   // 深绿
+                new Color(255, 152, 0),   // 深橙
+                new Color(233, 30, 99),   // 深红
+                new Color(103, 58, 183),  // 深紫
+                new Color(117, 117, 117), // 深灰
+                new Color(0, 172, 193),   // 深青
+                new Color(104, 159, 56)   // 深黄绿
         };
-        
+
         int index = Math.abs(hash) % lightPalette.length;
         return new JBColor(lightPalette[index], darkPalette[index]);
     }
-    
+
     /**
      * 获取选中标签的颜色
      */
     private Color getSelectedTagColor(String tag) {
         // 使用标签的哈希值生成颜色，确保相同标签有相同颜色
         int hash = tag.hashCode();
-        
-        // 预定义的深色调色板（选中状态）
+
+        // 选中状态使用更高饱和度的颜色
         Color[] lightPalette = {
-                new Color(100, 140, 230), // 蓝
-                new Color(100, 200, 130), // 绿
-                new Color(230, 140, 100), // 橙
-                new Color(230, 100, 140), // 红
-                new Color(170, 100, 230), // 紫
-                new Color(200, 200, 100), // 黄
-                new Color(100, 200, 200)  // 青
+                new Color(3, 169, 244),   // 蓝
+                new Color(76, 175, 80),   // 绿
+                new Color(255, 152, 0),   // 橙
+                new Color(233, 30, 99),   // 红
+                new Color(103, 58, 183),  // 紫
+                new Color(158, 158, 158), // 灰
+                new Color(0, 188, 212),   // 青
+                new Color(139, 195, 74)   // 黄绿
         };
-        
+
         Color[] darkPalette = {
-                new Color(80, 120, 200),  // 蓝
-                new Color(80, 180, 110),  // 绿
-                new Color(200, 120, 80),  // 橙
-                new Color(200, 80, 120),  // 红
-                new Color(150, 80, 200),  // 紫
-                new Color(180, 180, 80),  // 黄
-                new Color(80, 180, 180)   // 青
+                new Color(33, 150, 243),  // 蓝
+                new Color(46, 125, 50),   // 绿
+                new Color(239, 108, 0),   // 橙
+                new Color(216, 27, 96),   // 红
+                new Color(94, 53, 177),   // 紫
+                new Color(97, 97, 97),    // 灰
+                new Color(0, 151, 167),   // 青
+                new Color(85, 139, 47)    // 黄绿
         };
-        
+
         int index = Math.abs(hash) % lightPalette.length;
         return new JBColor(lightPalette[index], darkPalette[index]);
     }
-    
+
+    /**
+     * 颜色工具类
+     */
+    private static class ColorUtil {
+        /**
+         * 判断颜色是否为深色
+         */
+        public static boolean isDark(Color color) {
+            // 使用人眼对不同颜色的敏感度公式
+            double brightness = (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
+            return brightness < 0.5;
+        }
+    }
+
     /**
      * 获取当前选中的标签
      */
