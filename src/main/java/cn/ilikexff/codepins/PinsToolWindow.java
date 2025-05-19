@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.ui.AnimationUtil;
 import cn.ilikexff.codepins.ui.EmptyStatePanel;
 import cn.ilikexff.codepins.ui.PinListCellRenderer;
 import cn.ilikexff.codepins.ui.SearchTextField;
@@ -167,6 +168,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                         // 如果是代码块图钉，添加代码预览项
                         JMenuItem codeItem = new JMenuItem("查看代码块", codeIcon);
                         codeItem.addActionListener(event -> {
+                            // 添加按钮动画效果
+                            AnimationUtil.buttonClickEffect(codeItem);
                             CodePreviewUtil.showPreviewPopup(project, selected);
                         });
                         menu.add(codeItem);
@@ -175,6 +178,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 添加编辑备注项
                     JMenuItem editItem = new JMenuItem("修改备注", editIcon);
                     editItem.addActionListener(event -> {
+                        // 添加按钮动画效果
+                        AnimationUtil.buttonClickEffect(editItem);
                         String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
                         if (newNote != null) {
                             PinStorage.updateNote(selected, newNote.trim());
@@ -185,6 +190,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 添加编辑标签项
                     JMenuItem tagItem = new JMenuItem("编辑标签", tagIcon);
                     tagItem.addActionListener(event -> {
+                        // 添加按钮动画效果
+                        AnimationUtil.buttonClickEffect(tagItem);
                         SimpleTagEditorDialog dialog = new SimpleTagEditorDialog(project, selected);
                         if (dialog.showAndGet()) {
                             // 如果用户点击了确定，更新标签
@@ -196,6 +203,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 添加删除项
                     JMenuItem deleteItem = new JMenuItem("删除本钉", deleteIcon);
                     deleteItem.addActionListener(event -> {
+                        // 添加按钮动画效果
+                        AnimationUtil.buttonClickEffect(deleteItem);
                         PinStorage.removePin(selected);
                         allPins = PinStorage.getPins();
                     });
@@ -204,6 +213,9 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 添加刷新项
                     JMenuItem refreshItem = new JMenuItem("刷新", refreshIcon);
                     refreshItem.addActionListener(event -> {
+                        // 添加按钮动画效果
+                        AnimationUtil.buttonClickEffect(refreshItem);
+
                         // 重新加载所有图钉
                         allPins = PinStorage.getPins();
                         model.clear();

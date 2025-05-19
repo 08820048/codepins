@@ -11,6 +11,7 @@ import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
+import cn.ilikexff.codepins.ui.AnimationUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
@@ -34,6 +35,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private final JBList<String> tagsList;
     private final JBTextField newTagField;
     private final List<String> currentTags;
+    private JPanel tagActionPanel; // 标签操作面板
 
     public SimpleTagEditorDialog(Project project, PinEntry pinEntry) {
         super(project);
@@ -90,7 +92,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.add(scrollPane);
 
         // 添加标签操作按钮面板
-        JPanel tagActionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        tagActionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         tagActionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         tagActionPanel.setBorder(JBUI.Borders.empty(8, 0, 8, 0));
 
@@ -176,9 +178,18 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private void addNewTag() {
         String tag = newTagField.getText().trim();
         if (!tag.isEmpty() && !tagsModel.contains(tag)) {
+            // 添加标签
             tagsModel.addElement(tag);
             currentTags.add(tag);
             newTagField.setText("");
+
+            // 添加按钮动画效果
+            AnimationUtil.buttonClickEffect((JButton)tagActionPanel.getComponent(1));
+
+            // 选中新添加的标签
+            int newIndex = tagsModel.size() - 1;
+            tagsList.setSelectedIndex(newIndex);
+            tagsList.ensureIndexIsVisible(newIndex);
         }
     }
 
@@ -187,10 +198,15 @@ public class SimpleTagEditorDialog extends DialogWrapper {
      */
     private void removeSelectedTags() {
         int[] indices = tagsList.getSelectedIndices();
-        for (int i = indices.length - 1; i >= 0; i--) {
-            String tag = tagsModel.getElementAt(indices[i]);
-            tagsModel.remove(indices[i]);
-            currentTags.remove(tag);
+        if (indices.length > 0) {
+            // 删除按钮动画效果
+            AnimationUtil.buttonClickEffect((JButton)tagActionPanel.getComponent(0));
+
+            for (int i = indices.length - 1; i >= 0; i--) {
+                String tag = tagsModel.getElementAt(indices[i]);
+                tagsModel.remove(indices[i]);
+                currentTags.remove(tag);
+            }
         }
     }
 
@@ -200,6 +216,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private void editSelectedTag() {
         int selectedIndex = tagsList.getSelectedIndex();
         if (selectedIndex >= 0) {
+            // 编辑按钮动画效果
+            AnimationUtil.buttonClickEffect((JButton)tagActionPanel.getComponent(1));
+
             String oldTag = tagsModel.getElementAt(selectedIndex);
             String newTag = JOptionPane.showInputDialog(this.getRootPane(),
                     "请输入新的标签名称", oldTag);

@@ -6,6 +6,7 @@ import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
+import cn.ilikexff.codepins.ui.AnimationUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -57,6 +58,8 @@ public class TagFilterPanel extends JPanel {
         clearButton.setBorder(JBUI.Borders.empty(2, 8));
         clearButton.setFocusPainted(false);
         clearButton.addActionListener(e -> {
+            // 添加按钮动画效果
+            AnimationUtil.buttonClickEffect(clearButton);
             selectedTags.clear();
             refreshTagsView();
             onTagSelectionChanged.accept(selectedTags);
@@ -144,13 +147,18 @@ public class TagFilterPanel extends JPanel {
         tagLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (selected) {
-                    selectedTags.remove(tag);
-                } else {
-                    selectedTags.add(tag);
-                }
-                refreshTagsView();
-                onTagSelectionChanged.accept(selectedTags);
+                // 添加标签点击动画效果
+                AnimationUtil.scale(tagLabel, 1.0f, 0.95f, 50, () -> {
+                    AnimationUtil.scale(tagLabel, 0.95f, 1.0f, 100, () -> {
+                        if (selected) {
+                            selectedTags.remove(tag);
+                        } else {
+                            selectedTags.add(tag);
+                        }
+                        refreshTagsView();
+                        onTagSelectionChanged.accept(selectedTags);
+                    });
+                });
             }
 
             @Override
