@@ -67,7 +67,8 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         // 添加说明标签
         JLabel instructionLabel = new JLabel("<html><b>标签使用说明：</b><br>" +
                 "1. 在下方输入框中输入标签名称，然后按回车或点击添加按钮<br>" +
-                "2. 选中列表中的标签，然后点击删除按钮可删除标签</html>");
+                "2. 选中列表中的标签，然后点击删除按钮可删除标签<br>" +
+                "3. 选中列表中的标签，然后点击编辑按钮或双击标签可编辑标签</html>");
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         instructionLabel.setBorder(JBUI.Borders.emptyBottom(10));
         mainPanel.add(instructionLabel);
@@ -78,31 +79,55 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.add(currentTagsLabel);
 
         // 添加标签列表
+        tagsList.setFixedCellHeight(50); // 设置固定行高，使标签显示更加一致
+
         JBScrollPane scrollPane = new JBScrollPane(tagsList);
         scrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
-        scrollPane.setPreferredSize(new Dimension(400, 150));
-        scrollPane.setMinimumSize(new Dimension(400, 150));
-        scrollPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 150));
+        scrollPane.setPreferredSize(new Dimension(400, 200));
+        scrollPane.setMinimumSize(new Dimension(400, 200));
+        scrollPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 200));
+        scrollPane.setBorder(BorderFactory.createLineBorder(JBColor.border(), 1));
         mainPanel.add(scrollPane);
 
-        // 添加删除按钮
-        JButton removeButton = new JButton("删除选中标签");
-        removeButton.setIcon(IconLoader.getIcon("/icons/trash.svg", getClass()));
-        removeButton.setAlignmentX(Component.LEFT_ALIGNMENT);
-        removeButton.addActionListener(e -> removeSelectedTags());
+        // 添加标签操作按钮面板
+        JPanel tagActionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        tagActionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        tagActionPanel.setBorder(JBUI.Borders.empty(8, 0, 8, 0));
 
-        JPanel removeButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        removeButtonPanel.add(removeButton);
-        removeButtonPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        mainPanel.add(removeButtonPanel);
+        // 删除按钮
+        JButton removeButton = new JButton("删除");
+        removeButton.setIcon(IconLoader.getIcon("/icons/trash.svg", getClass()));
+        removeButton.addActionListener(e -> removeSelectedTags());
+        removeButton.setFocusPainted(false);
+
+        // 编辑按钮
+        JButton editButton = new JButton("编辑");
+        editButton.setIcon(IconLoader.getIcon("/icons/edit.svg", getClass()));
+        editButton.addActionListener(e -> editSelectedTag());
+        editButton.setFocusPainted(false);
+
+        tagActionPanel.add(removeButton);
+        tagActionPanel.add(editButton);
+        mainPanel.add(tagActionPanel);
+
+        // 添加双击编辑功能
+        tagsList.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    editSelectedTag();
+                }
+            }
+        });
 
         // 添加分隔符
         JSeparator separator = new JSeparator();
         separator.setAlignmentX(Component.LEFT_ALIGNMENT);
         separator.setMaximumSize(new Dimension(Short.MAX_VALUE, 1));
-        mainPanel.add(Box.createVerticalStrut(10));
+        separator.setForeground(JBColor.border());
+        mainPanel.add(Box.createVerticalStrut(5));
         mainPanel.add(separator);
-        mainPanel.add(Box.createVerticalStrut(10));
+        mainPanel.add(Box.createVerticalStrut(15));
 
         // 添加新标签标签
         JLabel newTagLabel = new JLabel("添加新标签：");
@@ -116,8 +141,12 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
         // 设置输入框提示
         newTagField.putClientProperty("JTextField.placeholderText", "输入标签名称，按回车添加");
-        newTagField.setPreferredSize(new Dimension(300, 30));
-        newTagField.setMaximumSize(new Dimension(Short.MAX_VALUE, 30));
+        newTagField.setPreferredSize(new Dimension(300, 32));
+        newTagField.setMaximumSize(new Dimension(Short.MAX_VALUE, 32));
+        newTagField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(JBColor.border(), 1),
+                JBUI.Borders.empty(5, 8)
+        ));
         newTagField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -130,9 +159,10 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         JButton addButton = new JButton("添加");
         addButton.setIcon(IconLoader.getIcon("/icons/plus.svg", getClass()));
         addButton.addActionListener(e -> addNewTag());
+        addButton.setFocusPainted(false);
 
         inputPanel.add(newTagField);
-        inputPanel.add(Box.createHorizontalStrut(5));
+        inputPanel.add(Box.createHorizontalStrut(8));
         inputPanel.add(addButton);
 
         mainPanel.add(inputPanel);
@@ -165,6 +195,38 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     }
 
     /**
+     * 编辑选中的标签
+     */
+    private void editSelectedTag() {
+        int selectedIndex = tagsList.getSelectedIndex();
+        if (selectedIndex >= 0) {
+            String oldTag = tagsModel.getElementAt(selectedIndex);
+            String newTag = JOptionPane.showInputDialog(this.getRootPane(),
+                    "请输入新的标签名称", oldTag);
+
+            if (newTag != null && !newTag.trim().isEmpty() && !newTag.equals(oldTag)) {
+                // 检查新标签是否已存在
+                if (!tagsModel.contains(newTag.trim())) {
+                    // 替换旧标签
+                    currentTags.remove(oldTag);
+                    currentTags.add(newTag.trim());
+
+                    tagsModel.removeElement(oldTag);
+                    tagsModel.addElement(newTag.trim());
+
+                    // 选中新标签
+                    tagsList.setSelectedValue(newTag.trim(), true);
+                } else {
+                    JOptionPane.showMessageDialog(this.getRootPane(),
+                            "标签 '"+newTag.trim()+"' 已存在",
+                            "标签重复",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        }
+    }
+
+    /**
      * 获取当前标签列表
      */
     public List<String> getTags() {
@@ -177,7 +239,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private static class TagCellRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            // 创建自定义标签面板
+            JPanel tagPanel = new JPanel(new BorderLayout(8, 0));
+            tagPanel.setBorder(JBUI.Borders.empty(8, 10));
 
             // 获取标签文本
             String tag = value.toString();
@@ -186,41 +250,62 @@ public class SimpleTagEditorDialog extends DialogWrapper {
             Color tagColor = getTagColor(tag);
             Color textColor;
             Color borderColor;
+            Color bgColor;
 
             if (isSelected) {
                 // 选中状态使用更深的颜色
-                tagColor = tagColor.darker();
+                bgColor = tagColor.darker();
                 textColor = new JBColor(Color.WHITE, Color.WHITE);
                 borderColor = new JBColor(new Color(100, 100, 100), new Color(100, 100, 100));
             } else {
-                // 非选中状态使用适合背景色的文本颜色
+                // 非选中状态使用半透明背景
+                bgColor = new JBColor(
+                        new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), 40),
+                        new Color(tagColor.getRed() / 4, tagColor.getGreen() / 4, tagColor.getBlue() / 4, 80)
+                );
                 boolean isDark = ColorUtil.isDark(tagColor);
-                textColor = isDark ? new JBColor(Color.WHITE, Color.WHITE) : new JBColor(new Color(50, 50, 50), new Color(50, 50, 50));
-                borderColor = new JBColor(new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), 100),
-                                         new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), 100));
+                textColor = isDark ?
+                        new JBColor(new Color(40, 40, 40), new Color(220, 220, 220)) :
+                        new JBColor(new Color(40, 40, 40), new Color(220, 220, 220));
+                borderColor = new JBColor(
+                        new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), 80),
+                        new Color(tagColor.getRed() / 2, tagColor.getGreen() / 2, tagColor.getBlue() / 2, 100)
+                );
             }
 
-            // 设置样式
-            label.setBackground(tagColor);
-            label.setForeground(textColor);
+            // 设置面板样式
+            tagPanel.setBackground(bgColor);
+            tagPanel.setOpaque(true);
 
-            // 添加标签图标
-            label.setIcon(IconLoader.getIcon("/icons/tag-small.svg", TagCellRenderer.class));
-            label.setIconTextGap(8);
+            // 创建左侧的颜色指示器
+            JPanel colorIndicator = new JPanel();
+            colorIndicator.setBackground(tagColor);
+            colorIndicator.setPreferredSize(new Dimension(4, 0));
+            tagPanel.add(colorIndicator, BorderLayout.WEST);
 
-            // 设置圆角边框
-            Border tagBorder = BorderFactory.createCompoundBorder(
+            // 创建标签文本和图标
+            JPanel contentPanel = new JPanel(new BorderLayout(5, 0));
+            contentPanel.setOpaque(false);
+
+            JLabel iconLabel = new JLabel(IconLoader.getIcon("/icons/tag-small.svg", TagCellRenderer.class));
+            iconLabel.setForeground(textColor);
+
+            JLabel textLabel = new JLabel(tag);
+            textLabel.setForeground(textColor);
+            textLabel.setFont(textLabel.getFont().deriveFont(Font.BOLD, 12f));
+
+            contentPanel.add(iconLabel, BorderLayout.WEST);
+            contentPanel.add(textLabel, BorderLayout.CENTER);
+
+            tagPanel.add(contentPanel, BorderLayout.CENTER);
+
+            // 设置边框
+            tagPanel.setBorder(BorderFactory.createCompoundBorder(
                     BorderFactory.createLineBorder(borderColor, 1),
-                    JBUI.Borders.empty(6, 10)
-            );
+                    JBUI.Borders.empty(8, 10, 8, 10)
+            ));
 
-            label.setBorder(tagBorder);
-            label.setOpaque(true);
-
-            // 设置字体
-            label.setFont(label.getFont().deriveFont(Font.BOLD, 12f));
-
-            return label;
+            return tagPanel;
         }
 
         /**
