@@ -508,7 +508,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
 
         // 导出按钮
-        Icon exportIcon = IconLoader.getIcon("/icons/export.svg", getClass());
+        Icon exportIcon = IconLoader.getIcon("/icons/folder-output.svg", getClass());
         group.add(new AnAction("导出图钉", "将图钉导出到文件", exportIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -523,7 +523,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         });
 
         // 导入按钮
-        Icon importIcon = IconLoader.getIcon("/icons/import.svg", getClass());
+        Icon importIcon = IconLoader.getIcon("/icons/folder-input.svg", getClass());
         group.add(new AnAction("导入图钉", "从文件导入图钉", importIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
