@@ -18,6 +18,7 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -334,7 +335,14 @@ public class PinsToolWindow implements ToolWindowFactory {
      * 创建现代化搜索框
      */
     private JComponent createSearchField() {
+        // 创建现代化搜索框
         SearchTextField searchField = new SearchTextField("搜索图钉（支持备注与路径）");
+
+        // 创建容器面板，添加边距
+        JPanel container = new JPanel(new BorderLayout());
+        container.setBorder(JBUI.Borders.empty(5, 8, 5, 8)); // 增加边距，使搜索框与其他元素保持适当距离
+        container.setOpaque(false); // 透明背景，增加现代感
+        container.add(searchField, BorderLayout.CENTER);
 
         searchField.addDocumentListener(new DocumentListener() {
             void filter() {
@@ -356,7 +364,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             public void changedUpdate(DocumentEvent e) { filter(); }
         });
 
-        return searchField;
+        return container;
     }
 
     /**
