@@ -32,7 +32,8 @@ public class SharingUtil {
         HTML("HTML"),
         JSON("JSON"),
         CODE_ONLY("仅代码"),
-        IMAGE("图片");
+        IMAGE("图片"),
+        SVG("SVG");
 
         private final String displayName;
 
@@ -67,6 +68,20 @@ public class SharingUtil {
      * @return 是否成功
      */
     public static boolean copyPinToClipboard(Project project, PinEntry pin, SharingFormat format, boolean codeOnly) {
+        return copyPinToClipboard(project, pin, format, codeOnly, true);
+    }
+
+    /**
+     * 将图钉格式化为指定格式并复制到剪贴板
+     *
+     * @param project 当前项目
+     * @param pin 要分享的图钉
+     * @param format 分享格式
+     * @param codeOnly 是否只分享代码
+     * @param showLineNumbers 是否显示行号
+     * @return 是否成功
+     */
+    public static boolean copyPinToClipboard(Project project, PinEntry pin, SharingFormat format, boolean codeOnly, boolean showLineNumbers) {
         try {
             String content = formatPin(project, pin, format, codeOnly);
             if (content != null) {
@@ -107,8 +122,22 @@ public class SharingUtil {
      * @return 是否成功
      */
     public static boolean copyPinsToClipboard(Project project, List<PinEntry> pins, SharingFormat format, boolean codeOnly) {
+        return copyPinsToClipboard(project, pins, format, codeOnly, true);
+    }
+
+    /**
+     * 将多个图钉格式化为指定格式并复制到剪贴板
+     *
+     * @param project 当前项目
+     * @param pins 要分享的图钉列表
+     * @param format 分享格式
+     * @param codeOnly 是否只分享代码
+     * @param showLineNumbers 是否显示行号
+     * @return 是否成功
+     */
+    public static boolean copyPinsToClipboard(Project project, List<PinEntry> pins, SharingFormat format, boolean codeOnly, boolean showLineNumbers) {
         try {
-            String content = formatPins(project, pins, format, codeOnly);
+            String content = formatPins(project, pins, format, codeOnly, showLineNumbers);
             if (content != null) {
                 StringSelection selection = new StringSelection(content);
                 Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, null);
@@ -149,6 +178,21 @@ public class SharingUtil {
      * @return 是否成功
      */
     public static boolean exportPinToFile(Project project, PinEntry pin, File file, SharingFormat format, boolean codeOnly) {
+        return exportPinToFile(project, pin, file, format, codeOnly, true);
+    }
+
+    /**
+     * 将图钉导出为指定格式的文件
+     *
+     * @param project 当前项目
+     * @param pin 要导出的图钉
+     * @param file 导出文件
+     * @param format 导出格式
+     * @param codeOnly 是否只导出代码
+     * @param showLineNumbers 是否显示行号
+     * @return 是否成功
+     */
+    public static boolean exportPinToFile(Project project, PinEntry pin, File file, SharingFormat format, boolean codeOnly, boolean showLineNumbers) {
         try {
             String content = formatPin(project, pin, format, codeOnly);
             return writeToFile(file, content);
@@ -186,8 +230,23 @@ public class SharingUtil {
      * @return 是否成功
      */
     public static boolean exportPinsToFile(Project project, List<PinEntry> pins, File file, SharingFormat format, boolean codeOnly) {
+        return exportPinsToFile(project, pins, file, format, codeOnly, true);
+    }
+
+    /**
+     * 将多个图钉导出为指定格式的文件
+     *
+     * @param project 当前项目
+     * @param pins 要导出的图钉列表
+     * @param file 导出文件
+     * @param format 导出格式
+     * @param codeOnly 是否只导出代码
+     * @param showLineNumbers 是否显示行号
+     * @return 是否成功
+     */
+    public static boolean exportPinsToFile(Project project, List<PinEntry> pins, File file, SharingFormat format, boolean codeOnly, boolean showLineNumbers) {
         try {
-            String content = formatPins(project, pins, format, codeOnly);
+            String content = formatPins(project, pins, format, codeOnly, showLineNumbers);
             return writeToFile(file, content);
         } catch (Exception e) {
             Messages.showErrorDialog(
@@ -221,6 +280,20 @@ public class SharingUtil {
      * @return 格式化后的内容
      */
     public static String formatPin(Project project, PinEntry pin, SharingFormat format, boolean codeOnly) {
+        return formatPin(project, pin, format, codeOnly, true);
+    }
+
+    /**
+     * 格式化单个图钉
+     *
+     * @param project 当前项目
+     * @param pin 要格式化的图钉
+     * @param format 格式
+     * @param codeOnly 是否只包含代码
+     * @param showLineNumbers 是否显示行号
+     * @return 格式化后的内容
+     */
+    public static String formatPin(Project project, PinEntry pin, SharingFormat format, boolean codeOnly, boolean showLineNumbers) {
         // 如果是仅代码格式或者codeOnly标记为true，则只返回代码
         if (format == SharingFormat.CODE_ONLY || codeOnly) {
             String code = getCodeSnippet(project, pin);
@@ -293,9 +366,9 @@ public class SharingUtil {
 
         switch (format) {
             case MARKDOWN:
-                return formatPinAsMarkdown(project, pin);
+                return formatPinAsMarkdown(project, pin, showLineNumbers);
             case HTML:
-                return formatPinAsHTML(project, pin);
+                return formatPinAsHTML(project, pin, showLineNumbers);
             case JSON:
                 return formatPinAsJSON(project, pin);
             default:
@@ -325,6 +398,20 @@ public class SharingUtil {
      * @return 格式化后的内容
      */
     public static String formatPins(Project project, List<PinEntry> pins, SharingFormat format, boolean codeOnly) {
+        return formatPins(project, pins, format, codeOnly, true);
+    }
+
+    /**
+     * 格式化多个图钉
+     *
+     * @param project 当前项目
+     * @param pins 要格式化的图钉列表
+     * @param format 格式
+     * @param codeOnly 是否只包含代码
+     * @param showLineNumbers 是否显示行号
+     * @return 格式化后的内容
+     */
+    public static String formatPins(Project project, List<PinEntry> pins, SharingFormat format, boolean codeOnly, boolean showLineNumbers) {
         // 如果是仅代码格式或者codeOnly标记为true，则只返回代码
         if (format == SharingFormat.CODE_ONLY || codeOnly) {
             StringBuilder codeContent = new StringBuilder();
@@ -437,7 +524,7 @@ public class SharingUtil {
 
                 for (int i = 0; i < pins.size(); i++) {
                     content.append("## 图钉 ").append(i + 1).append("\n\n");
-                    content.append(formatPinAsMarkdown(project, pins.get(i))).append("\n\n");
+                    content.append(formatPinAsMarkdown(project, pins.get(i), showLineNumbers)).append("\n\n");
                     if (i < pins.size() - 1) {
                         content.append("---\n\n");
                     }
@@ -484,6 +571,11 @@ public class SharingUtil {
                 content.append(".code-filename { opacity: 0.8; }\n");
                 content.append("pre { margin-top: 0 !important; border-top-left-radius: 0 !important; border-top-right-radius: 0 !important; }\n");
 
+                // 行号样式
+                content.append(".with-line-numbers { counter-reset: line; }\n");
+                content.append(".with-line-numbers code { position: relative; padding-left: 3.5em; }\n");
+                content.append(".line-number { display: inline-block; width: 3em; text-align: right; color: #888; margin-right: 1em; padding-right: 0.5em; border-right: 1px solid #ddd; user-select: none; }\n");
+
                 // 添加水印样式
                 content.append(".watermark { position: fixed; bottom: 20px; right: 20px; opacity: 0.1; font-size: 16px; font-weight: bold; color: var(--primary-color); pointer-events: none; z-index: 1000; }\n");
                 content.append(".watermark img { width: 100px; height: auto; }\n");
@@ -503,7 +595,7 @@ public class SharingUtil {
                 for (int i = 0; i < pins.size(); i++) {
                     content.append("<div class=\"pin\">\n");
                     content.append("<h2>图钉 ").append(i + 1).append("</h2>\n");
-                    content.append(formatPinAsHTML(project, pins.get(i))).append("\n");
+                    content.append(formatPinAsHTML(project, pins.get(i), showLineNumbers)).append("\n");
                     content.append("</div>\n");
                 }
 
@@ -570,6 +662,18 @@ public class SharingUtil {
      * @return 格式化后的Markdown内容
      */
     private static String formatPinAsMarkdown(Project project, PinEntry pin) {
+        return formatPinAsMarkdown(project, pin, true);
+    }
+
+    /**
+     * 将图钉格式化为Markdown
+     *
+     * @param project 当前项目
+     * @param pin 要格式化的图钉
+     * @param showLineNumbers 是否显示行号
+     * @return 格式化后的Markdown内容
+     */
+    private static String formatPinAsMarkdown(Project project, PinEntry pin, boolean showLineNumbers) {
         StringBuilder md = new StringBuilder();
 
         // 获取文件名
@@ -623,9 +727,32 @@ public class SharingUtil {
         // 代码片段
         if (codeSnippet != null && !codeSnippet.trim().isEmpty()) {
             md.append("\n#### 代码\n\n");
-            md.append("```").append(language).append("\n");
-            md.append(codeSnippet).append("\n");
-            md.append("```\n");
+
+            // 如果需要显示行号，则添加行号
+            if (showLineNumbers) {
+                // 分割代码行
+                String[] lines = codeSnippet.split("\\n");
+
+                // 获取起始行号
+                // 使用已有的doc变量
+                int startLine = doc.getLineNumber(pin.marker.getStartOffset()) + 1;
+
+                // 构建带行号的代码
+                StringBuilder codeWithLineNumbers = new StringBuilder();
+                for (int i = 0; i < lines.length; i++) {
+                    int lineNumber = startLine + i;
+                    codeWithLineNumbers.append(String.format("%4d | %s\n", lineNumber, lines[i]));
+                }
+
+                md.append("```").append(language).append("\n");
+                md.append(codeWithLineNumbers);
+                md.append("```\n");
+            } else {
+                // 不显示行号
+                md.append("```").append(language).append("\n");
+                md.append(codeSnippet).append("\n");
+                md.append("```\n");
+            }
         }
 
         return md.toString();
@@ -639,6 +766,18 @@ public class SharingUtil {
      * @return 格式化后的HTML内容
      */
     private static String formatPinAsHTML(Project project, PinEntry pin) {
+        return formatPinAsHTML(project, pin, true);
+    }
+
+    /**
+     * 将图钉格式化为HTML
+     *
+     * @param project 当前项目
+     * @param pin 要格式化的图钉
+     * @param showLineNumbers 是否显示行号
+     * @return 格式化后的HTML内容
+     */
+    private static String formatPinAsHTML(Project project, PinEntry pin, boolean showLineNumbers) {
         StringBuilder html = new StringBuilder();
 
         // 获取文件名
@@ -704,10 +843,34 @@ public class SharingUtil {
             html.append("  <span class=\"code-filename\">").append(fileName).append("</span>\n");
             html.append("</div>\n");
 
-            // 使用highlight.js支持的结构
-            html.append("<pre><code class=\"language-").append(language).append("\">")
-                .append(escapeHtml(codeSnippet))
-                .append("</code></pre>\n");
+            // 如果需要显示行号，则添加行号
+            if (showLineNumbers) {
+                // 分割代码行
+                String[] lines = codeSnippet.split("\\n");
+
+                // 获取起始行号
+                // 使用已有的doc变量
+                int startLine = doc.getLineNumber(pin.marker.getStartOffset()) + 1;
+
+                // 构建带行号的代码
+                StringBuilder codeWithLineNumbers = new StringBuilder();
+                for (int i = 0; i < lines.length; i++) {
+                    int lineNumber = startLine + i;
+                    codeWithLineNumbers.append("<span class=\"line-number\">").append(lineNumber).append("</span>");
+                    codeWithLineNumbers.append(escapeHtml(lines[i])).append("\n");
+                }
+
+                // 使用highlight.js支持的结构，并添加行号类
+                html.append("<pre class=\"with-line-numbers\"><code class=\"language-").append(language).append("\">")
+                    .append(codeWithLineNumbers)
+                    .append("</code></pre>\n");
+            } else {
+                // 不显示行号
+                html.append("<pre><code class=\"language-").append(language).append("\">")
+                    .append(escapeHtml(codeSnippet))
+                    .append("</code></pre>\n");
+            }
+
             html.append("</div>\n");
         }
 
