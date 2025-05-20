@@ -6,7 +6,7 @@
     <version>1.1.2</version>
 
     <!-- 插件兼容性信息 -->
-    <idea-version since-build="241" until-build="241.*"/>
+    <idea-version since-build="241" until-build="252.*"/>
 
     <!-- 插件分类标签 -->
     <category>Navigation</category>

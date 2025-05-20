@@ -27,6 +27,6 @@ java {
 tasks {
     patchPluginXml {
         sinceBuild.set("241") // 支持 IntelliJ 2024.1 起
-        untilBuild.set("241.*")
+        untilBuild.set("252.*") // 支持到 IntelliJ 2025.2
     }
 }
