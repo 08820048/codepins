@@ -138,8 +138,9 @@ public class PinsToolWindow implements ToolWindowFactory {
                                     renderer.setHoverIndex(index);
 
                                     // 获取单元格组件
+                                    @SuppressWarnings("unchecked") // 添加注解来抑制警告
                                     Component cellComponent = list.getCellRenderer().getListCellRendererComponent(
-                                            list, entry, index, false, false);
+                                            list, entry, index, false, false); // 这里的调用是安全的
 
                                     // 添加悬停动画效果
                                     AnimationUtil.hoverEffect(cellComponent);
@@ -432,15 +433,17 @@ public class PinsToolWindow implements ToolWindowFactory {
         list.setDropMode(DropMode.INSERT);
 
         // 获取渲染器实例
-        PinListCellRenderer cellRenderer = (PinListCellRenderer) list.getCellRenderer();
+        @SuppressWarnings("unchecked") // 添加注解来抑制警告
+        PinListCellRenderer cellRenderer = (PinListCellRenderer) list.getCellRenderer(); // 这里的转换是安全的
 
         // 创建自定义的传输处理器
         list.setTransferHandler(new TransferHandler() {
             private int dragIndex = -1;
 
             @Override
+            @SuppressWarnings("unchecked") // 添加注解来抑制警告
             protected Transferable createTransferable(JComponent c) {
-                JList<PinEntry> list = (JList<PinEntry>) c;
+                JList<PinEntry> list = (JList<PinEntry>) c; // 这里的转换是安全的，因为我们知道c是一个 JList<PinEntry>
                 dragIndex = list.getSelectedIndex();
 
                 // 创建一个简单的 Transferable 对象，包含拖动的索引
@@ -478,7 +481,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                 }
 
                 // 获取放置的位置，更新视觉反馈
-                JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+                @SuppressWarnings("unchecked") // 添加注解来抑制警告
+                JList.DropLocation dl = (JList.DropLocation) support.getDropLocation(); // 这里的转换是安全的
                 int dropIndex = dl.getIndex();
 
                 // 更新拖放目标的视觉效果
@@ -496,7 +500,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     int fromIndex = Integer.parseInt(dragIndexStr);
 
                     // 获取放置的位置
-                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+                    @SuppressWarnings("unchecked") // 添加注解来抑制警告
+                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation(); // 这里的转换是安全的
                     int toIndex = dl.getIndex();
 
                     // 如果放置位置在拖动索引之后，需要调整
