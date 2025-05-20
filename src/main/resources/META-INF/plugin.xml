@@ -3,7 +3,7 @@
     <id>cn.ilikexff.codepins</id>
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins-intellij-plugin">ilikexff</vendor>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 
     <!-- 插件兼容性信息 -->
     <idea-version since-build="241" until-build="241.*"/>
@@ -31,6 +31,16 @@
 
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
+        Version 1.1.2:
+        - Fixed export/import functionality with improved UI and user experience
+        - Optimized pin list style with better support for light themes
+        - Added drag and drop functionality for manual pin reordering
+        - Added keyboard shortcut support (Alt+Shift+P to add pin, Alt+Shift+Left/Right to navigate)
+        - Improved search box with modern design and dark theme support
+        - Enhanced code preview cards with sophisticated styling and theme adaptation
+        - Added animation effects when hovering over list items
+        - Updated icons for import/export functionality
+
         Version 1.1.1:
         - Improved hover preview functionality, resolving thread safety issues
         - Enhanced code preview UI with dynamic height adjustment based on code length

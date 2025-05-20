@@ -4,10 +4,14 @@ plugins {
 }
 
 group = "cn.cn.codepins"
-version = "1.1.0"
+version = "1.1.2"
 
 repositories {
     mavenCentral()
+}
+
+dependencies {
+    implementation("com.google.code.gson:gson:2.10.1")
 }
 
 intellij {
@@ -22,7 +26,7 @@ java {
 
 tasks {
     patchPluginXml {
-        sinceBuild.set("231") // 支持 IntelliJ 2023.1 起
-        untilBuild.set("252.*")
+        sinceBuild.set("241") // 支持 IntelliJ 2024.1 起
+        untilBuild.set("241.*")
     }
 }
