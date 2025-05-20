@@ -2,6 +2,8 @@ package cn.ilikexff.codepins;
 
 import cn.ilikexff.codepins.ui.AnimationUtil;
 import cn.ilikexff.codepins.ui.EmptyStatePanel;
+import cn.ilikexff.codepins.ui.ExportDialog;
+import cn.ilikexff.codepins.ui.ImportDialog;
 import cn.ilikexff.codepins.ui.PinListCellRenderer;
 import cn.ilikexff.codepins.ui.SearchTextField;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
@@ -30,6 +32,7 @@ import java.util.stream.Collectors;
 
 public class PinsToolWindow implements ToolWindowFactory {
 
+    private Project project;
     private DefaultListModel<PinEntry> model;
     private List<PinEntry> allPins;
     private JList<PinEntry> list;
@@ -37,6 +40,7 @@ public class PinsToolWindow implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        this.project = project;
         model = new DefaultListModel<>();
         list = new JList<>(model);
         PinStorage.setModel(model);
@@ -365,6 +369,45 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     private ActionToolbar createToolbar() {
         DefaultActionGroup group = new DefaultActionGroup();
+
+        // 导出按钮
+        Icon exportIcon = IconLoader.getIcon("/icons/export.svg", getClass());
+        group.add(new AnAction("导出图钉", "将图钉导出到文件", exportIcon) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                ExportDialog dialog = new ExportDialog(project);
+                dialog.show();
+
+                // 刷新标签筛选面板
+                if (tagFilterPanelRef[0] != null) {
+                    tagFilterPanelRef[0].refreshTagsView();
+                }
+            }
+        });
+
+        // 导入按钮
+        Icon importIcon = IconLoader.getIcon("/icons/import.svg", getClass());
+        group.add(new AnAction("导入图钉", "从文件导入图钉", importIcon) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                ImportDialog dialog = new ImportDialog(project);
+                if (dialog.showAndGet()) {
+                    // 刷新图钉列表
+                    allPins = PinStorage.getPins();
+                    model.clear();
+                    for (PinEntry pin : allPins) {
+                        model.addElement(pin);
+                    }
+
+                    // 刷新标签筛选面板
+                    if (tagFilterPanelRef[0] != null) {
+                        tagFilterPanelRef[0].refreshTagsView();
+                    }
+                }
+            }
+        });
+
+        // 清空按钮
         Icon clearIcon = IconLoader.getIcon("/icons/x-octagon.svg", getClass());
         group.add(new AnAction("清空图钉", "清除所有图钉记录", clearIcon) {
             @Override
@@ -374,6 +417,12 @@ public class PinsToolWindow implements ToolWindowFactory {
                 if (confirm == JOptionPane.YES_OPTION) {
                     PinStorage.clearAll();
                     allPins = PinStorage.getPins();
+                    model.clear();
+
+                    // 刷新标签筛选面板
+                    if (tagFilterPanelRef[0] != null) {
+                        tagFilterPanelRef[0].refreshTagsView();
+                    }
                 }
             }
         });
