@@ -16,6 +16,7 @@ import com.intellij.ui.JBColor;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.RoundRectangle2D;
 
 /**
  * 工具类：用于显示代码预览弹窗（支持代码块内容）
@@ -233,14 +234,51 @@ public class CodePreviewUtil {
             editorField.setPreferredSize(new Dimension(650, editorHeight));
 
             // 创建包装面板，使用现代化设计
-            JPanel mainPanel = new JPanel(new BorderLayout());
-            mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            JPanel mainPanel = new JPanel(new BorderLayout()) {
+                // 重写绘制方法，添加圆角和阴影效果
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                    // 设置背景颜色（根据主题自适应）
+                    g2.setColor(new JBColor(new Color(250, 250, 250), new Color(43, 43, 46)));
+
+                    // 绘制圆角矩形
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight(), 12, 12);
+
+                    // 绘制微妙的边框
+                    g2.setColor(new JBColor(new Color(220, 220, 220, 100), new Color(70, 70, 70, 100)));
+                    g2.setStroke(new BasicStroke(1.0f));
+                    g2.drawRoundRect(0, 0, getWidth() - 1, getHeight() - 1, 12, 12);
+
+                    g2.dispose();
+                }
+            };
+            mainPanel.setOpaque(false);
+            mainPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0)); // 添加底部边距，为阴影留出空间
 
             // 创建标题面板
-            JPanel titlePanel = new JPanel();
+            JPanel titlePanel = new JPanel() {
+                // 重写绘制方法，添加圆角效果
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                    // 设置背景颜色（根据主题自适应）
+                    g2.setColor(new JBColor(new Color(60, 63, 65), new Color(40, 44, 52)));
+
+                    // 绘制圆角矩形（只有上部圆角）
+                    g2.fillRoundRect(0, 0, getWidth(), getHeight() + 10, 12, 12);
+                    g2.fillRect(0, getHeight() - 10, getWidth(), 10);
+
+                    g2.dispose();
+                }
+            };
             titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.X_AXIS));
-            titlePanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-            titlePanel.setBackground(new JBColor(new Color(40, 44, 52, 245), new Color(40, 44, 52, 245)));
+            titlePanel.setBorder(BorderFactory.createEmptyBorder(12, 15, 12, 15));
+            titlePanel.setOpaque(false);
 
             // 文件名和行号信息
             String fileName = pin.filePath;
@@ -249,15 +287,17 @@ public class CodePreviewUtil {
                 fileName = pin.filePath.substring(lastSlash + 1);
             }
 
-            // 创建文件名标签
+            // 创建文件名标签 - 使用现代化图标和颜色
             JLabel fileLabel = new JLabel("📄 " + fileName);
             fileLabel.setFont(fileLabel.getFont().deriveFont(Font.BOLD, 14.0f));
-            fileLabel.setForeground(new JBColor(new Color(255, 203, 107), new Color(255, 203, 107)));
+            // 亮色主题使用深色，暗色主题使用浅色
+            fileLabel.setForeground(new JBColor(new Color(50, 120, 220), new Color(255, 203, 107)));
 
-            // 创建行号标签
+            // 创建行号标签 - 使用现代化颜色
             JLabel lineLabel = new JLabel(String.format(" (第 %d-%d 行)", startLine + 1, endLine + 1));
             lineLabel.setFont(lineLabel.getFont().deriveFont(13.0f));
-            lineLabel.setForeground(new JBColor(new Color(247, 140, 108), new Color(247, 140, 108)));
+            // 亮色主题使用深色，暗色主题使用浅色
+            lineLabel.setForeground(new JBColor(new Color(200, 80, 40), new Color(247, 140, 108)));
 
             titlePanel.add(fileLabel);
             titlePanel.add(lineLabel);
@@ -267,8 +307,25 @@ public class CodePreviewUtil {
             mainPanel.add(titlePanel, BorderLayout.NORTH);
 
             // 创建代码编辑器面板
-            JPanel editorPanel = new JPanel(new BorderLayout());
-            editorPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 0));
+            JPanel editorPanel = new JPanel(new BorderLayout()) {
+                // 重写绘制方法，添加圆角效果
+                @Override
+                protected void paintComponent(Graphics g) {
+                    Graphics2D g2 = (Graphics2D) g.create();
+                    g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                    // 设置背景颜色（根据主题自适应）
+                    g2.setColor(new JBColor(new Color(250, 250, 250), new Color(43, 43, 46)));
+
+                    // 绘制圆角矩形（只有下部圆角）
+                    g2.fillRoundRect(0, -10, getWidth(), getHeight() + 10, 12, 12);
+                    g2.fillRect(0, 0, getWidth(), 10);
+
+                    g2.dispose();
+                }
+            };
+            editorPanel.setOpaque(false);
+            editorPanel.setBorder(BorderFactory.createEmptyBorder(0, 1, 1, 1));
             editorPanel.add(editorField, BorderLayout.CENTER);
             mainPanel.add(editorPanel, BorderLayout.CENTER);
 
@@ -285,12 +342,12 @@ public class CodePreviewUtil {
                     editor.setHorizontalScrollbarVisible(true);
                     editor.setVerticalScrollbarVisible(true);
 
-                    // 设置背景颜色
-                    editor.setBackgroundColor(new JBColor(new Color(43, 43, 46), new Color(43, 43, 46)));
+                    // 设置背景颜色 - 根据主题自适应
+                    editor.setBackgroundColor(new JBColor(new Color(250, 250, 250), new Color(43, 43, 46)));
                 }
             });
 
-            // 创建弹窗
+            // 创建弹窗 - 添加阴影和动画效果
             JBPopup popup = JBPopupFactory.getInstance()
                     .createComponentPopupBuilder(mainPanel, null)
                     .setResizable(true)
@@ -298,6 +355,9 @@ public class CodePreviewUtil {
                     .setRequestFocus(true)
                     .setCancelOnClickOutside(true)
                     .setCancelOnWindowDeactivation(true)
+                    .setShowShadow(true) // 显示阴影
+                    .setShowBorder(false) // 不显示边框，使用自定义边框
+                    .setFocusable(true)
                     .createPopup();
 
             popup.showInFocusCenter();

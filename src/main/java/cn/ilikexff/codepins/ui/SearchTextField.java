@@ -7,6 +7,7 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.DocumentListener;
+import javax.swing.plaf.ColorUIResource;
 import java.awt.*;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -122,7 +123,18 @@ public class SearchTextField extends JPanel {
         setBorder(createBorder(false));
         setOpaque(false); // 设置为透明，增加现代感
         setBackground(new Color(0, 0, 0, 0)); // 透明背景
-        textField.setBackground(new Color(255, 255, 255, 240)); // 轻微半透明的背景，增加现代感
+
+        // 设置文本框背景颜色，根据主题自适应
+        textField.setBackground(new JBColor(
+                new Color(255, 255, 255, 240), // 亮色主题下的半透明白色
+                new Color(60, 63, 65, 240)    // 暗色主题下的半透明深灰色
+        ));
+
+        // 设置文本颜色，根据主题自适应
+        textField.setForeground(new JBColor(
+                new Color(30, 30, 30),      // 亮色主题下的深色文本
+                new Color(220, 220, 220)    // 暗色主题下的浅色文本
+        ));
 
         // 添加组件
         add(searchIcon, BorderLayout.WEST);
@@ -168,13 +180,13 @@ public class SearchTextField extends JPanel {
         Color borderColor;
 
         if (focused) {
-            // 聚焦状态 - 亮蓝色
-            borderColor = new JBColor(new Color(100, 150, 200), new Color(100, 150, 200));
+            // 聚焦状态 - 亮色主题下使用深蓝色，暗色主题下使用浅蓝色
+            borderColor = new JBColor(new Color(60, 120, 200), new Color(100, 150, 200));
         } else if (isHovered) {
-            // 悬停状态 - 浅灰色，稍深
-            borderColor = new JBColor(new Color(180, 180, 180, 200), new Color(100, 100, 100, 200));
+            // 悬停状态 - 亮色主题下使用深灰色，暗色主题下使用浅灰色
+            borderColor = new JBColor(new Color(150, 150, 150, 200), new Color(100, 100, 100, 200));
         } else {
-            // 普通状态 - 浅灰色
+            // 普通状态 - 亮色主题下使用浅灰色，暗色主题下使用深灰色
             borderColor = new JBColor(new Color(200, 200, 200, 150), new Color(80, 80, 80, 150));
         }
 
@@ -233,14 +245,17 @@ public class SearchTextField extends JPanel {
         // 绘制背景
         if (textField.hasFocus() || isHovered) {
             // 聚焦或悬停状态时绘制阴影
-            g2.setColor(new Color(0, 0, 0, 10)); // 非常淡的阴影颜色
+            g2.setColor(new JBColor(new Color(0, 0, 0, 10), new Color(0, 0, 0, 20))); // 根据主题自适应的阴影颜色
             for (int i = 0; i < 3; i++) { // 多层阴影，增加深度感
                 g2.fill(new RoundRectangle2D.Float(i + 1, i + 1, width - (i * 2) - 2, height - (i * 2) - 2, cornerRadius, cornerRadius));
             }
         }
 
-        // 绘制背景
-        g2.setColor(new Color(255, 255, 255, 240)); // 半透明的白色背景
+        // 绘制背景 - 根据主题自适应
+        g2.setColor(new JBColor(
+                new Color(255, 255, 255, 240), // 亮色主题下的半透明白色
+                new Color(60, 63, 65, 240)    // 暗色主题下的半透明深灰色
+        ));
         g2.fill(new RoundRectangle2D.Float(1, 1, width - 2, height - 2, cornerRadius - 1, cornerRadius - 1));
 
         g2.dispose();
