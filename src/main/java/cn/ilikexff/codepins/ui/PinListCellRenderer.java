@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
+import cn.ilikexff.codepins.settings.CodePinsSettings;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.JBColor;

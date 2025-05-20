@@ -4,19 +4,19 @@
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins-intellij-plugin">ilikexff</vendor>
     <version>1.1.1</version>
-    
+
     <!-- 插件兼容性信息 -->
     <idea-version since-build="241" until-build="241.*"/>
-    
+
     <!-- 插件分类标签 -->
     <category>Navigation</category>
     <category>Code Tools</category>
-    
+
     <!-- 插件描述 -->
     <!-- 注意：Marketplace要求插件描述必须使用拉丁字符（英文），并且长度至少为40个字符 -->
     <description><![CDATA[
         A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects. Pin any line or code block, add notes, search, and preview code without leaving your current editing position.
-        
+
         Key Features:
         - Code Bookmarking: Pin any line or code block for quick reference and navigation
         - Add Notes: Attach custom notes to each pin to record important information
@@ -25,10 +25,10 @@
         - Auto-Update: Pin positions automatically update as you edit code
         - Persistent Storage: Pin information is preserved after IDE restart
     ]]></description>
-    
+
     <!-- 详细描述已包含在 description 标签中 -->
     <!-- 注意：pluginDescription 不是标准标签，已移除 -->
-    
+
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
         Version 1.1.1:
@@ -38,7 +38,7 @@
         - Added empty state view with friendly guidance information
         - Improved search field with enhanced visual feedback and user experience
         - Added tag system for better organization and filtering of pins
-        
+
         Version 1.0.0:
         - Initial release
         - Support for adding, deleting, searching, and managing code pins
@@ -46,7 +46,7 @@
         - Modern UI design and user experience optimization
         - Support for pin notes and quick preview functionality
     ]]></change-notes>
-    
+
     <depends>com.intellij.modules.platform</depends>
 
     <extensions defaultExtensionNs="com.intellij">
@@ -56,8 +56,14 @@
                     icon="/icons/logo.svg"
         />
 
-        <!-- ✅ 正确位置，注册服务类 -->
+        <!-- 注册服务类 -->
         <applicationService serviceImplementation="cn.ilikexff.codepins.PinStateService"/>
+        <applicationService serviceImplementation="cn.ilikexff.codepins.settings.CodePinsSettings"/>
+
+        <!-- 注册设置页面 -->
+        <applicationConfigurable parentId="tools" instance="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
+                             id="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
+                             displayName="CodePins Settings"/>
     </extensions>
 
     <actions>

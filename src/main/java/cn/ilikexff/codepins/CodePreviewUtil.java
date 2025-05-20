@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.settings.CodePinsSettings;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;
 import com.intellij.openapi.editor.RangeMarker;
@@ -213,6 +214,14 @@ public class CodePreviewUtil {
             lineCount = Math.max(1, lineCount);
             System.out.println("[CodePins] 代码片段行数: " + lineCount);
 
+            // 从设置中获取预览窗口高度
+            int previewHeight = 300; // 默认高度
+            try {
+                previewHeight = Integer.parseInt(CodePinsSettings.getInstance().previewHeight);
+            } catch (NumberFormatException e) {
+                System.out.println("[CodePins] 解析预览窗口高度设置失败，使用默认值: " + e.getMessage());
+            }
+
             // 创建一个新的文档来显示代码片段
             Document snippetDoc = EditorFactory.getInstance().createDocument(codeSnippet);
             EditorTextField editorField = new EditorTextField(snippetDoc, project, fileType, true, false);
@@ -220,7 +229,7 @@ public class CodePreviewUtil {
             editorField.setOneLineMode(false);
 
             // 动态计算面板高度，每行大约20像素，加上边距
-            int editorHeight = Math.min(500, Math.max(100, lineCount * 22 + 30)); // 限制最小和最大高度
+            int editorHeight = Math.min(previewHeight, Math.max(100, lineCount * 22 + 30)); // 限制最小高度并使用设置中的最大高度
             editorField.setPreferredSize(new Dimension(650, editorHeight));
 
             // 创建包装面板，使用现代化设计

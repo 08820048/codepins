@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.settings.CodePinsSettings;
 import cn.ilikexff.codepins.ui.AnimationUtil;
 import cn.ilikexff.codepins.ui.EmptyStatePanel;
 import cn.ilikexff.codepins.ui.ExportDialog;
@@ -209,8 +210,25 @@ public class PinsToolWindow implements ToolWindowFactory {
                     deleteItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(deleteItem);
-                        PinStorage.removePin(selected);
-                        allPins = PinStorage.getPins();
+
+                        // 检查是否需要确认
+                        boolean confirmDelete = CodePinsSettings.getInstance().confirmDelete;
+                        boolean shouldDelete = true;
+
+                        if (confirmDelete) {
+                            int result = JOptionPane.showConfirmDialog(
+                                    null,
+                                    "确定要删除这个图钉吗？",
+                                    "删除确认",
+                                    JOptionPane.YES_NO_OPTION
+                            );
+                            shouldDelete = (result == JOptionPane.YES_OPTION);
+                        }
+
+                        if (shouldDelete) {
+                            PinStorage.removePin(selected);
+                            allPins = PinStorage.getPins();
+                        }
                     });
                     menu.add(deleteItem);
 
