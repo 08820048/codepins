@@ -289,6 +289,39 @@ public class AnimationUtil {
     }
 
     /**
+     * 组件悬停效果
+     * 适用于任何Component类型的组件
+     *
+     * @param component 要应用效果的组件
+     */
+    public static void hoverEffect(Component component) {
+        // 在列表项上应用简单的颜色变化效果
+        if (component instanceof JPanel) {
+            JPanel panel = (JPanel) component;
+            Color originalBackground = panel.getBackground();
+
+            // 创建一个稍亮一点的颜色
+            Color brighterColor = new Color(
+                    Math.min(originalBackground.getRed() + 10, 255),
+                    Math.min(originalBackground.getGreen() + 10, 255),
+                    Math.min(originalBackground.getBlue() + 10, 255),
+                    originalBackground.getAlpha()
+            );
+
+            panel.setBackground(brighterColor);
+            panel.repaint();
+
+            // 创建定时器，延迟恢复原来的颜色
+            Timer timer = new Timer(300, e -> {
+                panel.setBackground(originalBackground);
+                panel.repaint();
+            });
+            timer.setRepeats(false);
+            timer.start();
+        }
+    }
+
+    /**
      * 二次缓动函数
      *
      * @param t 进度 (0.0 到 1.0)

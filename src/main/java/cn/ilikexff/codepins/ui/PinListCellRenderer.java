@@ -28,11 +28,15 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
     private final Icon fileIcon = IconLoader.getIcon("/icons/file.svg", getClass());
     private final Icon timeIcon = IconLoader.getIcon("/icons/clock.svg", getClass());
 
-    // 颜色常量
-    private static final Color SELECTED_BG = new JBColor(new Color(45, 90, 148, 200), new Color(45, 90, 148, 200));
-    private static final Color HOVER_BG = new JBColor(new Color(50, 50, 60, 100), new Color(50, 50, 60, 100));
-    private static final Color NORMAL_BG = new JBColor(new Color(60, 63, 65, 80), new Color(60, 63, 65, 80));
-    private static final Color BORDER_COLOR = new JBColor(new Color(80, 80, 90, 120), new Color(80, 80, 90, 120));
+    // 颜色常量 - 优化了亮色主题支持
+    // 选中背景色：亮色主题下使用浅蓝色，暗色主题下使用深蓝色
+    private static final Color SELECTED_BG = new JBColor(new Color(210, 230, 250), new Color(45, 90, 148, 200));
+    // 悬停背景色：亮色主题下使用浅灰色，暗色主题下使用深灰色
+    private static final Color HOVER_BG = new JBColor(new Color(240, 240, 245), new Color(50, 50, 60, 100));
+    // 普通背景色：亮色主题下使用白色，暗色主题下使用深灰色
+    private static final Color NORMAL_BG = new JBColor(new Color(250, 250, 250), new Color(60, 63, 65, 80));
+    // 边框颜色：亮色主题下使用浅灰色，暗色主题下使用深灰色
+    private static final Color BORDER_COLOR = new JBColor(new Color(220, 220, 220), new Color(80, 80, 90, 120));
 
     // 边框常量
     private static final Border NORMAL_BORDER = BorderFactory.createCompoundBorder(
@@ -40,21 +44,26 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
             JBUI.Borders.empty(8, 10)
     );
     private static final Border SELECTED_BORDER = BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new JBColor(new Color(100, 150, 200), new Color(100, 150, 200)), 1),
+            BorderFactory.createLineBorder(new JBColor(new Color(120, 170, 220), new Color(100, 150, 200)), 1),
             JBUI.Borders.empty(8, 10)
     );
 
     // 记录鼠标悬停和拖放的索引
     private int hoverIndex = -1;
     private int dragOverIndex = -1;
-    private static final Color DRAG_OVER_BG = new JBColor(new Color(40, 80, 120, 100), new Color(40, 80, 120, 100));
+    // 拖放目标背景色：亮色主题下使用浅蓝色，暗色主题下使用深蓝色
+    private static final Color DRAG_OVER_BG = new JBColor(new Color(230, 240, 250), new Color(40, 80, 120, 100));
     private static final Border DRAG_OVER_BORDER = BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(new JBColor(new Color(80, 130, 180), new Color(80, 130, 180)), 2),
+            BorderFactory.createLineBorder(new JBColor(new Color(100, 150, 200), new Color(80, 130, 180)), 2),
             JBUI.Borders.empty(7, 9)
     );
 
     public void setHoverIndex(int index) {
         this.hoverIndex = index;
+    }
+
+    public int getHoverIndex() {
+        return this.hoverIndex;
     }
 
     public void setDragOverIndex(int index) {
@@ -141,7 +150,8 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
             String fileName = getFileName(entry.filePath);
             JLabel fileNameLabel = new JLabel(fileName);
             fileNameLabel.setFont(fileNameLabel.getFont().deriveFont(Font.BOLD, 13f));
-            fileNameLabel.setForeground(new JBColor(new Color(220, 220, 220), new Color(220, 220, 220)));
+            // 文件名颜色：亮色主题下使用深色，暗色主题下使用浅色
+            fileNameLabel.setForeground(new JBColor(new Color(30, 30, 30), new Color(220, 220, 220)));
             fileNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             // 备注（如果有）
@@ -152,12 +162,14 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
             if (entry.note != null && !entry.note.isEmpty()) {
                 JLabel noteLabel = new JLabel(entry.note);
                 noteLabel.setFont(noteLabel.getFont().deriveFont(Font.ITALIC, 12f));
-                noteLabel.setForeground(new JBColor(new Color(120, 220, 120), new Color(120, 220, 120)));
+                // 备注颜色：亮色主题下使用深绿色，暗色主题下使用浅绿色
+                noteLabel.setForeground(new JBColor(new Color(0, 120, 0), new Color(120, 220, 120)));
                 notePanel.add(noteLabel);
             } else {
                 JLabel emptyNoteLabel = new JLabel("(无备注)");
                 emptyNoteLabel.setFont(emptyNoteLabel.getFont().deriveFont(Font.ITALIC, 12f));
-                emptyNoteLabel.setForeground(new JBColor(new Color(150, 150, 150), new Color(150, 150, 150)));
+                // 无备注提示颜色：亮色主题下使用深灰色，暗色主题下使用浅灰色
+                emptyNoteLabel.setForeground(new JBColor(new Color(120, 120, 120), new Color(150, 150, 150)));
                 notePanel.add(emptyNoteLabel);
             }
 
@@ -228,7 +240,8 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
 
             JLabel lineLabel = new JLabel(lineInfo);
             lineLabel.setFont(lineLabel.getFont().deriveFont(12f));
-            lineLabel.setForeground(new JBColor(new Color(247, 140, 108), new Color(247, 140, 108)));
+            // 行号颜色：亮色主题下使用深橙色，暗色主题下使用浅橙色
+            lineLabel.setForeground(new JBColor(new Color(200, 80, 40), new Color(247, 140, 108)));
 
             linePanel.add(lineLabel);
 
@@ -243,7 +256,8 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
             String timeStr = new SimpleDateFormat("MM-dd HH:mm").format(new Date(entry.timestamp));
             JLabel timeLabel = new JLabel(timeStr);
             timeLabel.setFont(timeLabel.getFont().deriveFont(11f));
-            timeLabel.setForeground(new JBColor(new Color(150, 150, 150), new Color(150, 150, 150)));
+            // 时间颜色：亮色主题下使用深灰色，暗色主题下使用浅灰色
+            timeLabel.setForeground(new JBColor(new Color(100, 100, 100), new Color(150, 150, 150)));
 
             timePanel.add(timeIcon);
             timePanel.add(timeLabel);

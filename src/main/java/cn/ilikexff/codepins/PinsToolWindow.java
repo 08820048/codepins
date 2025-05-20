@@ -128,6 +128,26 @@ public class PinsToolWindow implements ToolWindowFactory {
                         if (cellBounds != null && cellBounds.contains(e.getPoint())) {
                             PinEntry entry = list.getModel().getElementAt(index);
                             if (entry != null) {
+                                // 获取渲染器
+                                PinListCellRenderer renderer = (PinListCellRenderer) list.getCellRenderer();
+
+                                // 更新悬停索引
+                                int oldHoverIndex = renderer.getHoverIndex();
+                                if (oldHoverIndex != index) {
+                                    // 如果悬停索引发生变化，添加动画效果
+                                    renderer.setHoverIndex(index);
+
+                                    // 获取单元格组件
+                                    Component cellComponent = list.getCellRenderer().getListCellRendererComponent(
+                                            list, entry, index, false, false);
+
+                                    // 添加悬停动画效果
+                                    AnimationUtil.hoverEffect(cellComponent);
+
+                                    // 重绘列表
+                                    list.repaint(cellBounds);
+                                }
+
                                 // 显示自定义悬浮预览
                                 PinHoverPreview.showPreview(entry, project, list, e.getXOnScreen(), e.getYOnScreen() + 20);
                             }
@@ -135,6 +155,11 @@ public class PinsToolWindow implements ToolWindowFactory {
                     } else {
                         // 鼠标不在任何项上，隐藏预览
                         PinHoverPreview.hidePreview();
+
+                        // 重置悬停索引
+                        PinListCellRenderer renderer = (PinListCellRenderer) list.getCellRenderer();
+                        renderer.setHoverIndex(-1);
+                        list.repaint();
                     }
                 } catch (Exception ex) {
                     // 捕获并记录任何异常
