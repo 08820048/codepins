@@ -81,7 +81,7 @@ public class ExportDialog extends DialogWrapper {
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         JLabel descLabel = new JLabel("<html>您可以选择导出全部图钉或仅导出选中的图钉。<br>" +
-                "如需选择特定图钉，请选择'仅导出选中的图钉'选项，然后在下方列表中选择要导出的图钉。</html>");
+                "如需选择特定图钉，请选择"仅导出选中的图钉"选项，然后在下方列表中选择要导出的图钉。</html>");
         descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         infoPanel.add(titleLabel);
