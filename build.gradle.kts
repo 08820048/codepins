@@ -8,12 +8,18 @@ version = "1.1.2"
 
 repositories {
     mavenCentral()
+    maven { url = uri("https://packages.jetbrains.team/maven/p/intellij-plugin-verifier/intellij-plugin-structure") }
 }
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
     implementation("org.apache.xmlgraphics:batik-all:1.17") // SVG处理
     implementation("org.apache.pdfbox:pdfbox:2.0.29") // PDF处理
+    implementation("com.google.zxing:core:3.5.2") // 二维码生成
+    implementation("com.google.zxing:javase:3.5.2") // 二维码生成Java实现
+    implementation("org.kohsuke:github-api:1.314") // GitHub API
+
+    // 我们将使用自己的许可证实现
 }
 
 intellij {

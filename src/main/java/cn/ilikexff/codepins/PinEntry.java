@@ -26,6 +26,7 @@ public class PinEntry {
     public final String author;         // 创建者（可用于团队协作）
     public final boolean isBlock;       // 是否为代码块图钉
     private final List<String> tags;    // 标签列表
+    public String name;                 // 图钉名称
 
     public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author, boolean isBlock) {
         this.filePath = filePath;

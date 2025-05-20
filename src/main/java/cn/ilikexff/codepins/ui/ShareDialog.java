@@ -13,6 +13,7 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.vfs.VirtualFileWrapper;
+import javax.swing.Icon;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBRadioButton;
 import com.intellij.util.ui.JBUI;
@@ -197,6 +198,42 @@ public class ShareDialog extends DialogWrapper {
         JLabel infoLabel = new JBLabel("将分享 " + pins.size() + " 个图钉");
         infoPanel.add(infoLabel, BorderLayout.CENTER);
 
+        // 添加高级功能按钮
+        JPanel advancedPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+
+        // 添加社交分享按钮
+        Icon webIcon = IconLoader.getIcon("/icons/web.svg", getClass());
+        JButton socialShareButton = new JButton("社交分享", webIcon);
+        socialShareButton.addActionListener(e -> {
+            // 添加按钮动画效果
+            AnimationUtil.buttonClickEffect(socialShareButton);
+
+            // 获取选项
+            boolean codeOnly = codeOnlyCheckBox.isSelected();
+            boolean showLineNumbers = showLineNumbersCheckBox.isSelected();
+
+            // 打开社交分享对话框
+            SocialShareDialog dialog = new SocialShareDialog(project, pins,
+                    SharingUtil.SharingFormat.MARKDOWN, codeOnly, showLineNumbers);
+            dialog.show();
+        });
+        advancedPanel.add(socialShareButton);
+
+        // 添加水印设置按钮
+        Icon settingsIcon = IconLoader.getIcon("/icons/settings.svg", getClass());
+        JButton watermarkButton = new JButton("水印设置", settingsIcon);
+        watermarkButton.addActionListener(e -> {
+            // 添加按钮动画效果
+            AnimationUtil.buttonClickEffect(watermarkButton);
+
+            // 打开水印设置对话框
+            WatermarkSettingsDialog dialog = new WatermarkSettingsDialog(project);
+            dialog.show();
+        });
+        advancedPanel.add(watermarkButton);
+
+        infoPanel.add(advancedPanel, BorderLayout.SOUTH);
+
         // 创建面板布局
         JPanel leftPanel = new JPanel(new BorderLayout());
         leftPanel.add(formatPanel, BorderLayout.CENTER);
@@ -362,14 +399,14 @@ public class ShareDialog extends DialogWrapper {
                             File outputFile;
                             if (format == SharingUtil.SharingFormat.SVG) {
                                 // 生成SVG
-                                String svg = ImageGenerator.generateSVG(code, language, theme, 800);
+                                String svg = ImageGenerator.generateSVG(project, code, language, theme, 800);
                                 outputFile = File.createTempFile("codepins_", ".svg");
                                 java.io.FileWriter writer = new java.io.FileWriter(outputFile);
                                 writer.write(svg);
                                 writer.close();
                             } else {
                                 // 生成PNG图片
-                                outputFile = ImageGenerator.generateCodeCard(code, language, theme, 800);
+                                outputFile = ImageGenerator.generateCodeCard(project, code, language, theme, 800);
                             }
 
                             // 复制生成的文件到目标文件
@@ -420,14 +457,14 @@ public class ShareDialog extends DialogWrapper {
                             File outputFile;
                             if (format == SharingUtil.SharingFormat.SVG) {
                                 // 生成SVG
-                                String svg = ImageGenerator.generateSVG(codeBuilder.toString(), language, theme, 800);
+                                String svg = ImageGenerator.generateSVG(project, codeBuilder.toString(), language, theme, 800);
                                 outputFile = File.createTempFile("codepins_", ".svg");
                                 java.io.FileWriter writer = new java.io.FileWriter(outputFile);
                                 writer.write(svg);
                                 writer.close();
                             } else {
                                 // 生成PNG图片
-                                outputFile = ImageGenerator.generateCodeCard(codeBuilder.toString(), language, theme, 800);
+                                outputFile = ImageGenerator.generateCodeCard(project, codeBuilder.toString(), language, theme, 800);
                             }
 
                             // 复制生成的文件到目标文件

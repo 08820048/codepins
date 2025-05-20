@@ -5,6 +5,9 @@
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins-intellij-plugin">ilikexff</vendor>
     <version>1.1.2</version>
 
+    <!-- 产品描述符，用于许可证验证 -->
+    <product-descriptor code="***REMOVED_PRODUCT_CODE***" release-date="20240501" release-version="1.2.0" optional="true"/>
+
     <!-- 插件兼容性信息 -->
     <idea-version since-build="241" until-build="252.*"/>
 
@@ -94,6 +97,8 @@
         <!-- 注册服务类 -->
         <applicationService serviceImplementation="cn.ilikexff.codepins.PinStateService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.settings.CodePinsSettings"/>
+        <applicationService serviceImplementation="cn.ilikexff.codepins.services.GistService"/>
+        <applicationService serviceImplementation="cn.ilikexff.codepins.services.LicenseService"/>
 
         <!-- 注册设置页面 -->
         <applicationConfigurable parentId="tools" instance="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"

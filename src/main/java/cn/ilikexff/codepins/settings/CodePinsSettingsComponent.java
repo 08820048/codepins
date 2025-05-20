@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins.settings;
 
+import cn.ilikexff.codepins.ui.LicenseStatusPanel;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
@@ -69,8 +70,18 @@ public class CodePinsSettingsComponent {
         shortcutsInfoPanel.add(shortcutsInfoText, BorderLayout.CENTER);
         shortcutsInfoPanel.add(openKeyMapSettingsButton, BorderLayout.SOUTH);
 
+        // 创建许可证状态面板
+        LicenseStatusPanel licenseStatusPanel = new LicenseStatusPanel();
+        licenseStatusPanel.setBorder(BorderFactory.createTitledBorder(
+                BorderFactory.createLineBorder(JBColor.border()),
+                "许可证状态",
+                TitledBorder.LEFT,
+                TitledBorder.TOP
+        ));
+
         // 创建主面板
         mainPanel = FormBuilder.createFormBuilder()
+                .addComponent(licenseStatusPanel)
                 .addComponent(generalPanel)
                 .addComponent(UI.PanelFactory.panel(shortcutsInfoPanel).withLabel("快捷键信息:").createPanel())
                 .addComponentFillVertically(new JPanel(), 0)
