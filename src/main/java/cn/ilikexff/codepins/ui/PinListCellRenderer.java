@@ -194,15 +194,25 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
             linePanel.setOpaque(false);
             linePanel.setAlignmentX(Component.RIGHT_ALIGNMENT);
 
-            int line = 0;
+            String lineInfo = "Line ?";
             if (entry.marker != null && entry.marker.isValid()) {
                 Document doc = entry.marker.getDocument();
                 if (doc != null) {
-                    line = entry.getCurrentLine(doc);
+                    // 获取当前行号
+                    int startLine = doc.getLineNumber(entry.marker.getStartOffset()) + 1; // 转为1开始的行号
+
+                    if (entry.isBlock) {
+                        // 如果是代码块，显示起始和结束行号
+                        int endLine = doc.getLineNumber(entry.marker.getEndOffset()) + 1;
+                        lineInfo = "Line " + startLine + "-" + endLine;
+                    } else {
+                        // 如果是单行，只显示当前行号
+                        lineInfo = "Line " + startLine;
+                    }
                 }
             }
 
-            JLabel lineLabel = new JLabel("Line " + (line + 1));
+            JLabel lineLabel = new JLabel(lineInfo);
             lineLabel.setFont(lineLabel.getFont().deriveFont(12f));
             lineLabel.setForeground(new JBColor(new Color(247, 140, 108), new Color(247, 140, 108)));
 
