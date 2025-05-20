@@ -44,11 +44,21 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
             JBUI.Borders.empty(8, 10)
     );
 
-    // 记录鼠标悬停的索引
+    // 记录鼠标悬停和拖放的索引
     private int hoverIndex = -1;
+    private int dragOverIndex = -1;
+    private static final Color DRAG_OVER_BG = new JBColor(new Color(40, 80, 120, 100), new Color(40, 80, 120, 100));
+    private static final Border DRAG_OVER_BORDER = BorderFactory.createCompoundBorder(
+            BorderFactory.createLineBorder(new JBColor(new Color(80, 130, 180), new Color(80, 130, 180)), 2),
+            JBUI.Borders.empty(7, 9)
+    );
 
     public void setHoverIndex(int index) {
         this.hoverIndex = index;
+    }
+
+    public void setDragOverIndex(int index) {
+        this.dragOverIndex = index;
     }
 
     @Override
@@ -61,6 +71,10 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
         if (isSelected) {
             panel.setBackground(SELECTED_BG);
             panel.setBorder(SELECTED_BORDER);
+        } else if (index == dragOverIndex) {
+            // 拖放目标项的样式
+            panel.setBackground(DRAG_OVER_BG);
+            panel.setBorder(DRAG_OVER_BORDER);
         } else if (index == hoverIndex) {
             panel.setBackground(HOVER_BG);
             panel.setBorder(NORMAL_BORDER);

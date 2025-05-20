@@ -24,9 +24,14 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 import java.util.stream.Collectors;
@@ -52,6 +57,9 @@ public class PinsToolWindow implements ToolWindowFactory {
         // 使用自定义的现代卡片式渲染器
         PinListCellRenderer cellRenderer = new PinListCellRenderer();
         list.setCellRenderer(cellRenderer);
+
+        // 设置拖放功能
+        setupDragAndDrop();
 
         // 添加鼠标移动监听器，实现悬停效果
         list.addMouseMotionListener(new MouseMotionAdapter() {
@@ -380,6 +388,117 @@ public class PinsToolWindow implements ToolWindowFactory {
                 model.addElement(pin);
             }
         }
+    }
+
+    /**
+     * 设置拖放功能
+     */
+    private void setupDragAndDrop() {
+        // 创建自定义的拖放处理器
+        list.setDragEnabled(true);
+        list.setDropMode(DropMode.INSERT);
+
+        // 获取渲染器实例
+        PinListCellRenderer cellRenderer = (PinListCellRenderer) list.getCellRenderer();
+
+        // 创建自定义的传输处理器
+        list.setTransferHandler(new TransferHandler() {
+            private int dragIndex = -1;
+
+            @Override
+            protected Transferable createTransferable(JComponent c) {
+                JList<PinEntry> list = (JList<PinEntry>) c;
+                dragIndex = list.getSelectedIndex();
+
+                // 创建一个简单的 Transferable 对象，包含拖动的索引
+                return new Transferable() {
+                    @Override
+                    public DataFlavor[] getTransferDataFlavors() {
+                        return new DataFlavor[] { DataFlavor.stringFlavor };
+                    }
+
+                    @Override
+                    public boolean isDataFlavorSupported(DataFlavor flavor) {
+                        return flavor.equals(DataFlavor.stringFlavor);
+                    }
+
+                    @Override
+                    public Object getTransferData(DataFlavor flavor) throws UnsupportedFlavorException, IOException {
+                        if (flavor.equals(DataFlavor.stringFlavor)) {
+                            return String.valueOf(dragIndex);
+                        } else {
+                            throw new UnsupportedFlavorException(flavor);
+                        }
+                    }
+                };
+            }
+
+            @Override
+            public int getSourceActions(JComponent c) {
+                return MOVE;
+            }
+
+            @Override
+            public boolean canImport(TransferSupport support) {
+                if (!support.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                    return false;
+                }
+
+                // 获取放置的位置，更新视觉反馈
+                JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+                int dropIndex = dl.getIndex();
+
+                // 更新拖放目标的视觉效果
+                cellRenderer.setDragOverIndex(dropIndex);
+                list.repaint();
+
+                return true;
+            }
+
+            @Override
+            public boolean importData(TransferSupport support) {
+                try {
+                    // 获取拖动的索引
+                    String dragIndexStr = (String) support.getTransferable().getTransferData(DataFlavor.stringFlavor);
+                    int fromIndex = Integer.parseInt(dragIndexStr);
+
+                    // 获取放置的位置
+                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
+                    int toIndex = dl.getIndex();
+
+                    // 如果放置位置在拖动索引之后，需要调整
+                    if (fromIndex < toIndex) {
+                        toIndex--;
+                    }
+
+                    // 移动图钉位置
+                    PinStorage.movePinPosition(fromIndex, toIndex);
+
+                    // 选中移动后的项
+                    list.setSelectedIndex(toIndex);
+
+                    // 添加动画效果
+                    AnimationUtil.scale(list, 1.0f, 0.98f, 100, () -> {
+                        AnimationUtil.scale(list, 0.98f, 1.0f, 150);
+                    });
+
+                    return true;
+                } catch (Exception e) {
+                    System.out.println("[CodePins] 拖放失败: " + e.getMessage());
+                    return false;
+                }
+            }
+
+            @Override
+            protected void exportDone(JComponent source, Transferable data, int action) {
+                // 重置拖放目标的视觉效果
+                cellRenderer.setDragOverIndex(-1);
+                list.repaint();
+
+                // 重置拖动索引
+                dragIndex = -1;
+            }
+        });
     }
 
     /**

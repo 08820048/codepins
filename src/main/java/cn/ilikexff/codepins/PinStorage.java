@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.settings.CodePinsSettings;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -8,7 +9,11 @@ import com.intellij.openapi.vfs.VirtualFile;
 
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 图钉统一存储管理类（内存 + UI 模型 + 本地持久化）
@@ -17,6 +22,7 @@ public class PinStorage {
 
     private static final List<PinEntry> pins = new ArrayList<>();
     private static DefaultListModel<PinEntry> model = null;
+    private static final Set<String> allTags = new HashSet<>(); // 所有标签的集合
 
     /**
      * 设置 UI 模型，用于同步刷新列表
@@ -36,6 +42,9 @@ public class PinStorage {
         Document doc = entry.marker.getDocument();
         int currentLine = entry.getCurrentLine(doc);
 
+        // 更新标签集合
+        allTags.addAll(entry.getTags());
+
         // 存入持久化服务中（静态快照）
         if (entry.isBlock) {
             // 如果是代码块图钉，保存偏移量范围
@@ -48,14 +57,15 @@ public class PinStorage {
                             entry.author,
                             entry.isBlock,
                             entry.marker.getStartOffset(),
-                            entry.marker.getEndOffset()
+                            entry.marker.getEndOffset(),
+                            entry.getTags()
                     )
             );
             System.out.println("[CodePins] 保存代码块图钉，范围: " + entry.marker.getStartOffset() + "-" + entry.marker.getEndOffset());
         } else {
-            // 如果是单行图钉，使用简化的构造函数
+            // 如果是单行图钉，使用带标签的构造函数
             PinStateService.getInstance().addPin(
-                    new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author, entry.isBlock)
+                    new PinState(entry.filePath, currentLine, entry.note, entry.timestamp, entry.author, entry.isBlock, entry.getTags())
             );
         }
 
@@ -76,6 +86,9 @@ public class PinStorage {
                 p -> p.filePath.equals(entry.filePath) && p.line == currentLine
         );
 
+        // 更新标签集合
+        refreshAllTags();
+
         refreshModel();
     }
 
@@ -85,6 +98,7 @@ public class PinStorage {
     public static void clearAll() {
         pins.clear();
         PinStateService.getInstance().clear();
+        allTags.clear();
         refreshModel();
     }
 
@@ -147,9 +161,15 @@ public class PinStorage {
                     state.note,
                     state.timestamp,
                     state.author,
-                    state.isBlock
+                    state.isBlock,
+                    state.tags
             );
             pins.add(entry);
+
+            // 更新标签集合
+            if (state.tags != null) {
+                allTags.addAll(state.tags);
+            }
         }
 
         refreshModel();
@@ -172,6 +192,205 @@ public class PinStorage {
         }
 
         refreshModel();
+    }
+
+    /**
+     * 更新图钉标签
+     */
+    public static void updateTags(PinEntry entry, List<String> newTags) {
+        // 更新内存中的图钉标签
+        entry.setTags(newTags);
+
+        // 更新持久化存储中的标签
+        Document doc = entry.marker.getDocument();
+        int currentLine = entry.getCurrentLine(doc);
+
+        for (PinState p : PinStateService.getInstance().getPins()) {
+            if (p.filePath.equals(entry.filePath) && p.line == currentLine) {
+                p.tags.clear();
+                if (newTags != null) {
+                    p.tags.addAll(newTags);
+                }
+                break;
+            }
+        }
+
+        // 更新所有标签集合
+        refreshAllTags();
+
+        // 刷新UI
+        refreshModel();
+    }
+
+    /**
+     * 获取所有标签
+     */
+    public static Set<String> getAllTags() {
+        return new HashSet<>(allTags); // 返回副本，避免外部修改
+    }
+
+    /**
+     * 刷新所有标签集合
+     */
+    private static void refreshAllTags() {
+        allTags.clear();
+        for (PinEntry pin : pins) {
+            allTags.addAll(pin.getTags());
+        }
+    }
+
+    /**
+     * 根据标签筛选图钉
+     */
+    public static List<PinEntry> filterByTags(List<String> tags) {
+        if (tags == null || tags.isEmpty()) {
+            return new ArrayList<>(pins); // 返回所有图钉
+        }
+
+        List<PinEntry> filtered = new ArrayList<>();
+        for (PinEntry pin : pins) {
+            boolean match = false;
+            for (String tag : tags) {
+                if (pin.hasTag(tag)) {
+                    match = true;
+                    break;
+                }
+            }
+            if (match) {
+                filtered.add(pin);
+            }
+        }
+
+        return filtered;
+    }
+
+    /**
+     * 添加图钉状态（用于导入功能）
+     * 从 PinState 创建 PinEntry 并添加到存储中
+     *
+     * @param state 图钉状态
+     * @return 是否添加成功
+     */
+    public static boolean addPinState(PinState state) {
+        // 检查文件是否存在
+        VirtualFile file = LocalFileSystem.getInstance().findFileByPath(state.filePath);
+        if (file == null || !file.exists()) {
+            System.out.println("[CodePins] 文件不存在: " + state.filePath);
+            return false;
+        }
+
+        try {
+            // 获取文件内容
+            Document document = FileDocumentManager.getInstance().getDocument(file);
+            if (document == null) {
+                System.out.println("[CodePins] 无法获取文件内容: " + state.filePath);
+                return false;
+            }
+
+            // 创建标记
+            RangeMarker marker;
+            if (state.isBlock && state.startOffset >= 0 && state.endOffset >= 0) {
+                // 代码块图钉
+                int startOffset = Math.min(state.startOffset, document.getTextLength());
+                int endOffset = Math.min(state.endOffset, document.getTextLength());
+                marker = document.createRangeMarker(startOffset, endOffset);
+            } else {
+                // 单行图钉
+                int line = Math.min(state.line - 1, document.getLineCount() - 1);
+                int lineStartOffset = document.getLineStartOffset(line);
+                int lineEndOffset = document.getLineEndOffset(line);
+                marker = document.createRangeMarker(lineStartOffset, lineEndOffset);
+            }
+
+            // 创建 PinEntry 并添加到存储
+            PinEntry entry = new PinEntry(
+                    state.filePath,
+                    marker,
+                    state.note,
+                    state.timestamp,
+                    state.author,
+                    state.isBlock,
+                    state.tags
+            );
+
+            pins.add(entry);
+            allTags.addAll(state.tags);
+
+            // 添加到持久化存储
+            PinStateService.getInstance().addPin(state);
+
+            refreshModel();
+            return true;
+        } catch (Exception e) {
+            System.out.println("[CodePins] 添加图钉失败: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 交换两个图钉的位置
+     *
+     * @param fromIndex 起始索引
+     * @param toIndex 目标索引
+     */
+    public static void movePinPosition(int fromIndex, int toIndex) {
+        if (fromIndex < 0 || fromIndex >= pins.size() || toIndex < 0 || toIndex >= pins.size() || fromIndex == toIndex) {
+            return;
+        }
+
+        // 交换内存中的图钉位置
+        PinEntry pin = pins.remove(fromIndex);
+        pins.add(toIndex, pin);
+
+        // 刷新 UI 模型
+        refreshModel();
+
+        // 保存自定义排序
+        saveCustomOrder();
+    }
+
+    /**
+     * 保存自定义排序
+     */
+    private static void saveCustomOrder() {
+        // 将当前图钉顺序保存到持久化存储
+        List<PinState> states = PinStateService.getInstance().getPins();
+
+        // 清空并重新添加所有图钉，保持当前顺序
+        PinStateService.getInstance().clear();
+
+        for (PinEntry pin : pins) {
+            Document doc = pin.marker.getDocument();
+            int currentLine = pin.getCurrentLine(doc);
+
+            // 创建新的 PinState
+            PinState state;
+            if (pin.isBlock) {
+                state = new PinState(
+                        pin.filePath,
+                        currentLine,
+                        pin.note,
+                        pin.timestamp,
+                        pin.author,
+                        pin.isBlock,
+                        pin.marker.getStartOffset(),
+                        pin.marker.getEndOffset(),
+                        pin.getTags()
+                );
+            } else {
+                state = new PinState(
+                        pin.filePath,
+                        currentLine,
+                        pin.note,
+                        pin.timestamp,
+                        pin.author,
+                        pin.isBlock,
+                        pin.getTags()
+                );
+            }
+
+            PinStateService.getInstance().addPin(state);
+        }
     }
 
     /**
