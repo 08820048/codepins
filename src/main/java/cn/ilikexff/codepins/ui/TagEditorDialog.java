@@ -63,7 +63,7 @@ public class TagEditorDialog extends DialogWrapper {
 
         // 设置对话框标题和尺寸
         setTitle("编辑标签");
-        setSize(400, 300);
+        setSize(500, 500); // 增大对话框尺寸
         init();
     }
 
@@ -71,7 +71,7 @@ public class TagEditorDialog extends DialogWrapper {
     protected @Nullable JComponent createCenterPanel() {
         // 主面板
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setPreferredSize(new Dimension(400, 300));
+        mainPanel.setPreferredSize(new Dimension(500, 500)); // 增大面板尺寸
 
         // 添加使用说明面板
         JPanel instructionPanel = new JPanel();

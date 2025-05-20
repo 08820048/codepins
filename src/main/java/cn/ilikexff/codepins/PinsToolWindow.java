@@ -7,11 +7,12 @@ import cn.ilikexff.codepins.ui.ExportDialog;
 import cn.ilikexff.codepins.ui.ImportDialog;
 import cn.ilikexff.codepins.ui.PinListCellRenderer;
 import cn.ilikexff.codepins.ui.SearchTextField;
+import cn.ilikexff.codepins.ui.ShareDialog;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
 import com.intellij.openapi.actionSystem.*;
-import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
@@ -28,13 +29,12 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.awt.dnd.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class PinsToolWindow implements ToolWindowFactory {
@@ -200,6 +200,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     Icon codeIcon = IconLoader.getIcon("/icons/view.svg", getClass());
                     Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
                     Icon tagIcon = IconLoader.getIcon("/icons/tag.svg", getClass());
+                    Icon shareIcon = IconLoader.getIcon("/icons/share.svg", getClass());
                     Icon deleteIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
                     Icon refreshIcon = IconLoader.getIcon("/icons/refresh.svg", getClass());
 
@@ -239,6 +240,20 @@ public class PinsToolWindow implements ToolWindowFactory {
                         }
                     });
                     menu.add(tagItem);
+
+                    // 添加分享项
+                    JMenuItem shareItem = new JMenuItem("分享图钉", shareIcon);
+                    shareItem.addActionListener(event -> {
+                        // 添加按钮动画效果
+                        AnimationUtil.buttonClickEffect(shareItem);
+
+                        // 创建分享对话框
+                        List<PinEntry> pinsToShare = new ArrayList<>();
+                        pinsToShare.add(selected);
+                        ShareDialog dialog = new ShareDialog(project, pinsToShare);
+                        dialog.show();
+                    });
+                    menu.add(shareItem);
 
                     // 添加删除项
                     JMenuItem deleteItem = new JMenuItem("删除本钉", deleteIcon);
@@ -579,6 +594,34 @@ public class PinsToolWindow implements ToolWindowFactory {
                         tagFilterPanelRef[0].refreshTagsView();
                     }
                 }
+            }
+        });
+
+        // 分享按钮
+        Icon shareIcon = IconLoader.getIcon("/icons/share.svg", getClass());
+        group.add(new AnAction("分享图钉", "分享选中的图钉", shareIcon) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                List<PinEntry> selectedPins = list.getSelectedValuesList();
+                if (selectedPins.isEmpty()) {
+                    // 如果没有选中的图钉，提示用户
+                    Messages.showInfoMessage(
+                            project,
+                            "请先选择要分享的图钉",
+                            "分享图钉"
+                    );
+                    return;
+                }
+
+                // 创建分享对话框
+                ShareDialog dialog = new ShareDialog(project, selectedPins);
+                dialog.show();
+            }
+
+            @Override
+            public void update(@NotNull AnActionEvent e) {
+                // 只有在有图钉时才启用此操作
+                e.getPresentation().setEnabled(!model.isEmpty());
             }
         });
 

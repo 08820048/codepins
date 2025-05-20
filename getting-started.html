@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CodePins - Getting Started</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #2C3E50;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        h2 {
+            color: #3498DB;
+            margin-top: 30px;
+        }
+        .step {
+            background-color: #f8f9fa;
+            border-left: 4px solid #3498DB;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 0 4px 4px 0;
+        }
+        .step h3 {
+            margin-top: 0;
+            color: #2C3E50;
+        }
+        code {
+            background-color: #f1f1f1;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: Consolas, Monaco, 'Andale Mono', monospace;
+        }
+        .keyboard {
+            display: inline-block;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            padding: 2px 6px;
+            font-size: 0.9em;
+            box-shadow: 0 1px 0 rgba(0,0,0,0.2);
+        }
+        .tip {
+            background-color: #e8f4f8;
+            border-left: 4px solid #5bc0de;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 4px 4px 0;
+        }
+        img {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Getting Started with CodePins</h1>
+    
+    <p>Welcome to CodePins, your modern code bookmarking solution for IntelliJ-based IDEs. This guide will help you get started with the essential features.</p>
+    
+    <div class="step">
+        <h3>Step 1: Adding Your First Pin</h3>
+        <p>There are multiple ways to add a pin to your code:</p>
+        <ul>
+            <li><strong>Right-click method:</strong> Right-click on any line of code and select "Pin This Line" from the context menu.</li>
+            <li><strong>Keyboard shortcut:</strong> Place your cursor on any line and press <span class="keyboard">Alt+Shift+P</span>.</li>
+        </ul>
+        <p>You'll be prompted to add an optional note to your pin. This is useful for reminding yourself why this code is important.</p>
+    </div>
+    
+    <div class="step">
+        <h3>Step 2: Viewing Your Pins</h3>
+        <p>All your pins are accessible from the CodePins tool window:</p>
+        <ul>
+            <li>Click the CodePins icon <code>📌</code> in the left sidebar of your IDE.</li>
+            <li>Alternatively, press <span class="keyboard">Alt+Shift+T</span> to toggle the CodePins tool window.</li>
+        </ul>
+        <p>The tool window displays all your pins with their file paths, line numbers, and notes.</p>
+    </div>
+    
+    <div class="step">
+        <h3>Step 3: Navigating Between Pins</h3>
+        <p>CodePins makes it easy to jump between important code locations:</p>
+        <ul>
+            <li><strong>From the tool window:</strong> Double-click any pin to jump to its location.</li>
+            <li><strong>Using keyboard shortcuts:</strong>
+                <ul>
+                    <li>Press <span class="keyboard">Alt+Shift+RIGHT</span> to navigate to the next pin.</li>
+                    <li>Press <span class="keyboard">Alt+Shift+LEFT</span> to navigate to the previous pin.</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <h3>Step 4: Managing Your Pins</h3>
+        <p>Keep your pins organized with these features:</p>
+        <ul>
+            <li><strong>Search:</strong> Use the search box at the top of the tool window to filter pins by file path or note content.</li>
+            <li><strong>Reorder:</strong> Drag and drop pins to arrange them in your preferred order.</li>
+            <li><strong>Edit:</strong> Right-click on a pin and select "Edit Note" to update its description.</li>
+            <li><strong>Delete:</strong> Right-click on a pin and select "Delete Pin" to remove it, or use the "Clear All" button to remove all pins.</li>
+        </ul>
+    </div>
+    
+    <div class="step">
+        <h3>Step 5: Using Tags</h3>
+        <p>Tags help you categorize and filter your pins:</p>
+        <ul>
+            <li>When adding or editing a pin, include hashtags in your note (e.g., #important, #bug, #todo).</li>
+            <li>Use the search box to filter pins by tag (e.g., type "#bug" to see only pins with that tag).</li>
+        </ul>
+    </div>
+    
+    <div class="tip">
+        <h3>Pro Tip: Code Blocks</h3>
+        <p>CodePins supports pinning entire code blocks, not just single lines:</p>
+        <ol>
+            <li>Select multiple lines of code in your editor.</li>
+            <li>Right-click and select "Pin This Code Block" or use the keyboard shortcut.</li>
+            <li>The pin will display the line range (e.g., "Lines 10-15") in the tool window.</li>
+        </ol>
+    </div>
+    
+    <div class="tip">
+        <h3>Pro Tip: Import/Export</h3>
+        <p>Share your pins with team members or between projects:</p>
+        <ol>
+            <li>Click the export icon in the CodePins tool window to save your pins to a file.</li>
+            <li>Click the import icon to load pins from a previously exported file.</li>
+        </ol>
+        <p>This is great for onboarding new team members or creating standardized navigation points in your codebase.</p>
+    </div>
+    
+    <h2>Keyboard Shortcuts Reference</h2>
+    <table border="0" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+        <tr style="background-color: #f1f1f1;">
+            <th style="text-align: left; padding: 8px; border: 1px solid #ddd;">Action</th>
+            <th style="text-align: left; padding: 8px; border: 1px solid #ddd;">Shortcut</th>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">Add Pin at Cursor</td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><span class="keyboard">Alt+Shift+P</span></td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 8px; border: 1px solid #ddd;">Navigate to Next Pin</td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><span class="keyboard">Alt+Shift+RIGHT</span></td>
+        </tr>
+        <tr>
+            <td style="padding: 8px; border: 1px solid #ddd;">Navigate to Previous Pin</td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><span class="keyboard">Alt+Shift+LEFT</span></td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+            <td style="padding: 8px; border: 1px solid #ddd;">Toggle CodePins Tool Window</td>
+            <td style="padding: 8px; border: 1px solid #ddd;"><span class="keyboard">Alt+Shift+T</span></td>
+        </tr>
+    </table>
+    
+    <h2>Need Help?</h2>
+    <p>If you have any questions or feedback, please visit our <a href="https://github.com/08820048/codepins-intellij-plugin">GitHub repository</a> or contact us at <a href="mailto:ilikexff@gmail.com">ilikexff@gmail.com</a>.</p>
+    
+    <p>Happy coding with CodePins!</p>
+</body>
+</html>
