@@ -61,6 +61,7 @@
     </extensions>
 
     <actions>
+        <!-- 右键菜单添加图钉 -->
         <action id="CodePins.PinAction"
                 class="cn.ilikexff.codepins.PinAction"
                 text="Pin This Line"
@@ -68,5 +69,54 @@
                 icon="/icons/logo.svg">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
+
+        <!-- 快捷键添加图钉 -->
+        <action id="CodePins.AddPinAction"
+                class="cn.ilikexff.codepins.actions.AddPinAction"
+                text="Add Pin at Cursor"
+                description="Add a pin at the current cursor position"
+                icon="/icons/pin-add.svg">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift P"/>
+            <add-to-group group-id="EditorActions" anchor="last"/>
+        </action>
+
+        <!-- 导航到下一个图钉 -->
+        <action id="CodePins.NavigateNextPinAction"
+                class="cn.ilikexff.codepins.actions.NavigateNextPinAction"
+                text="Navigate to Next Pin"
+                description="Navigate to the next pin"
+                icon="/icons/pin-next.svg">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift RIGHT"/>
+            <add-to-group group-id="EditorActions" anchor="last"/>
+        </action>
+
+        <!-- 导航到上一个图钉 -->
+        <action id="CodePins.NavigatePrevPinAction"
+                class="cn.ilikexff.codepins.actions.NavigatePrevPinAction"
+                text="Navigate to Previous Pin"
+                description="Navigate to the previous pin"
+                icon="/icons/pin-prev.svg">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift LEFT"/>
+            <add-to-group group-id="EditorActions" anchor="last"/>
+        </action>
+
+        <!-- 切换图钉工具窗口 -->
+        <action id="CodePins.TogglePinsToolWindowAction"
+                class="cn.ilikexff.codepins.actions.TogglePinsToolWindowAction"
+                text="Toggle CodePins Tool Window"
+                description="Show or hide the CodePins tool window"
+                icon="/icons/pin-toggle.svg">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift T"/>
+            <add-to-group group-id="ToolWindowsGroup" anchor="last"/>
+        </action>
+
+        <!-- 创建 CodePins 操作组 -->
+        <group id="CodePins.ActionGroup" text="CodePins" description="CodePins actions" popup="true">
+            <reference ref="CodePins.AddPinAction"/>
+            <reference ref="CodePins.NavigateNextPinAction"/>
+            <reference ref="CodePins.NavigatePrevPinAction"/>
+            <reference ref="CodePins.TogglePinsToolWindowAction"/>
+            <add-to-group group-id="MainMenu" anchor="last"/>
+        </group>
     </actions>
 </idea-plugin>
