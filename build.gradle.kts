@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.apache.xmlgraphics:batik-all:1.17") // SVG处理
+    implementation("org.apache.pdfbox:pdfbox:2.0.29") // PDF处理
 }
 
 intellij {
