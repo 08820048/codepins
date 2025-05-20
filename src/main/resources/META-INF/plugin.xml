@@ -15,15 +15,40 @@
     <!-- 插件描述 -->
     <!-- 注意：Marketplace要求插件描述必须使用拉丁字符（英文），并且长度至少为40个字符 -->
     <description><![CDATA[
-        A modern code bookmarking tool that helps you quickly navigate and manage important code locations in complex projects. Pin any line or code block, add notes, search, and preview code without leaving your current editing position.
+        <h2>CodePins - The Modern Code Bookmarking Solution</h2>
 
-        Key Features:
-        - Code Bookmarking: Pin any line or code block for quick reference and navigation
-        - Add Notes: Attach custom notes to each pin to record important information
-        - Quick Search: Quickly find pins by filename, path, or note content
-        - Code Preview: Hover to view pin details without leaving your current position
-        - Auto-Update: Pin positions automatically update as you edit code
-        - Persistent Storage: Pin information is preserved after IDE restart
+        <p>CodePins is a sophisticated code bookmarking tool designed to enhance your coding workflow in complex projects. It allows you to pin important code locations, add notes, and quickly navigate between them with elegant UI and powerful features.</p>
+
+        <h3>Why Choose CodePins?</h3>
+
+        <p>Unlike traditional bookmarks, CodePins offers a modern, intuitive experience with rich features like code previews, custom tags, drag-and-drop organization, and keyboard shortcuts - all designed to help you maintain focus and productivity.</p>
+
+        <h3>Key Features</h3>
+
+        <ul>
+            <li><strong>Smart Bookmarking:</strong> Pin any line or code block with a single click or keyboard shortcut</li>
+            <li><strong>Rich Annotations:</strong> Add custom notes and tags to each pin for better organization</li>
+            <li><strong>Instant Preview:</strong> Hover over pins to preview code without switching context</li>
+            <li><strong>Keyboard Navigation:</strong> Navigate between pins using intuitive keyboard shortcuts</li>
+            <li><strong>Customizable Organization:</strong> Drag and drop pins to reorder them according to your workflow</li>
+            <li><strong>Powerful Search:</strong> Quickly find pins by filename, path, note content, or tags</li>
+            <li><strong>Adaptive UI:</strong> Beautiful interface that adapts to both light and dark themes</li>
+            <li><strong>Auto-Update:</strong> Pin positions automatically update as you edit code</li>
+            <li><strong>Import/Export:</strong> Share pins between projects or team members</li>
+            <li><strong>Persistent Storage:</strong> Pin information is preserved after IDE restart</li>
+        </ul>
+
+        <h3>Perfect For</h3>
+
+        <ul>
+            <li>Navigating large codebases and complex projects</li>
+            <li>Onboarding new team members by highlighting important code sections</li>
+            <li>Tracking TODOs and points of interest during code reviews</li>
+            <li>Creating a personal map of important code locations</li>
+            <li>Maintaining context when working across multiple files</li>
+        </ul>
+
+        <p>CodePins seamlessly integrates with your development workflow, helping you stay organized and focused on what matters most - writing great code.</p>
     ]]></description>
 
     <!-- 详细描述已包含在 description 标签中 -->
