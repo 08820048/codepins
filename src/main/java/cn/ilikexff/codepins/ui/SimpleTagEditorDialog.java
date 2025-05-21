@@ -24,6 +24,7 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.HashSet;
 
 /**
  * 简化版标签编辑对话框
@@ -36,11 +37,16 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private final JBTextField newTagField;
     private final List<String> currentTags;
     private JPanel tagActionPanel; // 标签操作面板
+    private Set<String> existingTags; // 已有的所有标签
+    private JPanel existingTagsPanel; // 已有标签面板
 
     public SimpleTagEditorDialog(Project project, PinEntry pinEntry) {
         super(project);
         this.pinEntry = pinEntry;
         this.currentTags = new ArrayList<>(pinEntry.getTags());
+
+        // 获取所有已有标签
+        this.existingTags = PinStorage.getAllTags();
 
         // 创建标签列表模型和列表
         tagsModel = new DefaultListModel<>();
@@ -53,6 +59,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
         // 创建新标签输入框
         newTagField = new JBTextField();
+
+        // 创建已有标签面板
+        existingTagsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
         // 设置对话框标题和尺寸
         setTitle("编辑标签");
@@ -131,6 +140,25 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.add(separator);
         mainPanel.add(Box.createVerticalStrut(15));
 
+        // 添加已有标签区域
+        JLabel existingTagsLabel = new JLabel("当前已有标签（点击添加）：");
+        existingTagsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
+        mainPanel.add(existingTagsLabel);
+
+        // 创建已有标签滚动面板
+        JScrollPane existingTagsScrollPane = new JBScrollPane(existingTagsPanel);
+        existingTagsScrollPane.setAlignmentX(Component.LEFT_ALIGNMENT);
+        existingTagsScrollPane.setPreferredSize(new Dimension(400, 100));
+        existingTagsScrollPane.setMinimumSize(new Dimension(400, 100));
+        existingTagsScrollPane.setMaximumSize(new Dimension(Short.MAX_VALUE, 100));
+        existingTagsScrollPane.setBorder(BorderFactory.createLineBorder(JBColor.border(), 1));
+
+        // 填充已有标签
+        populateExistingTags();
+
+        mainPanel.add(existingTagsScrollPane);
+        mainPanel.add(Box.createVerticalStrut(15));
+
         // 添加新标签标签
         JLabel newTagLabel = new JLabel("添加新标签：");
         newTagLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
@@ -190,6 +218,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
             int newIndex = tagsModel.size() - 1;
             tagsList.setSelectedIndex(newIndex);
             tagsList.ensureIndexIsVisible(newIndex);
+
+            // 刷新已有标签面板
+            populateExistingTags();
         }
     }
 
@@ -207,6 +238,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
                 tagsModel.remove(indices[i]);
                 currentTags.remove(tag);
             }
+
+            // 刷新已有标签面板
+            populateExistingTags();
         }
     }
 
@@ -235,6 +269,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
                     // 选中新标签
                     tagsList.setSelectedValue(newTag.trim(), true);
+
+                    // 刷新已有标签面板
+                    populateExistingTags();
                 } else {
                     JOptionPane.showMessageDialog(this.getRootPane(),
                             "标签 '"+newTag.trim()+"' 已存在",
@@ -253,6 +290,125 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     }
 
     /**
+     * 填充已有标签面板
+     */
+    private void populateExistingTags() {
+        existingTagsPanel.removeAll();
+
+        // 如果没有已有标签，显示提示信息
+        if (existingTags.isEmpty()) {
+            JLabel emptyLabel = new JLabel("暂无已有标签");
+            emptyLabel.setForeground(JBColor.GRAY);
+            existingTagsPanel.add(emptyLabel);
+            return;
+        }
+
+        // 从当前标签中移除已经添加的标签
+        Set<String> availableTags = new HashSet<>(existingTags);
+        availableTags.removeAll(currentTags);
+
+        // 如果过滤后没有可用标签，显示提示信息
+        if (availableTags.isEmpty()) {
+            JLabel emptyLabel = new JLabel("所有标签已添加");
+            emptyLabel.setForeground(JBColor.GRAY);
+            existingTagsPanel.add(emptyLabel);
+            return;
+        }
+
+        // 为每个已有标签创建一个可点击的标签组件
+        for (String tag : availableTags) {
+            JLabel tagLabel = createClickableTagLabel(tag);
+            existingTagsPanel.add(tagLabel);
+        }
+
+        existingTagsPanel.revalidate();
+        existingTagsPanel.repaint();
+    }
+
+    /**
+     * 创建可点击的标签标签
+     */
+    private JLabel createClickableTagLabel(String tag) {
+        // 创建标签
+        JLabel tagLabel = new JLabel(tag);
+        tagLabel.setFont(tagLabel.getFont().deriveFont(Font.PLAIN, 12f));
+
+        // 生成标签颜色
+        Color tagColor = ColorUtil.getTagColor(tag);
+        Color bgColor = new JBColor(
+                new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), 40),
+                new Color(tagColor.getRed() / 4, tagColor.getGreen() / 4, tagColor.getBlue() / 4, 80)
+        );
+
+        // 设置文本颜色
+        boolean isDark = ColorUtil.isDark(tagColor);
+        Color textColor = isDark ?
+                new JBColor(new Color(40, 40, 40), new Color(220, 220, 220)) :
+                new JBColor(new Color(40, 40, 40), new Color(220, 220, 220));
+
+        // 设置边框颜色
+        Color borderColor = new JBColor(
+                new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), 80),
+                new Color(tagColor.getRed() / 2, tagColor.getGreen() / 2, tagColor.getBlue() / 2, 100)
+        );
+
+        // 设置标签样式
+        tagLabel.setForeground(textColor);
+        tagLabel.setBackground(bgColor);
+        tagLabel.setOpaque(true);
+        tagLabel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(borderColor, 1),
+                JBUI.Borders.empty(5, 8)
+        ));
+        tagLabel.setIcon(IconUtil.loadIcon("/icons/tag-small.svg", getClass()));
+        tagLabel.setIconTextGap(6);
+
+        // 添加鼠标事件
+        tagLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                // 鼠标悬停效果
+                tagLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+                tagLabel.setBackground(tagColor.brighter());
+                tagLabel.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(borderColor.darker(), 1),
+                        JBUI.Borders.empty(5, 8)
+                ));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                // 恢复正常效果
+                tagLabel.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+                tagLabel.setBackground(bgColor);
+                tagLabel.setBorder(BorderFactory.createCompoundBorder(
+                        BorderFactory.createLineBorder(borderColor, 1),
+                        JBUI.Borders.empty(5, 8)
+                ));
+            }
+
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 点击添加标签
+                if (!tagsModel.contains(tag)) {
+                    tagsModel.addElement(tag);
+                    currentTags.add(tag);
+
+                    // 选中新添加的标签
+                    int newIndex = tagsModel.size() - 1;
+                    tagsList.setSelectedIndex(newIndex);
+                    tagsList.ensureIndexIsVisible(newIndex);
+
+                    // 刷新已有标签面板
+                    populateExistingTags();
+                }
+            }
+        });
+
+        return tagLabel;
+    }
+
+    /**
      * 标签单元格渲染器
      */
     private static class TagCellRenderer extends DefaultListCellRenderer {
@@ -266,7 +422,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
             String tag = value.toString();
 
             // 生成标签颜色
-            Color tagColor = getTagColor(tag);
+            Color tagColor = ColorUtil.getTagColor(tag);
             Color textColor;
             Color borderColor;
             Color bgColor;
@@ -327,10 +483,26 @@ public class SimpleTagEditorDialog extends DialogWrapper {
             return tagPanel;
         }
 
+
+    }
+
+    /**
+     * 颜色工具类
+     */
+    private static class ColorUtil {
+        /**
+         * 判断颜色是否为深色
+         */
+        public static boolean isDark(Color color) {
+            // 使用人眼对不同颜色的敏感度公式
+            double brightness = (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
+            return brightness < 0.5;
+        }
+
         /**
          * 根据标签名称生成颜色
          */
-        private Color getTagColor(String tag) {
+        public static Color getTagColor(String tag) {
             // 使用标签的哈希值生成颜色，确保相同标签有相同颜色
             int hash = tag.hashCode();
 
@@ -359,20 +531,6 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
             int index = Math.abs(hash) % lightPalette.length;
             return new JBColor(lightPalette[index], darkPalette[index]);
-        }
-    }
-
-    /**
-     * 颜色工具类
-     */
-    private static class ColorUtil {
-        /**
-         * 判断颜色是否为深色
-         */
-        public static boolean isDark(Color color) {
-            // 使用人眼对不同颜色的敏感度公式
-            double brightness = (0.299 * color.getRed() + 0.587 * color.getGreen() + 0.114 * color.getBlue()) / 255;
-            return brightness < 0.5;
         }
     }
 }
