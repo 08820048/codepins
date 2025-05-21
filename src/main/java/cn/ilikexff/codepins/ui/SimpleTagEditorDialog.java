@@ -2,9 +2,11 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
 import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.services.LicenseService;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
@@ -23,6 +25,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -31,6 +34,7 @@ import java.util.HashSet;
  */
 public class SimpleTagEditorDialog extends DialogWrapper {
 
+    private final Project project;
     private final PinEntry pinEntry;
     private final DefaultListModel<String> tagsModel;
     private final JBList<String> tagsList;
@@ -42,6 +46,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
     public SimpleTagEditorDialog(Project project, PinEntry pinEntry) {
         super(project);
+        this.project = project;
         this.pinEntry = pinEntry;
         this.currentTags = new ArrayList<>(pinEntry.getTags());
 
@@ -75,13 +80,52 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
         mainPanel.setBorder(JBUI.Borders.empty(10));
 
+        // 获取标签限制信息
+        Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
+        int maxTagTypes = tagsInfo.get("max");
+        int maxTagsPerPin = tagsInfo.get("perPin");
+        int currentTagTypes = tagsInfo.get("current");
+        boolean isPremiumUser = LicenseService.getInstance().isPremiumUser();
+
         // 添加说明标签
-        JLabel instructionLabel = new JLabel("<html><b>标签使用说明：</b><br>" +
+        StringBuilder instructionText = new StringBuilder("<html><b>标签使用说明：</b><br>" +
                 "1. 在下方输入框中输入标签名称，然后按回车或点击添加按钮<br>" +
                 "2. 选中列表中的标签，然后点击删除按钮可删除标签<br>" +
-                "3. 选中列表中的标签，然后点击编辑按钮或双击标签可编辑标签</html>");
+                "3. 选中列表中的标签，然后点击编辑按钮或双击标签可编辑标签");
+
+        // 添加标签限制信息（仅对免费用户显示）
+        if (!isPremiumUser) {
+            instructionText.append("<br><br><b>免费版限制：</b><br>");
+            instructionText.append("- 每个图钉最多 ").append(maxTagsPerPin).append(" 个标签<br>");
+            instructionText.append("- 最多创建 ").append(maxTagTypes).append(" 种不同标签（当前已使用 ")
+                    .append(currentTagTypes).append(" 种）<br>");
+            instructionText.append("- <a href='upgrade'>升级到专业版</a>获得无限标签");
+        }
+
+        instructionText.append("</html>");
+
+        JLabel instructionLabel = new JLabel(instructionText.toString());
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         instructionLabel.setBorder(JBUI.Borders.emptyBottom(10));
+
+        // 添加超链接点击事件
+        if (!isPremiumUser) {
+            instructionLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    String text = instructionLabel.getText();
+                    if (text.contains("<a href='upgrade'>") &&
+                            e.getX() >= text.indexOf("<a href='upgrade'>") &&
+                            e.getX() <= text.indexOf("</a>")) {
+                        // 显示升级对话框
+                        LicenseService.getInstance().showUpgradeDialogIfNeeded(
+                                project,
+                                "无限标签");
+                    }
+                }
+            });
+        }
+
         mainPanel.add(instructionLabel);
 
         // 添加当前标签标签
@@ -206,6 +250,38 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private void addNewTag() {
         String tag = newTagField.getText().trim();
         if (!tag.isEmpty() && !tagsModel.contains(tag)) {
+            // 检查是否为专业版用户
+            boolean isPremiumUser = LicenseService.getInstance().isPremiumUser();
+
+            // 如果不是专业版用户，检查标签数量限制
+            if (!isPremiumUser) {
+                // 获取标签限制信息
+                Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
+                int maxTagsPerPin = tagsInfo.get("perPin");
+                int maxTagTypes = tagsInfo.get("max");
+                int currentTagTypes = tagsInfo.get("current");
+
+                // 检查每个图钉的标签数量限制
+                if (currentTags.size() >= maxTagsPerPin) {
+                    Messages.showWarningDialog(
+                            "免费版用户每个图钉最多只能添加 " + maxTagsPerPin + " 个标签。\n" +
+                            "升级到专业版可获得无限标签功能。",
+                            "标签数量限制"
+                    );
+                    return;
+                }
+
+                // 检查是否是新标签，以及是否会超出总标签种类限制
+                if (!existingTags.contains(tag) && currentTagTypes >= maxTagTypes) {
+                    Messages.showWarningDialog(
+                            "免费版用户最多只能创建 " + maxTagTypes + " 种不同标签。\n" +
+                            "升级到专业版可获得无限标签功能。",
+                            "标签种类限制"
+                    );
+                    return;
+                }
+            }
+
             // 添加标签
             tagsModel.addElement(tag);
             currentTags.add(tag);

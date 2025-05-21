@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 动作：在当前行或选区添加一个图钉，并可附加备注。
@@ -123,20 +124,51 @@ public class PinAction extends AnAction {
             if (statusBar != null) {
                 StatusBar.Info.set("❌ 图钉添加失败", project);
             }
+
+            // 获取图钉数量信息
+            Map<String, Integer> pinsInfo = PinStorage.getPinsCountInfo();
+            int currentPins = pinsInfo.get("current");
+            int maxPins = pinsInfo.get("max");
+
+            // 获取标签数量信息
+            Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
+            int currentTagTypes = tagsInfo.get("current");
+            int maxTagTypes = tagsInfo.get("max");
+            int maxTagsPerPin = tagsInfo.get("perPin");
+
+            // 确定失败原因
+            String failureReason;
+            String featureName;
+
+            if (currentPins >= maxPins && maxPins != -1) {
+                failureReason = "免费版限制" + maxPins + "个图钉，升级到专业版可获得无限图钉";
+                featureName = "无限图钉";
+            } else if (tags.size() > maxTagsPerPin && maxTagsPerPin != -1) {
+                failureReason = "免费版每个图钉最多只能添加" + maxTagsPerPin + "个标签，升级到专业版可获得无限标签";
+                featureName = "无限标签";
+            } else if (currentTagTypes >= maxTagTypes && maxTagTypes != -1) {
+                failureReason = "免费版最多只能创建" + maxTagTypes + "种不同标签，升级到专业版可获得无限标签";
+                featureName = "无限标签";
+            } else {
+                failureReason = "添加图钉失败，请稍后重试";
+                featureName = "专业版功能";
+            }
+
             // 创建带有升级链接的通知
             Notification notification = new Notification(
                     "CodePins",
                     "图钉添加失败",
-                    "免费版限制100个图钉，升级到专业版可获得无限图钉",
+                    failureReason,
                     NotificationType.WARNING
             );
 
             // 添加升级按钮
+            final String finalFeatureName = featureName;
             notification.addAction(new AnAction("升级到专业版") {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     // 显示升级对话框
-                    cn.ilikexff.codepins.services.LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "无限图钉");
+                    cn.ilikexff.codepins.services.LicenseService.getInstance().showUpgradeDialogIfNeeded(project, finalFeatureName);
                 }
             });
 

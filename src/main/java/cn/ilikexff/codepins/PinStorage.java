@@ -26,6 +26,12 @@ public class PinStorage {
     private static DefaultListModel<PinEntry> model = null;
     private static final Set<String> allTags = new HashSet<>(); // 所有标签的集合
 
+    // 免费版用户固定为100个图钉
+    private static final int FREE_USER_MAX_PINS = 100;
+    // 免费版标签限制常量
+    private static final int FREE_USER_MAX_TAG_TYPES = 10; // 最多10种不同标签
+    private static final int FREE_USER_MAX_TAGS_PER_PIN = 3; // 每个图钉最多3个标签
+
     /**
      * 设置 UI 模型，用于同步刷新列表
      */
@@ -45,11 +51,23 @@ public class PinStorage {
 
         // 如果不是专业版用户，检查是否超过最大图钉数量限制
         if (!isPremiumUser) {
-            // 免费版用户固定为100个图钉
-            final int FREE_USER_MAX_PINS = 100;
-
             if (pins.size() >= FREE_USER_MAX_PINS) {
                 System.out.println("[CodePins] 添加图钉失败：免费版用户已达到最大图钉数量限制 (" + FREE_USER_MAX_PINS + ")");
+                return false;
+            }
+
+            // 检查标签数量限制
+            if (entry.getTags().size() > FREE_USER_MAX_TAGS_PER_PIN) {
+                System.out.println("[CodePins] 添加图钉失败：免费版用户每个图钉最多只能添加 " + FREE_USER_MAX_TAGS_PER_PIN + " 个标签");
+                return false;
+            }
+
+            // 检查新标签是否会超出总标签种类限制
+            Set<String> newTags = new HashSet<>(entry.getTags());
+            newTags.removeAll(allTags); // 只保留尚未存在的新标签
+
+            if (!newTags.isEmpty() && (allTags.size() + newTags.size()) > FREE_USER_MAX_TAG_TYPES) {
+                System.out.println("[CodePins] 添加图钉失败：免费版用户最多只能创建 " + FREE_USER_MAX_TAG_TYPES + " 种不同标签");
                 return false;
             }
         }
@@ -136,9 +154,6 @@ public class PinStorage {
     public static Map<String, Integer> getPinsCountInfo() {
         Map<String, Integer> info = new HashMap<>();
 
-        // 免费版用户固定为100个图钉
-        final int FREE_USER_MAX_PINS = 100;
-
         // 当前图钉数量
         info.put("current", pins.size());
 
@@ -149,6 +164,31 @@ public class PinStorage {
         } else {
             info.put("max", FREE_USER_MAX_PINS); // 免费版限制
         }
+
+        return info;
+    }
+
+    /**
+     * 获取标签数量信息
+     *
+     * @return 包含当前标签种类数量和最大限制的Map
+     */
+    public static Map<String, Integer> getTagsCountInfo() {
+        Map<String, Integer> info = new HashMap<>();
+
+        // 当前标签种类数量
+        info.put("current", allTags.size());
+
+        // 最大标签种类数量限制
+        boolean isPremiumUser = cn.ilikexff.codepins.services.LicenseService.getInstance().isPremiumUser();
+        if (isPremiumUser) {
+            info.put("max", -1); // -1 表示无限制
+        } else {
+            info.put("max", FREE_USER_MAX_TAG_TYPES); // 免费版限制
+        }
+
+        // 每个图钉的标签数量限制
+        info.put("perPin", isPremiumUser ? -1 : FREE_USER_MAX_TAGS_PER_PIN);
 
         return info;
     }
@@ -240,8 +280,52 @@ public class PinStorage {
 
     /**
      * 更新图钉标签
+     *
+     * @return 是否更新成功
      */
-    public static void updateTags(PinEntry entry, List<String> newTags) {
+    public static boolean updateTags(PinEntry entry, List<String> newTags) {
+        // 检查是否为专业版用户
+        boolean isPremiumUser = cn.ilikexff.codepins.services.LicenseService.getInstance().isPremiumUser();
+
+        // 如果不是专业版用户，检查标签数量限制
+        if (!isPremiumUser) {
+            // 检查每个图钉的标签数量限制
+            if (newTags != null && newTags.size() > FREE_USER_MAX_TAGS_PER_PIN) {
+                System.out.println("[CodePins] 更新标签失败：免费版用户每个图钉最多只能添加 " + FREE_USER_MAX_TAGS_PER_PIN + " 个标签");
+                return false;
+            }
+
+            // 检查新标签是否会超出总标签种类限制
+            if (newTags != null) {
+                Set<String> existingTags = new HashSet<>(allTags);
+                // 移除当前图钉的标签（因为要被替换）
+                for (String tag : entry.getTags()) {
+                    // 检查其他图钉是否也使用了这个标签
+                    boolean tagUsedElsewhere = false;
+                    for (PinEntry pin : pins) {
+                        if (pin != entry && pin.hasTag(tag)) {
+                            tagUsedElsewhere = true;
+                            break;
+                        }
+                    }
+                    // 如果没有其他图钉使用这个标签，从现有标签集合中移除
+                    if (!tagUsedElsewhere) {
+                        existingTags.remove(tag);
+                    }
+                }
+
+                // 计算新增的标签种类
+                Set<String> newTagsSet = new HashSet<>(newTags);
+                newTagsSet.removeAll(existingTags);
+
+                // 检查是否超出限制
+                if (!newTagsSet.isEmpty() && (existingTags.size() + newTagsSet.size()) > FREE_USER_MAX_TAG_TYPES) {
+                    System.out.println("[CodePins] 更新标签失败：免费版用户最多只能创建 " + FREE_USER_MAX_TAG_TYPES + " 种不同标签");
+                    return false;
+                }
+            }
+        }
+
         // 更新内存中的图钉标签
         entry.setTags(newTags);
 
@@ -264,6 +348,8 @@ public class PinStorage {
 
         // 刷新UI
         refreshModel();
+
+        return true;
     }
 
     /**

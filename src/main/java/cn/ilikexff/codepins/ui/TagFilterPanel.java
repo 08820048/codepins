@@ -2,6 +2,7 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
 import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.services.LicenseService;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
@@ -14,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -93,6 +95,49 @@ public class TagFilterPanel extends JPanel {
      */
     public void refreshTagsView() {
         tagsContainer.removeAll();
+
+        // 获取标签限制信息
+        Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
+        int currentTagTypes = tagsInfo.get("current");
+        int maxTagTypes = tagsInfo.get("max");
+        boolean isPremiumUser = LicenseService.getInstance().isPremiumUser();
+
+        // 添加标签计数信息
+        if (!isPremiumUser && maxTagTypes != -1) {
+            JPanel countPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+            countPanel.setOpaque(false);
+
+            // 创建标签计数标签
+            JLabel countLabel = new JLabel("标签: " + currentTagTypes + "/" + maxTagTypes);
+            countLabel.setFont(countLabel.getFont().deriveFont(Font.PLAIN, 11f));
+
+            // 根据使用比例设置颜色
+            float usageRatio = (float) currentTagTypes / maxTagTypes;
+            if (usageRatio >= 0.9) {
+                countLabel.setForeground(new Color(217, 83, 79)); // 红色
+            } else if (usageRatio >= 0.7) {
+                countLabel.setForeground(new Color(240, 173, 78)); // 黄色
+            } else {
+                countLabel.setForeground(JBColor.GRAY);
+            }
+
+            countPanel.add(countLabel);
+
+            // 添加升级链接
+            JLabel upgradeLabel = new JLabel("<html><a href='#'>升级</a></html>");
+            upgradeLabel.setFont(upgradeLabel.getFont().deriveFont(Font.PLAIN, 11f));
+            upgradeLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            upgradeLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // 显示升级对话框
+                    LicenseService.getInstance().showUpgradeDialogIfNeeded(null, "无限标签");
+                }
+            });
+            countPanel.add(upgradeLabel);
+
+            tagsContainer.add(countPanel);
+        }
 
         Set<String> allTags = PinStorage.getAllTags();
         if (allTags.isEmpty()) {
