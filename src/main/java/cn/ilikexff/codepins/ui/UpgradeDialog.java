@@ -69,6 +69,7 @@ public class UpgradeDialog extends DialogWrapper {
         featuresPanel.setLayout(new BoxLayout(featuresPanel, BoxLayout.Y_AXIS));
 
         // 添加功能项
+        addFeatureItem(featuresPanel, "无限图钉", "免费版限制100个图钉，专业版无数量限制");
         addFeatureItem(featuresPanel, "更多社交分享平台", "支持7个国际社交媒体平台，包括Reddit、Telegram、Hacker News等");
         addFeatureItem(featuresPanel, "自定义水印", "自定义或完全移除分享图片中的水印");
         addFeatureItem(featuresPanel, "高级分享选项（即将推出）", "密码保护、链接有效期限制等高级分享选项");

@@ -18,6 +18,7 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,12 +123,24 @@ public class PinAction extends AnAction {
             if (statusBar != null) {
                 StatusBar.Info.set("❌ 图钉添加失败", project);
             }
-            Notifications.Bus.notify(new Notification(
+            // 创建带有升级链接的通知
+            Notification notification = new Notification(
                     "CodePins",
                     "图钉添加失败",
-                    "已达到最大图钉数量限制，请删除一些图钉后再试",
+                    "免费版限制100个图钉，升级到专业版可获得无限图钉",
                     NotificationType.WARNING
-            ), project);
+            );
+
+            // 添加升级按钮
+            notification.addAction(new AnAction("升级到专业版") {
+                @Override
+                public void actionPerformed(@NotNull AnActionEvent e) {
+                    // 显示升级对话框
+                    cn.ilikexff.codepins.services.LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "无限图钉");
+                }
+            });
+
+            Notifications.Bus.notify(notification, project);
         }
     }
 }

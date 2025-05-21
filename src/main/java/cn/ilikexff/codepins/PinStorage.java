@@ -10,8 +10,10 @@ import com.intellij.openapi.vfs.VirtualFile;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -38,15 +40,18 @@ public class PinStorage {
      * @return 是否添加成功
      */
     public static boolean addPin(PinEntry entry) {
-        // 检查是否超过最大图钉数量限制
-        try {
-            int maxPins = Integer.parseInt(cn.ilikexff.codepins.settings.CodePinsSettings.getInstance().maxPinsCount);
-            if (pins.size() >= maxPins) {
-                System.out.println("[CodePins] 添加图钉失败：已达到最大图钉数量限制 (" + maxPins + ")");
+        // 检查是否为专业版用户
+        boolean isPremiumUser = cn.ilikexff.codepins.services.LicenseService.getInstance().isPremiumUser();
+
+        // 如果不是专业版用户，检查是否超过最大图钉数量限制
+        if (!isPremiumUser) {
+            // 免费版用户固定为100个图钉
+            final int FREE_USER_MAX_PINS = 100;
+
+            if (pins.size() >= FREE_USER_MAX_PINS) {
+                System.out.println("[CodePins] 添加图钉失败：免费版用户已达到最大图钉数量限制 (" + FREE_USER_MAX_PINS + ")");
                 return false;
             }
-        } catch (NumberFormatException e) {
-            System.out.println("[CodePins] 解析最大图钉数量设置失败，使用默认值: " + e.getMessage());
         }
 
         pins.add(entry);
@@ -121,6 +126,31 @@ public class PinStorage {
      */
     public static List<PinEntry> getPins() {
         return pins;
+    }
+
+    /**
+     * 获取图钉数量信息
+     *
+     * @return 包含当前图钉数量和最大限制的Map
+     */
+    public static Map<String, Integer> getPinsCountInfo() {
+        Map<String, Integer> info = new HashMap<>();
+
+        // 免费版用户固定为100个图钉
+        final int FREE_USER_MAX_PINS = 100;
+
+        // 当前图钉数量
+        info.put("current", pins.size());
+
+        // 最大图钉数量限制
+        boolean isPremiumUser = cn.ilikexff.codepins.services.LicenseService.getInstance().isPremiumUser();
+        if (isPremiumUser) {
+            info.put("max", -1); // -1 表示无限制
+        } else {
+            info.put("max", FREE_USER_MAX_PINS); // 免费版限制
+        }
+
+        return info;
     }
 
     /**

@@ -23,14 +23,12 @@ import java.awt.*;
 public class CodePinsSettingsComponent {
     private final JPanel mainPanel;
     private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox("删除图钉时确认");
-    private final JBTextField maxPinsTextField = new JBTextField();
     private final JBTextField previewHeightTextField = new JBTextField();
     private final JBCheckBox testPremiumModeCheckBox = new JBCheckBox("测试付费模式（仅用于开发测试）");
 
     public CodePinsSettingsComponent() {
         // 创建常规设置面板
         JPanel generalPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent(new JBLabel("最大图钉数量:"), maxPinsTextField, 1, false)
                 .addLabeledComponent(new JBLabel("预览窗口高度:"), previewHeightTextField, 1, false)
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
@@ -144,16 +142,7 @@ public class CodePinsSettingsComponent {
     }
 
     public JComponent getPreferredFocusedComponent() {
-        return maxPinsTextField;
-    }
-
-    @NotNull
-    public String getMaxPinsCount() {
-        return maxPinsTextField.getText();
-    }
-
-    public void setMaxPinsCount(@NotNull String newText) {
-        maxPinsTextField.setText(newText);
+        return previewHeightTextField;
     }
 
     @NotNull

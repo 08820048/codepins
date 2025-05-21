@@ -16,10 +16,12 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
+import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -35,6 +37,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PinsToolWindow implements ToolWindowFactory {
@@ -196,6 +199,12 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 创建菜单
                     JPopupMenu menu = new JPopupMenu();
 
+                    // 设置菜单样式
+                    menu.setBorder(BorderFactory.createCompoundBorder(
+                            BorderFactory.createLineBorder(new JBColor(new Color(200, 200, 200, 100), new Color(60, 60, 60, 150)), 1),
+                            BorderFactory.createEmptyBorder(2, 2, 2, 2)
+                    ));
+
                     // 加载图标
                     Icon codeIcon = IconUtil.loadIcon("/icons/view.svg", getClass());
                     Icon editIcon = IconUtil.loadIcon("/icons/edit.svg", getClass());
@@ -208,6 +217,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     if (selected.isBlock) {
                         // 如果是代码块图钉，添加代码预览项
                         JMenuItem codeItem = new JMenuItem("查看代码块", codeIcon);
+                        // 应用自定义UI
+                        cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(codeItem);
                         codeItem.addActionListener(event -> {
                             // 添加按钮动画效果
                             AnimationUtil.buttonClickEffect(codeItem);
@@ -218,6 +229,8 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                     // 添加编辑备注项
                     JMenuItem editItem = new JMenuItem("修改备注", editIcon);
+                    // 应用自定义UI
+                    cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(editItem);
                     editItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(editItem);
@@ -230,6 +243,8 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                     // 添加编辑标签项
                     JMenuItem tagItem = new JMenuItem("编辑标签", tagIcon);
+                    // 应用自定义UI
+                    cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(tagItem);
                     tagItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(tagItem);
@@ -243,6 +258,8 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                     // 添加分享项
                     JMenuItem shareItem = new JMenuItem("分享图钉", shareIcon);
+                    // 应用自定义UI
+                    cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(shareItem);
                     shareItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(shareItem);
@@ -257,6 +274,8 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                     // 添加删除项
                     JMenuItem deleteItem = new JMenuItem("删除本钉", deleteIcon);
+                    // 应用自定义UI
+                    cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(deleteItem);
                     deleteItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(deleteItem);
@@ -284,6 +303,8 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                     // 添加刷新项
                     JMenuItem refreshItem = new JMenuItem("刷新", refreshIcon);
+                    // 应用自定义UI
+                    cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(refreshItem);
                     refreshItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(refreshItem);
@@ -358,9 +379,27 @@ public class PinsToolWindow implements ToolWindowFactory {
         });
 
         // 创建顶部面板（搜索和工具栏）
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.add(createSearchField(), BorderLayout.CENTER);
-        topPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
+        JPanel topPanel = new JPanel(new BorderLayout(8, 0));
+        topPanel.setBorder(JBUI.Borders.empty(4, 4, 4, 4));
+
+        // 创建搜索面板，包含搜索框
+        JPanel searchPanel = new JPanel(new BorderLayout());
+        searchPanel.setOpaque(false);
+        searchPanel.add(createSearchField(), BorderLayout.CENTER);
+
+        // 创建右侧面板，包含图钉计数和工具栏
+        JPanel rightPanel = new JPanel(new BorderLayout(8, 0));
+        rightPanel.setOpaque(false);
+
+        // 添加图钉计数标签
+        rightPanel.add(createPinCountLabel(), BorderLayout.WEST);
+
+        // 添加工具栏
+        rightPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
+
+        // 添加到顶部面板
+        topPanel.add(searchPanel, BorderLayout.CENTER);
+        topPanel.add(rightPanel, BorderLayout.EAST);
 
         // 创建主面板
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -646,6 +685,92 @@ public class PinsToolWindow implements ToolWindowFactory {
         });
 
         return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
+    }
+
+    /**
+     * 创建图钉计数标签
+     */
+    private JComponent createPinCountLabel() {
+        // 获取图钉数量信息
+        Map<String, Integer> countInfo = PinStorage.getPinsCountInfo();
+        int currentCount = countInfo.get("current");
+        int maxCount = countInfo.get("max");
+
+        // 创建标签
+        JLabel countLabel = new JLabel();
+
+        // 获取当前UI主题颜色
+        Color textColor = UIUtil.getLabelForeground();
+        Color hoverColor = JBColor.namedColor("Link.activeForeground", new JBColor(new Color(0x4083C9), new Color(0x589DF6)));
+        Color warningColor = JBColor.namedColor("Component.warningForeground", new JBColor(new Color(0xA0522D), new Color(0xBC6D4C)));
+        Color errorColor = JBColor.namedColor("Component.errorForeground", new JBColor(new Color(0xC75450), new Color(0xFF5261)));
+        Color successColor = JBColor.namedColor("Plugins.tagForeground", new JBColor(new Color(0x008000), new Color(0x369E6A)));
+
+        // 设置标签文本和样式
+        if (maxCount == -1) {
+            // 专业版用户，无限制
+            countLabel.setText(currentCount + " 图钉");
+            countLabel.setForeground(successColor);
+            countLabel.setIcon(IconUtil.loadIcon("/icons/premium-small.svg", getClass()));
+        } else {
+            // 免费版用户，有限制
+            countLabel.setText(currentCount + "/" + maxCount);
+            countLabel.setIcon(IconUtil.loadIcon("/icons/pin-small.svg", getClass()));
+
+            // 根据使用比例设置颜色
+            float usageRatio = (float) currentCount / maxCount;
+            if (usageRatio >= 0.9) {
+                countLabel.setForeground(errorColor);
+            } else if (usageRatio >= 0.7) {
+                countLabel.setForeground(warningColor);
+            } else {
+                countLabel.setForeground(textColor);
+            }
+        }
+
+        // 设置字体和边距
+        countLabel.setFont(countLabel.getFont().deriveFont(Font.PLAIN, 12f));
+        countLabel.setBorder(JBUI.Borders.empty(0, 8, 0, 4));
+        countLabel.setIconTextGap(4);
+
+        // 添加鼠标点击事件，点击时显示升级对话框
+        if (maxCount != -1) {
+            countLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+            countLabel.setToolTipText("免费版限制100个图钉，点击升级到专业版获取无限图钉");
+
+            countLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseClicked(MouseEvent e) {
+                    // 显示升级对话框
+                    cn.ilikexff.codepins.services.LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "无限图钉");
+                }
+
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    countLabel.setForeground(hoverColor);
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    // 恢复原来的颜色
+                    float usageRatio = (float) currentCount / maxCount;
+                    if (usageRatio >= 0.9) {
+                        countLabel.setForeground(errorColor);
+                    } else if (usageRatio >= 0.7) {
+                        countLabel.setForeground(warningColor);
+                    } else {
+                        countLabel.setForeground(textColor);
+                    }
+                }
+            });
+        }
+
+        // 创建容器面板，使用半透明背景
+        JPanel container = new JPanel(new BorderLayout());
+        container.setOpaque(false);
+        container.add(countLabel, BorderLayout.CENTER);
+
+        return container;
     }
 
     // 已移除 createListPopupMenu 方法，改为使用 MouseAdapter 动态创建菜单

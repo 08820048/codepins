@@ -18,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 )
 public class CodePinsSettings implements PersistentStateComponent<CodePinsSettings> {
     // 常规设置
-    public String maxPinsCount = "100";
     public String previewHeight = "300";
     public boolean confirmDelete = true;
 
