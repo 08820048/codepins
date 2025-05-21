@@ -68,10 +68,8 @@ public class LicenseStatusPanel extends JPanel {
             updateStatusLabel();
         });
 
-        // 创建升级按钮
+        // 创建升级按钮 - 使用默认按钮样式
         upgradeButton = new JButton("升级到专业版");
-        upgradeButton.setBackground(new Color(0, 122, 204));
-        upgradeButton.setForeground(Color.WHITE);
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
         });

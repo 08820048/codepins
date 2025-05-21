@@ -15,7 +15,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 /**
  * 水印设置对话框
@@ -26,7 +25,6 @@ public class WatermarkSettingsDialog extends DialogWrapper {
     private final Project project;
 
     private JRadioButton textWatermarkRadio;
-    private JRadioButton imageWatermarkRadio;
     private JRadioButton noWatermarkRadio;
 
     private JTextField textField;
@@ -34,11 +32,7 @@ public class WatermarkSettingsDialog extends DialogWrapper {
     private ColorPanel colorPanel;
     private JSlider opacitySlider;
 
-    private JTextField imagePathField;
-    private JButton browseButton;
-
     private JPanel textPanel;
-    private JPanel imagePanel;
 
     /**
      * 构造函数
@@ -65,7 +59,6 @@ public class WatermarkSettingsDialog extends DialogWrapper {
 
         // 水印类型选项
         textWatermarkRadio = new JBRadioButton("文本水印");
-        imageWatermarkRadio = new JBRadioButton("图片水印");
         noWatermarkRadio = new JBRadioButton("无水印");
 
         // 默认选择文本水印
@@ -74,12 +67,10 @@ public class WatermarkSettingsDialog extends DialogWrapper {
         // 添加到按钮组
         ButtonGroup typeGroup = new ButtonGroup();
         typeGroup.add(textWatermarkRadio);
-        typeGroup.add(imageWatermarkRadio);
         typeGroup.add(noWatermarkRadio);
 
         // 添加到面板
         typePanel.add(textWatermarkRadio);
-        typePanel.add(imageWatermarkRadio);
         typePanel.add(noWatermarkRadio);
 
         // 创建文本水印设置面板
@@ -112,103 +103,23 @@ public class WatermarkSettingsDialog extends DialogWrapper {
         opacitySlider.setPaintLabels(true);
         textPanel.add(opacitySlider);
 
-        // 创建图片水印设置面板
-        imagePanel = new JPanel(new GridLayout(0, 2, 10, 10));
-        imagePanel.setBorder(BorderFactory.createTitledBorder("图片水印设置"));
-
-        // 图片路径
-        imagePanel.add(new JBLabel("水印图片:"));
-        JPanel pathPanel = new JPanel(new BorderLayout());
-        imagePathField = new JTextField();
-        browseButton = new JButton("浏览...");
-        pathPanel.add(imagePathField, BorderLayout.CENTER);
-        pathPanel.add(browseButton, BorderLayout.EAST);
-        imagePanel.add(pathPanel);
-
-        // 位置选择
-        imagePanel.add(new JBLabel("水印位置:"));
-        JComboBox<WatermarkManager.WatermarkPosition> imagePositionComboBox =
-                new JComboBox<>(WatermarkManager.WatermarkPosition.values());
-        imagePositionComboBox.setSelectedItem(WatermarkManager.WatermarkPosition.BOTTOM_RIGHT);
-        imagePanel.add(imagePositionComboBox);
-
-        // 透明度滑块
-        imagePanel.add(new JBLabel("透明度:"));
-        JSlider imageOpacitySlider = new JSlider(0, 100, 50);
-        imageOpacitySlider.setMajorTickSpacing(25);
-        imageOpacitySlider.setMinorTickSpacing(5);
-        imageOpacitySlider.setPaintTicks(true);
-        imageOpacitySlider.setPaintLabels(true);
-        imagePanel.add(imageOpacitySlider);
-
-        // 浏览按钮点击事件
-        browseButton.addActionListener(e -> {
-            JFileChooser fileChooser = new JFileChooser();
-            fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-            fileChooser.setDialogTitle("选择水印图片");
-
-            // 设置文件过滤器
-            fileChooser.setFileFilter(new javax.swing.filechooser.FileFilter() {
-                @Override
-                public boolean accept(File f) {
-                    if (f.isDirectory()) {
-                        return true;
-                    }
-                    String name = f.getName().toLowerCase();
-                    return name.endsWith(".png") || name.endsWith(".jpg") ||
-                           name.endsWith(".jpeg") || name.endsWith(".gif");
-                }
-
-                @Override
-                public String getDescription() {
-                    return "图片文件 (*.png, *.jpg, *.jpeg, *.gif)";
-                }
-            });
-
-            int result = fileChooser.showOpenDialog(dialogPanel);
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File selectedFile = fileChooser.getSelectedFile();
-                imagePathField.setText(selectedFile.getAbsolutePath());
-            }
-        });
-
-        // 初始状态下只显示文本水印设置面板
-        imagePanel.setVisible(false);
-
         // 添加水印类型选择监听器
         textWatermarkRadio.addActionListener(e -> {
             textPanel.setVisible(true);
-            imagePanel.setVisible(false);
-        });
-
-        imageWatermarkRadio.addActionListener(e -> {
-            textPanel.setVisible(false);
-            imagePanel.setVisible(true);
         });
 
         noWatermarkRadio.addActionListener(e -> {
             textPanel.setVisible(false);
-            imagePanel.setVisible(false);
         });
 
         // 检查是否为付费用户
         boolean isPremium = SocialSharingUtil.isPremiumUser();
         if (!isPremium) {
-            // 非付费用户禁用图片水印和无水印选项
-            imageWatermarkRadio.setEnabled(false);
-            imageWatermarkRadio.setText(imageWatermarkRadio.getText() + " (专业版功能)");
+            // 非付费用户禁用无水印选项
             noWatermarkRadio.setEnabled(false);
             noWatermarkRadio.setText(noWatermarkRadio.getText() + " (专业版功能)");
 
             // 添加点击事件，显示升级对话框
-            imageWatermarkRadio.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "图片水印");
-                }
-            });
-
             noWatermarkRadio.addMouseListener(new java.awt.event.MouseAdapter() {
                 @Override
                 public void mouseClicked(java.awt.event.MouseEvent e) {
@@ -273,12 +184,7 @@ public class WatermarkSettingsDialog extends DialogWrapper {
         // 组装面板
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(typePanel, BorderLayout.NORTH);
-
-        JPanel settingsPanel = new JPanel(new CardLayout());
-        settingsPanel.add(textPanel, "text");
-        settingsPanel.add(imagePanel, "image");
-
-        mainPanel.add(settingsPanel, BorderLayout.CENTER);
+        mainPanel.add(textPanel, BorderLayout.CENTER);
 
         dialogPanel.add(mainPanel, BorderLayout.CENTER);
 
@@ -295,8 +201,6 @@ public class WatermarkSettingsDialog extends DialogWrapper {
             WatermarkManager.WatermarkType type;
             if (textWatermarkRadio.isSelected()) {
                 type = WatermarkManager.WatermarkType.TEXT;
-            } else if (imageWatermarkRadio.isSelected() && isPremium) {
-                type = WatermarkManager.WatermarkType.IMAGE;
             } else if (noWatermarkRadio.isSelected() && isPremium) {
                 type = WatermarkManager.WatermarkType.NONE;
             } else {
@@ -305,9 +209,8 @@ public class WatermarkSettingsDialog extends DialogWrapper {
             }
 
             // 如果用户选择了付费功能但不是付费用户，显示升级对话框
-            if (!isPremium && (imageWatermarkRadio.isSelected() || noWatermarkRadio.isSelected())) {
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project,
-                    imageWatermarkRadio.isSelected() ? "图片水印" : "移除水印");
+            if (!isPremium && noWatermarkRadio.isSelected()) {
+                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "移除水印");
                 return; // 不关闭对话框
             }
 

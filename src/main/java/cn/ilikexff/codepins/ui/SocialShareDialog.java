@@ -259,7 +259,7 @@ public class SocialShareDialog extends DialogWrapper {
         if (!isPremium) {
             JPanel upgradePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             Icon infoIcon = IconLoader.getIcon("/icons/info.svg", getClass());
-            JButton upgradeButton = new JButton("升级到付费版", infoIcon);
+            JButton upgradeButton = new JButton("升级到专业版", infoIcon);
             upgradeButton.addActionListener(e -> {
                 // 显示升级对话框
                 LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "社交分享高级功能");

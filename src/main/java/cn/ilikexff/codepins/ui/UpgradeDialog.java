@@ -108,10 +108,8 @@ public class UpgradeDialog extends DialogWrapper {
         // 创建按钮面板
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        // 创建升级按钮
+        // 创建升级按钮 - 使用默认按钮样式
         JButton upgradeButton = new JButton("立即升级");
-        upgradeButton.setBackground(new Color(0, 122, 204));
-        upgradeButton.setForeground(Color.WHITE);
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
             close(OK_EXIT_CODE);

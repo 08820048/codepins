@@ -115,8 +115,6 @@ public class CodePinsSettingsComponent {
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         JButton upgradeButton = new JButton("升级到专业版");
-        upgradeButton.setBackground(new Color(0, 122, 204));
-        upgradeButton.setForeground(Color.WHITE);
 
         // 加载图标
         Icon upgradeIcon = IconUtil.loadIcon("/icons/logo.svg", getClass());
