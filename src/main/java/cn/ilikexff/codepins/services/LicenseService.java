@@ -69,10 +69,16 @@ public final class LicenseService {
 
             // 在开发模式下，始终返回有效
             Method isEAPMethod = appInfo.getClass().getMethod("isEAP");
-            Method isInternalMethod = appInfo.getClass().getMethod("isInternal");
-
             boolean isEAP = (Boolean) isEAPMethod.invoke(appInfo);
-            boolean isInternal = (Boolean) isInternalMethod.invoke(appInfo);
+
+            // 尝试获取isInternal方法，如果不存在则忽略
+            boolean isInternal = false;
+            try {
+                Method isInternalMethod = appInfo.getClass().getMethod("isInternal");
+                isInternal = (Boolean) isInternalMethod.invoke(appInfo);
+            } catch (NoSuchMethodException e) {
+                LOG.info("isInternal method not found, skipping internal check");
+            }
 
             if (isEAP || isInternal) {
                 licenseStatus = LicenseStatus.VALID;

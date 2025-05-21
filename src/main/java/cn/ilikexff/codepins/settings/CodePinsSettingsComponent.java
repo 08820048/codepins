@@ -61,8 +61,15 @@ public class CodePinsSettingsComponent {
         shortcutsInfoPanel.add(openKeyMapSettingsButton, BorderLayout.SOUTH);
 
         // 创建许可证状态面板
-        LicenseStatusPanel licenseStatusPanel = new LicenseStatusPanel();
-        licenseStatusPanel.setBorder(BorderFactory.createTitledBorder("许可证状态"));
+        JPanel licensePanel;
+        try {
+            LicenseStatusPanel licenseStatusPanel = new LicenseStatusPanel();
+            licenseStatusPanel.setBorder(BorderFactory.createTitledBorder("许可证状态"));
+            licensePanel = licenseStatusPanel;
+        } catch (Exception e) {
+            // 如果许可证面板创建失败，使用简单面板代替
+            licensePanel = createSimpleLicensePanel();
+        }
 
         // 创建快捷键信息面板的标签面板
         JPanel labeledShortcutsPanel = new JPanel(new BorderLayout());
@@ -72,7 +79,7 @@ public class CodePinsSettingsComponent {
 
         // 创建主面板
         mainPanel = FormBuilder.createFormBuilder()
-                .addComponent(licenseStatusPanel)
+                .addComponent(licensePanel)
                 .addComponent(generalPanel)
                 .addComponent(labeledShortcutsPanel)
                 .addComponentFillVertically(new JPanel(), 0)
@@ -86,6 +93,37 @@ public class CodePinsSettingsComponent {
         com.intellij.openapi.options.ShowSettingsUtil.getInstance().showSettingsDialog(
                 null, "preferences.keymap"
         );
+    }
+
+    /**
+     * 创建简单的许可证面板
+     * 当LicenseStatusPanel创建失败时使用
+     *
+     * @return 简单的许可证面板
+     */
+    private JPanel createSimpleLicensePanel() {
+        JPanel panel = new JPanel(new BorderLayout());
+        panel.setBorder(BorderFactory.createTitledBorder("许可证状态"));
+
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setBorder(JBUI.Borders.empty(10));
+
+        JLabel statusLabel = new JBLabel("<html><font color='gray'>您正在使用CodePins免费版</font></html>");
+        contentPanel.add(statusLabel, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        JButton upgradeButton = new JButton("升级到专业版");
+        upgradeButton.setBackground(new Color(0, 122, 204));
+        upgradeButton.setForeground(Color.WHITE);
+        upgradeButton.addActionListener(e -> {
+            com.intellij.ide.BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
+        });
+        buttonPanel.add(upgradeButton);
+
+        contentPanel.add(buttonPanel, BorderLayout.SOUTH);
+        panel.add(contentPanel, BorderLayout.CENTER);
+
+        return panel;
     }
 
     public JPanel getPanel() {
