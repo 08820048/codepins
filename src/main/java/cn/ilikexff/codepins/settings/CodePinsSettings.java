@@ -23,6 +23,9 @@ public class CodePinsSettings implements PersistentStateComponent<CodePinsSettin
     public boolean autoShowPreview = true;
     public boolean confirmDelete = true;
 
+    // 开发测试设置
+    public boolean testPremiumMode = false;
+
     /**
      * 获取设置实例
      */

@@ -159,11 +159,26 @@ public final class LicenseService {
      * @return 是否为付费用户
      */
     public boolean isPremiumUser() {
+        // 检查测试模式设置
+        if (cn.ilikexff.codepins.settings.CodePinsSettings.getInstance().testPremiumMode) {
+            return true; // 如果测试模式开启，返回true
+        }
+
         // 如果状态为未检查，重新检查
         if (licenseStatus == LicenseStatus.NOT_CHECKED) {
             checkLicense();
         }
         return licenseStatus == LicenseStatus.VALID;
+    }
+
+    /**
+     * 设置测试模式状态
+     *
+     * @param enabled 是否启用测试模式
+     */
+    public void setTestPremiumMode(boolean enabled) {
+        cn.ilikexff.codepins.settings.CodePinsSettings.getInstance().testPremiumMode = enabled;
+        LOG.info("Test premium mode " + (enabled ? "enabled" : "disabled"));
     }
 
     /**

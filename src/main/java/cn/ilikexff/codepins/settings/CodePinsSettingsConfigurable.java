@@ -38,6 +38,7 @@ public class CodePinsSettingsConfigurable implements Configurable {
         modified |= !mySettingsComponent.getPreviewHeight().equals(settings.previewHeight);
         modified |= mySettingsComponent.getAutoShowPreview() != settings.autoShowPreview;
         modified |= mySettingsComponent.getConfirmDelete() != settings.confirmDelete;
+        modified |= mySettingsComponent.getTestPremiumMode() != settings.testPremiumMode;
         return modified;
     }
 
@@ -48,6 +49,10 @@ public class CodePinsSettingsConfigurable implements Configurable {
         settings.previewHeight = mySettingsComponent.getPreviewHeight();
         settings.autoShowPreview = mySettingsComponent.getAutoShowPreview();
         settings.confirmDelete = mySettingsComponent.getConfirmDelete();
+        settings.testPremiumMode = mySettingsComponent.getTestPremiumMode();
+
+        // 更新许可证服务的测试模式状态
+        cn.ilikexff.codepins.services.LicenseService.getInstance().setTestPremiumMode(settings.testPremiumMode);
     }
 
     @Override
@@ -57,6 +62,7 @@ public class CodePinsSettingsConfigurable implements Configurable {
         mySettingsComponent.setPreviewHeight(settings.previewHeight);
         mySettingsComponent.setAutoShowPreview(settings.autoShowPreview);
         mySettingsComponent.setConfirmDelete(settings.confirmDelete);
+        mySettingsComponent.setTestPremiumMode(settings.testPremiumMode);
     }
 
     @Override

@@ -26,6 +26,7 @@ public class CodePinsSettingsComponent {
     private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox("删除图钉时确认");
     private final JBTextField maxPinsTextField = new JBTextField();
     private final JBTextField previewHeightTextField = new JBTextField();
+    private final JBCheckBox testPremiumModeCheckBox = new JBCheckBox("测试付费模式（仅用于开发测试）");
 
     public CodePinsSettingsComponent() {
         // 创建常规设置面板
@@ -36,6 +37,12 @@ public class CodePinsSettingsComponent {
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
         generalPanel.setBorder(BorderFactory.createTitledBorder("常规设置"));
+
+        // 创建开发测试面板
+        JPanel devPanel = FormBuilder.createFormBuilder()
+                .addComponent(testPremiumModeCheckBox)
+                .getPanel();
+        devPanel.setBorder(BorderFactory.createTitledBorder("开发测试设置"));
 
         // 创建快捷键信息面板
         JPanel shortcutsInfoPanel = new JPanel(new BorderLayout());
@@ -83,6 +90,7 @@ public class CodePinsSettingsComponent {
         mainPanel = FormBuilder.createFormBuilder()
                 .addComponent(licensePanel)
                 .addComponent(generalPanel)
+                .addComponent(devPanel)
                 .addComponent(labeledShortcutsPanel)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
@@ -173,5 +181,13 @@ public class CodePinsSettingsComponent {
 
     public void setConfirmDelete(boolean newStatus) {
         confirmDeleteCheckBox.setSelected(newStatus);
+    }
+
+    public boolean getTestPremiumMode() {
+        return testPremiumModeCheckBox.isSelected();
+    }
+
+    public void setTestPremiumMode(boolean newStatus) {
+        testPremiumModeCheckBox.setSelected(newStatus);
     }
 }
