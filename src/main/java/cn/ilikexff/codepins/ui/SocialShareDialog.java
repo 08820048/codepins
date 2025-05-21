@@ -77,55 +77,32 @@ public class SocialShareDialog extends DialogWrapper {
         platformRadios = new JRadioButton[platforms.length];
         ButtonGroup platformGroup = new ButtonGroup();
 
-        // 创建国际平台和国内平台面板
-        JPanel internationalPanel = new JPanel(new GridLayout(0, 3, 10, 5)); // 3列网格
-        internationalPanel.setBorder(BorderFactory.createTitledBorder("国际平台"));
-
-        JPanel domesticPanel = new JPanel(new GridLayout(0, 3, 10, 5)); // 3列网格
-        domesticPanel.setBorder(BorderFactory.createTitledBorder("国内平台"));
+        // 创建平台面板
+        JPanel platformsPanel = new JPanel(new GridLayout(0, 3, 10, 5)); // 3列网格
+        platformsPanel.setBorder(BorderFactory.createTitledBorder("分享平台"));
 
         // 添加平台选项
-        int firstInternationalIndex = -1;
-        int firstDomesticIndex = -1;
+        int firstPlatformIndex = -1;
 
         for (int i = 0; i < platforms.length; i++) {
             SocialSharingUtil.SocialPlatform platform = platforms[i];
             platformRadios[i] = new JBRadioButton(platform.getDisplayName());
             platformGroup.add(platformRadios[i]);
+            platformsPanel.add(platformRadios[i]);
 
-            // 根据平台类型添加到不同面板
-            switch (platform) {
-                case WEIBO:
-                case WECHAT:
-                case QQ:
-                case QZONE:
-                case DOUBAN:
-                case ZHIHU:
-                    domesticPanel.add(platformRadios[i]);
-                    if (firstDomesticIndex == -1) {
-                        firstDomesticIndex = i;
-                    }
-                    break;
-                default:
-                    internationalPanel.add(platformRadios[i]);
-                    if (firstInternationalIndex == -1) {
-                        firstInternationalIndex = i;
-                    }
-                    break;
+            if (firstPlatformIndex == -1) {
+                firstPlatformIndex = i;
             }
         }
 
         // 默认选中第一个选项
-        if (firstInternationalIndex != -1) {
-            platformRadios[firstInternationalIndex].setSelected(true);
-        } else if (firstDomesticIndex != -1) {
-            platformRadios[firstDomesticIndex].setSelected(true);
+        if (firstPlatformIndex != -1) {
+            platformRadios[firstPlatformIndex].setSelected(true);
         }
 
         // 添加到平台面板
         JPanel platformsContainer = new JPanel(new BorderLayout(0, 10));
-        platformsContainer.add(internationalPanel, BorderLayout.NORTH);
-        platformsContainer.add(domesticPanel, BorderLayout.CENTER);
+        platformsContainer.add(platformsPanel, BorderLayout.CENTER);
 
         // 添加滚动面板
         JScrollPane scrollPane = new JScrollPane(platformsContainer);
@@ -173,26 +150,24 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 过期时间选择
         JPanel expirationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        expirationPanel.add(new JBLabel("过期时间:"));
+        expirationPanel.add(new JBLabel("链接有效期:"));
 
         expirationComboBox = new JComboBox<>(ShareLinkGenerator.ExpirationTime.values());
         expirationComboBox.setSelectedItem(ShareLinkGenerator.ExpirationTime.ONE_DAY);
         expirationPanel.add(expirationComboBox);
 
-        // 如果用户不是付费用户，禁用永不过期选项
-        if (!isPremium) {
-            expirationComboBox.setEnabled(false);
-            expirationPanel.add(new JBLabel(" (付费功能)"));
+        // 禁用过期时间选择，标记为未来开发功能
+        expirationComboBox.setEnabled(false);
+        expirationPanel.add(new JBLabel(" (长期有效，限制功能将在未来版本中提供)"));
 
-            // 添加点击事件，显示升级对话框
-            expirationComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "自定义过期时间");
-                }
-            });
-        }
+        // 添加点击事件，显示升级对话框
+        expirationComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // 显示升级对话框
+                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "链接有效期限制");
+            }
+        });
 
         linkPanel.add(expirationPanel, BorderLayout.NORTH);
 
@@ -207,29 +182,27 @@ public class SocialShareDialog extends DialogWrapper {
         passwordPanel.add(passwordCheckBox);
         passwordPanel.add(passwordField);
 
-        // 如果用户不是付费用户，禁用密码保护选项
-        if (!isPremium) {
-            passwordCheckBox.setEnabled(false);
-            passwordField.setEnabled(false);
-            passwordPanel.add(new JBLabel(" (付费功能)"));
+        // 禁用密码保护选项，标记为未来开发功能
+        passwordCheckBox.setEnabled(false);
+        passwordField.setEnabled(false);
+        passwordPanel.add(new JBLabel(" (未来功能，专业版)"));
 
-            // 添加点击事件，显示升级对话框
-            passwordCheckBox.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "密码保护");
-                }
-            });
+        // 添加点击事件，显示升级对话框
+        passwordCheckBox.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // 显示升级对话框
+                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "密码保护");
+            }
+        });
 
-            passwordField.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "密码保护");
-                }
-            });
-        }
+        passwordField.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                // 显示升级对话框
+                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "密码保护");
+            }
+        });
 
         linkPanel.add(passwordPanel, BorderLayout.CENTER);
 
@@ -247,8 +220,8 @@ public class SocialShareDialog extends DialogWrapper {
         infoArea.setWrapStyleWord(true);
         infoArea.setBackground(JBColor.background());
         infoArea.setText("将分享 " + pins.size() + " 个图钉到社交媒体。\n\n" +
-                "注意：分享链接将在指定时间后过期，请确保接收者及时查看。\n" +
-                "免费版用户的链接将在1天后过期，付费版用户可以设置更长的过期时间或永不过期。");
+                "注意：分享链接使用GitHub Gist服务存储，链接长期有效。\n" +
+                "自定义过期时间和密码保护功能将在未来版本中提供，并作为专业版功能。");
 
         // 设置固定高度，避免文本区域过大
         JScrollPane infoScrollPane = new JScrollPane(infoArea);
@@ -318,23 +291,12 @@ public class SocialShareDialog extends DialogWrapper {
                 return;
             }
 
-            // 获取过期时间
-            ShareLinkGenerator.ExpirationTime expiration =
-                    (ShareLinkGenerator.ExpirationTime) expirationComboBox.getSelectedItem();
+            // 固定使用1天过期时间（未来功能）
+            ShareLinkGenerator.ExpirationTime expiration = ShareLinkGenerator.ExpirationTime.ONE_DAY;
 
-            // 获取密码
-            boolean requiresPassword = passwordCheckBox.isSelected();
-            String password = requiresPassword ? new String(passwordField.getPassword()) : null;
-
-            // 如果选择了密码保护但没有输入密码
-            if (requiresPassword && (password == null || password.isEmpty())) {
-                Messages.showErrorDialog(
-                        project,
-                        "请输入密码",
-                        "分享错误"
-                );
-                return;
-            }
+            // 禁用密码保护功能（未来功能）
+            boolean requiresPassword = false;
+            String password = null;
 
             // 生成分享链接
             ShareLinkGenerator.ShareLinkInfo linkInfo = ShareLinkGenerator.generateShareLink(

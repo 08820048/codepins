@@ -69,9 +69,9 @@ public class UpgradeDialog extends DialogWrapper {
         featuresPanel.setLayout(new BoxLayout(featuresPanel, BoxLayout.Y_AXIS));
 
         // 添加功能项
-        addFeatureItem(featuresPanel, "更多社交媒体分享平台", "支持16个国内外社交媒体平台，包括微信、知乎、豆瓣等");
+        addFeatureItem(featuresPanel, "更多社交分享平台", "支持7个国际社交媒体平台，包括Reddit、Telegram、Hacker News等");
         addFeatureItem(featuresPanel, "自定义水印", "自定义或完全移除分享图片中的水印");
-        addFeatureItem(featuresPanel, "高级分享选项", "密码保护、自定义过期时间等高级分享选项");
+        addFeatureItem(featuresPanel, "高级分享选项（即将推出）", "密码保护、链接有效期限制等高级分享选项");
         addFeatureItem(featuresPanel, "图片分享高级功能", "更多图片格式、更高分辨率、自定义样式");
         addFeatureItem(featuresPanel, "优先支持", "获得优先的技术支持和问题解决");
         addFeatureItem(featuresPanel, "未来高级功能", "自动获得所有未来的高级功能");

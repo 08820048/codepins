@@ -30,18 +30,8 @@ public class SocialSharingUtil {
         FACEBOOK("Facebook", "https://www.facebook.com/sharer/sharer.php?u=%s"),
         REDDIT("Reddit", "https://www.reddit.com/submit?url=%s&title=%s"),
         TELEGRAM("Telegram", "https://t.me/share/url?url=%s&text=%s"),
-        WHATSAPP("WhatsApp", "https://api.whatsapp.com/send?text=%s %s"),
-        PINTEREST("Pinterest", "https://pinterest.com/pin/create/button/?url=%s&description=%s"),
-        TUMBLR("Tumblr", "https://www.tumblr.com/widgets/share/tool?canonicalUrl=%s&title=%s"),
         HACKER_NEWS("Hacker News", "https://news.ycombinator.com/submitlink?u=%s&t=%s"),
-
-        // 国内平台
-        WEIBO("微博", "https://service.weibo.com/share/share.php?url=%s&title=%s"),
-        WECHAT("微信", ""), // 微信需要特殊处理，生成二维码
-        QQ("QQ", "https://connect.qq.com/widget/shareqq/index.html?url=%s&title=%s"),
-        QZONE("QQ空间", "https://sns.qzone.qq.com/cgi-bin/qzshare/cgi_qzshare_onekey?url=%s&title=%s"),
-        DOUBAN("豆瓣", "https://www.douban.com/share/service?href=%s&name=%s"),
-        ZHIHU("知乎", "https://www.zhihu.com/share?title=%s&url=%s");
+        GITHUB("GitHub", "https://github.com/08820048/CodePins");
 
         private final String displayName;
         private final String shareUrlTemplate;
@@ -87,39 +77,20 @@ public class SocialSharingUtil {
 
     // 免费版支持的平台
     private static final SocialPlatform[] FREE_PLATFORMS = {
-            // 国际平台
             SocialPlatform.TWITTER,
             SocialPlatform.LINKEDIN,
-            SocialPlatform.FACEBOOK,
-            SocialPlatform.REDDIT,
-            SocialPlatform.TELEGRAM,
-
-            // 国内平台
-            SocialPlatform.WEIBO,
-            SocialPlatform.QQ,
-            SocialPlatform.QZONE
+            SocialPlatform.FACEBOOK
     };
 
     // 付费版支持的平台
     private static final SocialPlatform[] PREMIUM_PLATFORMS = {
-            // 国际平台
             SocialPlatform.TWITTER,
             SocialPlatform.LINKEDIN,
             SocialPlatform.FACEBOOK,
             SocialPlatform.REDDIT,
             SocialPlatform.TELEGRAM,
-            SocialPlatform.WHATSAPP,
-            SocialPlatform.PINTEREST,
-            SocialPlatform.TUMBLR,
             SocialPlatform.HACKER_NEWS,
-
-            // 国内平台
-            SocialPlatform.WEIBO,
-            SocialPlatform.WECHAT,
-            SocialPlatform.QQ,
-            SocialPlatform.QZONE,
-            SocialPlatform.DOUBAN,
-            SocialPlatform.ZHIHU
+            SocialPlatform.GITHUB
     };
 
     /**
@@ -169,32 +140,20 @@ public class SocialSharingUtil {
 
                 // 需要标题和URL，顺序是标题在前
                 case TWITTER:
-                case ZHIHU:
                     shareUrl = String.format(platform.getShareUrlTemplate(), encodedTitle, encodedUrl);
                     break;
 
                 // 需要URL和标题，顺序是URL在前
                 case REDDIT:
-                case WEIBO:
                 case TELEGRAM:
-                case PINTEREST:
-                case TUMBLR:
                 case HACKER_NEWS:
-                case QQ:
-                case QZONE:
-                case DOUBAN:
                     shareUrl = String.format(platform.getShareUrlTemplate(), encodedUrl, encodedTitle);
                     break;
 
-                // WhatsApp特殊格式
-                case WHATSAPP:
-                    shareUrl = String.format(platform.getShareUrlTemplate(), encodedTitle, encodedUrl);
+                // GitHub特殊处理
+                case GITHUB:
+                    shareUrl = platform.getShareUrlTemplate();
                     break;
-
-                // 微信需要生成二维码
-                case WECHAT:
-                    showWeChatQRCode(project, url);
-                    return true;
 
                 default:
                     Messages.showErrorDialog(
