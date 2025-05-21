@@ -260,10 +260,10 @@ public class SocialSharingUtil {
     public static boolean isPremiumUser() {
         // 使用LicenseService检查用户是否为付费用户
         try {
-            // 在开发环境中，默认返回true以便测试所有功能
-            if (isDevEnvironment()) {
-                return true;
-            }
+            // 注释掉开发环境检查，确保在测试时也能正确显示免费/付费状态
+            // if (isDevEnvironment()) {
+            //     return true;
+            // }
             return LicenseService.getInstance().isPremiumUser();
         } catch (Exception e) {
             // 如果出错，返回false

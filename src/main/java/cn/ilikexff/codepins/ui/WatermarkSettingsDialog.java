@@ -196,9 +196,9 @@ public class WatermarkSettingsDialog extends DialogWrapper {
         if (!isPremium) {
             // 非付费用户禁用图片水印和无水印选项
             imageWatermarkRadio.setEnabled(false);
-            imageWatermarkRadio.setText(imageWatermarkRadio.getText() + " (付费功能)");
+            imageWatermarkRadio.setText(imageWatermarkRadio.getText() + " (专业版功能)");
             noWatermarkRadio.setEnabled(false);
-            noWatermarkRadio.setText(noWatermarkRadio.getText() + " (付费功能)");
+            noWatermarkRadio.setText(noWatermarkRadio.getText() + " (专业版功能)");
 
             // 添加点击事件，显示升级对话框
             imageWatermarkRadio.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -259,7 +259,7 @@ public class WatermarkSettingsDialog extends DialogWrapper {
             // 添加升级提示
             JPanel upgradePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
             Icon infoIcon = IconLoader.getIcon("/icons/info.svg", getClass());
-            JButton upgradeButton = new JButton("升级到付费版", infoIcon);
+            JButton upgradeButton = new JButton("升级到专业版", infoIcon);
             upgradeButton.addActionListener(e -> {
                 // 显示升级对话框
                 LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "水印设置");
@@ -302,6 +302,13 @@ public class WatermarkSettingsDialog extends DialogWrapper {
             } else {
                 // 默认使用文本水印
                 type = WatermarkManager.WatermarkType.TEXT;
+            }
+
+            // 如果用户选择了付费功能但不是付费用户，显示升级对话框
+            if (!isPremium && (imageWatermarkRadio.isSelected() || noWatermarkRadio.isSelected())) {
+                LicenseService.getInstance().showUpgradeDialogIfNeeded(project,
+                    imageWatermarkRadio.isSelected() ? "图片水印" : "移除水印");
+                return; // 不关闭对话框
             }
 
             // TODO: 保存水印设置到配置

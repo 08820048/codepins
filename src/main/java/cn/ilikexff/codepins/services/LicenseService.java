@@ -67,7 +67,7 @@ public final class LicenseService {
             // 获取ApplicationInfo实例
             Object appInfo = ApplicationManager.getApplication().getService(Class.forName("com.intellij.openapi.application.ApplicationInfo"));
 
-            // 在开发模式下，始终返回有效
+            // 在开发模式下，默认返回无效，以便测试免费用户功能
             Method isEAPMethod = appInfo.getClass().getMethod("isEAP");
             boolean isEAP = (Boolean) isEAPMethod.invoke(appInfo);
 
@@ -80,9 +80,17 @@ public final class LicenseService {
                 LOG.info("isInternal method not found, skipping internal check");
             }
 
+            // 注释掉自动设置为有效的代码，以便测试免费用户功能
+            // if (isEAP || isInternal) {
+            //     licenseStatus = LicenseStatus.VALID;
+            //     LOG.info("Running in development mode, license is considered valid");
+            //     return;
+            // }
+
+            // 在开发环境中，默认设置为无效，以便测试免费用户功能
             if (isEAP || isInternal) {
-                licenseStatus = LicenseStatus.VALID;
-                LOG.info("Running in development mode, license is considered valid");
+                licenseStatus = LicenseStatus.INVALID;
+                LOG.info("Running in development mode, license is considered invalid for testing");
                 return;
             }
 
@@ -134,10 +142,10 @@ public final class LicenseService {
 
         } catch (Exception e) {
             LOG.error("Error checking license: " + e.getMessage(), e);
-            // 在开发环境中，如果找不到许可证API，默认为有效
+            // 在开发环境中，如果找不到许可证API，默认为无效以便测试
             if (e instanceof ClassNotFoundException) {
                 LOG.info("LicensingFacade not found, assuming development environment");
-                licenseStatus = LicenseStatus.VALID;
+                licenseStatus = LicenseStatus.INVALID; // 设置为无效以便测试免费用户功能
             } else {
                 licenseStatus = LicenseStatus.INVALID;
             }

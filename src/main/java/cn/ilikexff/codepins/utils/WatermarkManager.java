@@ -147,56 +147,9 @@ public class WatermarkManager {
     public static BufferedImage addImageWatermark(BufferedImage image, BufferedImage watermarkImage,
                                                  WatermarkPosition position, float opacity,
                                                  boolean isPremium) {
-        // 如果不是付费用户，不允许使用图片水印
-        if (!isPremium) {
-            return addTextWatermark(image, DEFAULT_WATERMARK_TEXT, WatermarkPosition.BOTTOM_RIGHT,
-                                   new Color(128, 128, 128, 50), DEFAULT_OPACITY, false);
-        }
-
-        // 创建图片副本
-        BufferedImage watermarked = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2d = watermarked.createGraphics();
-
-        // 绘制原始图片
-        g2d.drawImage(image, 0, 0, null);
-
-        // 设置水印透明度
-        g2d.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity));
-
-        // 计算水印位置
-        int x = 0;
-        int y = 0;
-
-        switch (position) {
-            case TOP_LEFT:
-                x = 10;
-                y = 10;
-                break;
-            case TOP_RIGHT:
-                x = image.getWidth() - watermarkImage.getWidth() - 10;
-                y = 10;
-                break;
-            case BOTTOM_LEFT:
-                x = 10;
-                y = image.getHeight() - watermarkImage.getHeight() - 10;
-                break;
-            case BOTTOM_RIGHT:
-                x = image.getWidth() - watermarkImage.getWidth() - 10;
-                y = image.getHeight() - watermarkImage.getHeight() - 10;
-                break;
-            case CENTER:
-                x = (image.getWidth() - watermarkImage.getWidth()) / 2;
-                y = (image.getHeight() - watermarkImage.getHeight()) / 2;
-                break;
-        }
-
-        // 绘制水印
-        g2d.drawImage(watermarkImage, x, y, null);
-
-        // 释放资源
-        g2d.dispose();
-
-        return watermarked;
+        // 图片水印功能已移除，始终使用文本水印
+        return addTextWatermark(image, DEFAULT_WATERMARK_TEXT, WatermarkPosition.BOTTOM_RIGHT,
+                               new Color(128, 128, 128, 50), DEFAULT_OPACITY, false);
     }
 
     /**
@@ -206,7 +159,16 @@ public class WatermarkManager {
      * @return 是否允许移除水印
      */
     public static boolean removeWatermark(Project project) {
-        // 使用LicenseService检查是否为付费用户，并显示升级对话框
-        return LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "移除水印");
+        // 检查是否为付费用户
+        boolean isPremium = LicenseService.getInstance().isPremiumUser();
+
+        // 如果不是付费用户，显示升级对话框并返回false
+        if (!isPremium) {
+            LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "移除水印");
+            return false;
+        }
+
+        // 付费用户可以移除水印
+        return true;
     }
 }
