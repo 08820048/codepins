@@ -149,7 +149,7 @@ public class SocialShareDialog extends DialogWrapper {
                 if (!isPlatformFree) {
                     final int platformIndex = i; // 创建一个最终变量供匿名类使用
                     platformRadios[i].setEnabled(false);
-                    platformRadios[i].setText(platformRadios[i].getText() + " (付费功能)");
+                    platformRadios[i].setText(platformRadios[i].getText() + " (专业版功能)");
 
                     // 添加点击事件，显示升级对话框
                     platformRadios[i].addMouseListener(new java.awt.event.MouseAdapter() {

@@ -88,6 +88,7 @@ public final class LicenseService {
             // }
 
             // 在开发环境中，默认设置为无效，以便测试免费用户功能
+            // 注意：在生产环境中，这段代码将被保留，以确保开发环境中的测试正常进行
             if (isEAP || isInternal) {
                 licenseStatus = LicenseStatus.INVALID;
                 LOG.info("Running in development mode, license is considered invalid for testing");

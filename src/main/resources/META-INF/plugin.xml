@@ -3,7 +3,7 @@
     <id>cn.ilikexff.codepins</id>
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins-intellij-plugin">ilikexff</vendor>
-    <version>1.1.2</version>
+    <version>1.1.3</version>
 
     <!-- 产品描述符，用于许可证验证 -->
     <product-descriptor code="***REMOVED_PRODUCT_CODE***" release-date="20240501" release-version="1.2.0" optional="true"/>
@@ -59,30 +59,48 @@
 
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
-        Version 1.1.2:
-        - Fixed export/import functionality with improved UI and user experience
-        - Optimized pin list style with better support for light themes
-        - Added drag and drop functionality for manual pin reordering
-        - Added keyboard shortcut support (Alt+Shift+P to add pin, Alt+Shift+Left/Right to navigate)
-        - Improved search box with modern design and dark theme support
-        - Enhanced code preview cards with sophisticated styling and theme adaptation
-        - Added animation effects when hovering over list items
-        - Updated icons for import/export functionality
+<h2>Version 1.1.3</h2>
+<ul>
+    <li><b>FREEMIUM Business Model:</b> Implemented Professional and Free editions</li>
+    <li><b>Watermark Improvements:</b> Simplified to text-only watermark option</li>
+    <li><b>UI Enhancements:</b> Better theme compatibility for upgrade prompts</li>
+    <li><b>Bug Fix:</b> Fixed button display issues in light themes</li>
+    <li><b>Premium Features:</b> Added unified upgrade dialog</li>
+    <li><b>System Optimization:</b> Improved license verification</li>
+    <li><b>Social Sharing:</b> Clearer premium feature indicators</li>
+    <li><b>Theme Support:</b> Enhanced UI consistency across light and dark themes</li>
+</ul>
 
-        Version 1.1.1:
-        - Improved hover preview functionality, resolving thread safety issues
-        - Enhanced code preview UI with dynamic height adjustment based on code length
-        - Completely redesigned pin list items with modern card-style design
-        - Added empty state view with friendly guidance information
-        - Improved search field with enhanced visual feedback and user experience
-        - Added tag system for better organization and filtering of pins
+<h2>Version 1.1.2</h2>
+<ul>
+    <li><b>Export/Import:</b> Fixed functionality with improved UI</li>
+    <li><b>UI Optimization:</b> Better support for light themes</li>
+    <li><b>Drag and Drop:</b> Added manual pin reordering</li>
+    <li><b>Keyboard Shortcuts:</b> Alt+Shift+P to add pin, Alt+Shift+Left/Right to navigate</li>
+    <li><b>Search Box:</b> Modern design with dark theme support</li>
+    <li><b>Code Preview:</b> Enhanced cards with sophisticated styling</li>
+    <li><b>Animations:</b> Added effects when hovering over list items</li>
+    <li><b>Icons:</b> Updated for import/export functionality</li>
+</ul>
 
-        Version 1.0.0:
-        - Initial release
-        - Support for adding, deleting, searching, and managing code pins
-        - Support for code blocks and single line code marking
-        - Modern UI design and user experience optimization
-        - Support for pin notes and quick preview functionality
+<h2>Version 1.1.1</h2>
+<ul>
+    <li><b>Hover Preview:</b> Improved functionality, resolved thread safety issues</li>
+    <li><b>Code Preview UI:</b> Dynamic height adjustment based on code length</li>
+    <li><b>Pin List:</b> Completely redesigned with modern card-style</li>
+    <li><b>Empty State:</b> Added view with friendly guidance</li>
+    <li><b>Search Field:</b> Enhanced visual feedback and user experience</li>
+    <li><b>Tag System:</b> Better organization and filtering of pins</li>
+</ul>
+
+<h2>Version 1.0.0</h2>
+<ul>
+    <li><b>Initial Release:</b> Core functionality for code bookmarking</li>
+    <li><b>Pin Management:</b> Add, delete, search, and manage code pins</li>
+    <li><b>Code Marking:</b> Support for blocks and single line marking</li>
+    <li><b>Modern UI:</b> Clean design and optimized user experience</li>
+    <li><b>Notes:</b> Support for pin notes and quick preview</li>
+</ul>
     ]]></change-notes>
 
     <depends>com.intellij.modules.platform</depends>
