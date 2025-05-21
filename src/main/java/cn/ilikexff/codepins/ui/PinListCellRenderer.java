@@ -2,8 +2,8 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
 import cn.ilikexff.codepins.settings.CodePinsSettings;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.editor.Document;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
@@ -23,10 +23,10 @@ import java.util.List;
 public class PinListCellRenderer extends DefaultListCellRenderer {
 
     // 缓存图标
-    private final Icon blockIcon = IconLoader.getIcon("/icons/code.svg", getClass());
-    private final Icon lineIcon = IconLoader.getIcon("/icons/bookmark.svg", getClass());
-    private final Icon fileIcon = IconLoader.getIcon("/icons/file.svg", getClass());
-    private final Icon timeIcon = IconLoader.getIcon("/icons/clock.svg", getClass());
+    private final Icon blockIcon = IconUtil.loadIcon("/icons/code.svg", getClass());
+    private final Icon lineIcon = IconUtil.loadIcon("/icons/bookmark.svg", getClass());
+    private final Icon fileIcon = IconUtil.loadIcon("/icons/file.svg", getClass());
+    private final Icon timeIcon = IconUtil.loadIcon("/icons/clock.svg", getClass());
 
     // 颜色常量 - 优化了亮色主题支持
     // 选中背景色：亮色主题下使用浅蓝色，暗色主题下使用深蓝色
@@ -320,7 +320,7 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
         ));
 
         // 添加标签图标
-        tagLabel.setIcon(IconLoader.getIcon("/icons/tag-small.svg", getClass()));
+        tagLabel.setIcon(IconUtil.loadIcon("/icons/tag-small.svg", getClass()));
         tagLabel.setIconTextGap(4);
 
         return tagLabel;

@@ -41,4 +41,9 @@ tasks {
         sinceBuild.set("241") // 支持 IntelliJ 2024.1 起
         untilBuild.set("252.*") // 支持到 IntelliJ 2025.2
     }
+
+    // 禁用buildSearchableOptions任务，因为它与付费插件不兼容
+    buildSearchableOptions {
+        enabled = false
+    }
 }

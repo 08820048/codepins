@@ -2,9 +2,9 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
 import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
@@ -98,13 +98,13 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
         // 删除按钮
         JButton removeButton = new JButton("删除");
-        removeButton.setIcon(IconLoader.getIcon("/icons/trash.svg", getClass()));
+        removeButton.setIcon(IconUtil.loadIcon("/icons/trash.svg", getClass()));
         removeButton.addActionListener(e -> removeSelectedTags());
         removeButton.setFocusPainted(false);
 
         // 编辑按钮
         JButton editButton = new JButton("编辑");
-        editButton.setIcon(IconLoader.getIcon("/icons/edit.svg", getClass()));
+        editButton.setIcon(IconUtil.loadIcon("/icons/edit.svg", getClass()));
         editButton.addActionListener(e -> editSelectedTag());
         editButton.setFocusPainted(false);
 
@@ -159,7 +159,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         });
 
         JButton addButton = new JButton("添加");
-        addButton.setIcon(IconLoader.getIcon("/icons/plus.svg", getClass()));
+        addButton.setIcon(IconUtil.loadIcon("/icons/plus.svg", getClass()));
         addButton.addActionListener(e -> addNewTag());
         addButton.setFocusPainted(false);
 
@@ -306,7 +306,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
             JPanel contentPanel = new JPanel(new BorderLayout(5, 0));
             contentPanel.setOpaque(false);
 
-            JLabel iconLabel = new JLabel(IconLoader.getIcon("/icons/tag-small.svg", TagCellRenderer.class));
+            JLabel iconLabel = new JLabel(IconUtil.loadIcon("/icons/tag-small.svg", TagCellRenderer.class));
             iconLabel.setForeground(textColor);
 
             JLabel textLabel = new JLabel(tag);

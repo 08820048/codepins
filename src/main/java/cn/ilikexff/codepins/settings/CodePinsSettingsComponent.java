@@ -1,6 +1,8 @@
 package cn.ilikexff.codepins.settings;
 
 import cn.ilikexff.codepins.ui.LicenseStatusPanel;
+import cn.ilikexff.codepins.utils.IconUtil;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
@@ -115,8 +117,15 @@ public class CodePinsSettingsComponent {
         JButton upgradeButton = new JButton("升级到专业版");
         upgradeButton.setBackground(new Color(0, 122, 204));
         upgradeButton.setForeground(Color.WHITE);
+
+        // 加载图标
+        Icon upgradeIcon = IconUtil.loadIcon("/icons/logo.svg", getClass());
+        if (upgradeIcon != null) {
+            upgradeButton.setIcon(upgradeIcon);
+        }
+
         upgradeButton.addActionListener(e -> {
-            com.intellij.ide.BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
+            BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
         });
         buttonPanel.add(upgradeButton);
 

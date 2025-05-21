@@ -1,8 +1,8 @@
 package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.services.LicenseService;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.JBUI;
@@ -35,7 +35,7 @@ public class LicenseStatusPanel extends JPanel {
         titlePanel.setBorder(JBUI.Borders.emptyBottom(10));
 
         // 加载图标
-        Icon icon = IconLoader.getIcon("/icons/logo.svg", getClass());
+        Icon icon = IconUtil.loadIcon("/icons/logo.svg", getClass());
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setBorder(JBUI.Borders.emptyRight(10));
 

@@ -1,6 +1,6 @@
 package cn.ilikexff.codepins.ui;
 
-import com.intellij.openapi.util.IconLoader;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 
@@ -19,7 +19,7 @@ public class EmptyStatePanel extends JPanel {
         setBorder(JBUI.Borders.empty(30));
 
         // 添加图标
-        Icon emptyIcon = IconLoader.getIcon("/icons/empty-pins.svg", getClass());
+        Icon emptyIcon = IconUtil.loadIcon("/icons/empty-pins.svg", getClass());
         JLabel iconLabel = new JLabel(emptyIcon);
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 

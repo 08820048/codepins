@@ -1,6 +1,6 @@
 package cn.ilikexff.codepins.ui;
 
-import com.intellij.openapi.util.IconLoader;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 
@@ -70,11 +70,11 @@ public class SearchTextField extends JPanel {
         });
 
         // 创建搜索图标 - 调整边距，增加精致感
-        searchIcon = new JLabel(IconLoader.getIcon("/icons/search.svg", getClass()));
+        searchIcon = new JLabel(IconUtil.loadIcon("/icons/search.svg", getClass()));
         searchIcon.setBorder(JBUI.Borders.empty(0, 10, 0, 0)); // 增加左边距，使图标与文本保持适当距离
 
         // 创建清除图标 - 调整边距，增加精致感
-        clearIcon = new JLabel(IconLoader.getIcon("/icons/x-circle.svg", getClass()));
+        clearIcon = new JLabel(IconUtil.loadIcon("/icons/x-circle.svg", getClass()));
         clearIcon.setBorder(JBUI.Borders.empty(0, 0, 0, 10)); // 增加右边距，使图标与文本保持适当距离
         clearIcon.setVisible(false);
 

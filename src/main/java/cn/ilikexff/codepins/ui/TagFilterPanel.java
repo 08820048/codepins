@@ -2,7 +2,7 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.PinEntry;
 import cn.ilikexff.codepins.PinStorage;
-import com.intellij.openapi.util.IconLoader;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
@@ -45,7 +45,7 @@ public class TagFilterPanel extends JPanel {
         JPanel titlePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
         titlePanel.setOpaque(false);
 
-        JLabel iconLabel = new JLabel(IconLoader.getIcon("/icons/filter.svg", getClass()));
+        JLabel iconLabel = new JLabel(IconUtil.loadIcon("/icons/filter.svg", getClass()));
         JLabel titleLabel = new JLabel("标签筛选");
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 13f));
 
@@ -129,7 +129,7 @@ public class TagFilterPanel extends JPanel {
         tagLabel.setOpaque(true);
 
         // 添加标签图标
-        tagLabel.setIcon(IconLoader.getIcon("/icons/tag-small.svg", getClass()));
+        tagLabel.setIcon(IconUtil.loadIcon("/icons/tag-small.svg", getClass()));
         tagLabel.setIconTextGap(6);
 
         // 设置圆角边框

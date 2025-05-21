@@ -1,0 +1,1618 @@
+"AWT-EventQueue-0" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+	at java.base@17.0.9/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base@17.0.9/java.lang.ClassLoader.defineClass(ClassLoader.java:1108)
+	at app//com.intellij.util.lang.UrlClassLoader.consumeClassData(UrlClassLoader.java:289)
+	at app//com.intellij.util.lang.ZipResourceFile.findClass(ZipResourceFile.java:113)
+	at app//com.intellij.util.lang.JarLoader.findClass(JarLoader.java:58)
+	at app//com.intellij.util.lang.ClassPath.findClassInLoader(ClassPath.java:240)
+	at app//com.intellij.util.lang.ClassPath.findClass(ClassPath.java:190)
+	at app//com.intellij.util.lang.UrlClassLoader.findClass(UrlClassLoader.java:240)
+	at java.base@17.0.9/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at java.base@17.0.9/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at com.intellij.util.keyFMap.ArrayBackedFMap.plus(ArrayBackedFMap.java:39)
+	at com.intellij.openapi.util.UserDataHolderBase.putUserData(UserDataHolderBase.java:65)
+	at org.jetbrains.plugins.gradle.service.project.wizard.GradleJavaNewProjectWizard$Step.<init>(GradleJavaNewProjectWizard.kt:86)
+	at org.jetbrains.plugins.gradle.service.project.wizard.GradleJavaNewProjectWizard.createStep(GradleJavaNewProjectWizard.kt:30)
+	at org.jetbrains.plugins.gradle.service.project.wizard.GradleJavaNewProjectWizard.createStep(GradleJavaNewProjectWizard.kt:23)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStep.initSteps(AbstractNewProjectWizardMultiStep.kt:31)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStep.initSteps(AbstractNewProjectWizardMultiStep.kt:9)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase.setupUI(AbstractNewProjectWizardMultiStepBase.kt:45)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase$getOrCreateStepPanel$panel$1.invoke(AbstractNewProjectWizardMultiStepBase.kt:66)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase$getOrCreateStepPanel$panel$1.invoke(AbstractNewProjectWizardMultiStepBase.kt:65)
+	at com.intellij.ui.dsl.builder.BuilderKt.panel(builder.kt:19)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase.getOrCreateStepPanel(AbstractNewProjectWizardMultiStepBase.kt:65)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase.access$getOrCreateStepPanel(AbstractNewProjectWizardMultiStepBase.kt:14)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase$setupUI$1$1.invoke(AbstractNewProjectWizardMultiStepBase.kt:54)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase$setupUI$1$1.invoke(AbstractNewProjectWizardMultiStepBase.kt:50)
+	at com.intellij.ui.dsl.builder.impl.PanelImpl.row(PanelImpl.kt:57)
+	at com.intellij.ui.dsl.builder.impl.PanelImpl.row(PanelImpl.kt:19)
+	at com.intellij.ui.dsl.builder.Panel.row$default(Panel.kt:75)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardMultiStepBase.setupUI(AbstractNewProjectWizardMultiStepBase.kt:50)
+	at com.intellij.ide.wizard.NewProjectWizardChainStep.setupUI(NewProjectWizardChainStep.kt:38)
+	at com.intellij.ide.wizard.NewProjectWizardStepPanel$component$2$1.invoke(NewProjectWizardStepPanel.kt:23)
+	at com.intellij.ide.wizard.NewProjectWizardStepPanel$component$2$1.invoke(NewProjectWizardStepPanel.kt:22)
+	at com.intellij.ui.dsl.builder.BuilderKt.panel(builder.kt:19)
+	at com.intellij.ide.wizard.NewProjectWizardStepPanel$component$2.invoke(NewProjectWizardStepPanel.kt:22)
+	at com.intellij.ide.wizard.NewProjectWizardStepPanel$component$2.invoke(NewProjectWizardStepPanel.kt:21)
+	at kotlin.SynchronizedLazyImpl.getValue(LazyJVM.kt:74)
+	at com.intellij.ide.wizard.NewProjectWizardStepPanel.getComponent(NewProjectWizardStepPanel.kt:21)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardBuilder$BridgeStep.getComponent(AbstractNewProjectWizardBuilder.kt:62)
+	at com.intellij.ide.wizard.AbstractNewProjectWizardBuilder$BridgeStep.getComponent(AbstractNewProjectWizardBuilder.kt:52)
+	at com.intellij.ide.projectWizard.ProjectTypeStep.showCustomOptions(ProjectTypeStep.java:559)
+	at com.intellij.ide.projectWizard.ProjectTypeStep.projectTypeChanged(ProjectTypeStep.java:470)
+	at com.intellij.ide.projectWizard.ProjectTypeStep.lambda$new$3(ProjectTypeStep.java:212)
+	at com.intellij.ide.projectWizard.ProjectTypeStep$$Lambda$1616/0x0000007000d669e8.valueChanged(Unknown Source)
+	at java.desktop/javax.swing.JList.fireSelectionValueChanged(JList.java:1831)
+	at java.desktop/javax.swing.JList$ListSelectionHandler.valueChanged(JList.java:1845)
+	at java.desktop/javax.swing.DefaultListSelectionModel.fireValueChanged(DefaultListSelectionModel.java:224)
+	at java.desktop/javax.swing.DefaultListSelectionModel.fireValueChanged(DefaultListSelectionModel.java:204)
+	at java.desktop/javax.swing.DefaultListSelectionModel.fireValueChanged(DefaultListSelectionModel.java:251)
+	at java.desktop/javax.swing.DefaultListSelectionModel.changeSelection(DefaultListSelectionModel.java:448)
+	at java.desktop/javax.swing.DefaultListSelectionModel.changeSelection(DefaultListSelectionModel.java:458)
+	at java.desktop/javax.swing.DefaultListSelectionModel.setSelectionInterval(DefaultListSelectionModel.java:502)
+	at java.desktop/javax.swing.JList.setSelectedIndex(JList.java:2232)
+	at com.intellij.ide.projectWizard.ProjectTypeStep.<init>(ProjectTypeStep.java:241)
+	at com.intellij.ide.projectWizard.NewProjectWizard.init(NewProjectWizard.java:60)
+	at com.intellij.ide.projectWizard.NewProjectWizard.<init>(NewProjectWizard.java:49)
+	at com.intellij.ide.actions.NewProjectAction.actionPerformed(NewProjectAction.java:23)
+	at com.intellij.openapi.actionSystem.ex.ActionUtil.doPerformActionOrShowPopup(ActionUtil.java:344)
+	at com.intellij.openapi.actionSystem.ex.ActionUtil.lambda$performActionDumbAwareWithCallbacks$4(ActionUtil.java:318)
+	at com.intellij.openapi.actionSystem.ex.ActionUtil$$Lambda$1567/0x0000007000d0d030.run(Unknown Source)
+	at com.intellij.openapi.actionSystem.ex.ActionUtil.performDumbAwareWithCallbacks(ActionUtil.java:381)
+	at com.intellij.openapi.actionSystem.ex.ActionUtil.performActionDumbAwareWithCallbacks(ActionUtil.java:318)
+	at com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenActionsUtil.performAnActionForComponent(WelcomeScreenActionsUtil.java:103)
+	at com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenActionsUtil$LargeIconWithTextWrapper.lambda$new$0(WelcomeScreenActionsUtil.java:142)
+	at com.intellij.openapi.wm.impl.welcomeScreen.WelcomeScreenActionsUtil$LargeIconWithTextWrapper$$Lambda$1418/0x0000007000bac060.actionPerformed(Unknown Source)
+	at java.desktop/javax.swing.AbstractButton.fireActionPerformed(AbstractButton.java:1972)
+	at java.desktop/javax.swing.AbstractButton$Handler.actionPerformed(AbstractButton.java:2313)
+	at java.desktop/javax.swing.DefaultButtonModel.fireActionPerformed(DefaultButtonModel.java:405)
+	at java.desktop/javax.swing.DefaultButtonModel.setPressed(DefaultButtonModel.java:262)
+	at java.desktop/javax.swing.plaf.basic.BasicButtonListener.mouseReleased(BasicButtonListener.java:279)
+	at java.desktop/java.awt.AWTEventMulticaster.mouseReleased(AWTEventMulticaster.java:297)
+	at java.desktop/java.awt.Component.processMouseEvent(Component.java:6657)
+	at java.desktop/javax.swing.JComponent.processMouseEvent(JComponent.java:3385)
+	at java.desktop/java.awt.Component.processEvent(Component.java:6422)
+	at java.desktop/java.awt.Container.processEvent(Container.java:2266)
+	at java.desktop/java.awt.Component.dispatchEventImpl(Component.java:5027)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2324)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4855)
+	at java.desktop/java.awt.LightweightDispatcher.retargetMouseEvent(Container.java:4969)
+	at java.desktop/java.awt.LightweightDispatcher.processMouseEvent(Container.java:4583)
+	at java.desktop/java.awt.LightweightDispatcher.dispatchEvent(Container.java:4524)
+	at java.desktop/java.awt.Container.dispatchEventImpl(Container.java:2310)
+	at java.desktop/java.awt.Window.dispatchEventImpl(Window.java:2809)
+	at java.desktop/java.awt.Component.dispatchEvent(Component.java:4855)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:794)
+	at java.desktop/java.awt.EventQueue$3.run(EventQueue.java:739)
+	at java.desktop/java.awt.EventQueue$3.run(EventQueue.java:733)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:86)
+	at java.base@17.0.9/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:97)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:766)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:764)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:86)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:763)
+	at com.intellij.ide.IdeEventQueue.defaultDispatchEvent(IdeEventQueue.kt:695)
+	at com.intellij.ide.IdeEventQueue.dispatchMouseEvent(IdeEventQueue.kt:635)
+	at com.intellij.ide.IdeEventQueue._dispatchEvent$lambda$10(IdeEventQueue.kt:580)
+	at com.intellij.ide.IdeEventQueue$$Lambda$1563/0x0000007000d09508.run(Unknown Source)
+	at com.intellij.openapi.application.impl.RwLockHolder.runWithEnabledImplicitRead(RwLockHolder.kt:75)
+	at com.intellij.openapi.application.impl.RwLockHolder.runWithImplicitRead(RwLockHolder.kt:67)
+	at com.intellij.ide.IdeEventQueue._dispatchEvent(IdeEventQueue.kt:580)
+	at com.intellij.ide.IdeEventQueue.access$_dispatchEvent(IdeEventQueue.kt:72)
+	at com.intellij.ide.IdeEventQueue$dispatchEvent$processEventRunnable$1$1$1.compute(IdeEventQueue.kt:355)
+	at com.intellij.ide.IdeEventQueue$dispatchEvent$processEventRunnable$1$1$1.compute(IdeEventQueue.kt:354)
+	at com.intellij.openapi.progress.impl.CoreProgressManager.computePrioritized(CoreProgressManager.java:793)
+	at com.intellij.ide.IdeEventQueue$dispatchEvent$processEventRunnable$1$1.invoke(IdeEventQueue.kt:354)
+	at com.intellij.ide.IdeEventQueue$dispatchEvent$processEventRunnable$1$1.invoke(IdeEventQueue.kt:349)
+	at com.intellij.ide.IdeEventQueueKt.performActivity$lambda$1(IdeEventQueue.kt:1014)
+	at com.intellij.ide.IdeEventQueueKt$$Lambda$1139/0x00000070009db228.run(Unknown Source)
+	at com.intellij.openapi.application.TransactionGuardImpl.performActivity(TransactionGuardImpl.java:114)
+	at com.intellij.ide.IdeEventQueueKt.performActivity(IdeEventQueue.kt:1014)
+	at com.intellij.ide.IdeEventQueue.dispatchEvent$lambda$7(IdeEventQueue.kt:349)
+	at com.intellij.ide.IdeEventQueue$$Lambda$1138/0x00000070009daaf8.run(Unknown Source)
+	at com.intellij.openapi.application.impl.ApplicationImpl.runIntendedWriteActionOnCurrentThread(ApplicationImpl.java:848)
+	at com.intellij.ide.IdeEventQueue.dispatchEvent(IdeEventQueue.kt:391)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:207)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:128)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:117)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:105)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:92)
+
+"DefaultDispatcher-worker-29 @com.intellij.diagnostic.PerformanceWatcherImpl#981" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+	at java.base@17.0.9/java.lang.ClassLoader.defineClass2(Native Method)
+	at java.base@17.0.9/java.lang.ClassLoader.defineClass(ClassLoader.java:1108)
+	at app//com.intellij.util.lang.UrlClassLoader.consumeClassData(UrlClassLoader.java:289)
+	at app//com.intellij.util.lang.ZipResourceFile.findClass(ZipResourceFile.java:113)
+	at app//com.intellij.util.lang.JarLoader.findClass(JarLoader.java:58)
+	at app//com.intellij.util.lang.ClassPath.findClassInLoader(ClassPath.java:240)
+	at app//com.intellij.util.lang.ClassPath.findClass(ClassPath.java:190)
+	at app//com.intellij.util.lang.UrlClassLoader.findClass(UrlClassLoader.java:240)
+	at java.base@17.0.9/java.lang.ClassLoader.loadClass(ClassLoader.java:592)
+	at java.base@17.0.9/java.lang.ClassLoader.loadClass(ClassLoader.java:525)
+	at java.base@17.0.9/java.lang.Class.getDeclaredMethods0(Native Method)
+	at java.base@17.0.9/java.lang.Class.privateGetDeclaredMethods(Class.java:3402)
+	at java.base@17.0.9/java.lang.Class.privateGetPublicMethods(Class.java:3427)
+	at java.base@17.0.9/java.lang.Class.getMethods(Class.java:2019)
+	at java.base@17.0.9/java.lang.reflect.Proxy$ProxyBuilder.referencedTypes(Proxy.java:744)
+	at java.base@17.0.9/java.lang.reflect.Proxy$ProxyBuilder.<init>(Proxy.java:645)
+	at java.base@17.0.9/java.lang.reflect.Proxy$ProxyBuilder.<init>(Proxy.java:656)
+	at java.base@17.0.9/java.lang.reflect.Proxy.lambda$getProxyConstructor$0(Proxy.java:429)
+	at java.base@17.0.9/java.lang.reflect.Proxy$$Lambda$40/0x00000070000ed5d0.apply(Unknown Source)
+	at java.base@17.0.9/jdk.internal.loader.AbstractClassLoaderValue$Memoizer.get(AbstractClassLoaderValue.java:329)
+	at java.base@17.0.9/jdk.internal.loader.AbstractClassLoaderValue.computeIfAbsent(AbstractClassLoaderValue.java:205)
+	at java.base@17.0.9/java.lang.reflect.Proxy.getProxyConstructor(Proxy.java:427)
+	at java.base@17.0.9/java.lang.reflect.Proxy.newProxyInstance(Proxy.java:1037)
+	at com.intellij.util.messages.impl.MessageBusImpl$syncPublisher$1.invoke(MessageBusImpl.kt:132)
+	at com.intellij.util.messages.impl.MessageBusImpl$syncPublisher$1.invoke(MessageBusImpl.kt:129)
+	at com.intellij.util.messages.impl.MessageBusImpl.syncPublisher$lambda$0(MessageBusImpl.kt:129)
+	at com.intellij.util.messages.impl.MessageBusImpl$$Lambda$518/0x000000700053d000.apply(Unknown Source)
+	at java.base@17.0.9/java.util.concurrent.ConcurrentHashMap.computeIfAbsent(ConcurrentHashMap.java:1708)
+	at com.intellij.util.messages.impl.MessageBusImpl.syncPublisher(MessageBusImpl.kt:129)
+	at com.intellij.diagnostic.PerformanceWatcherImplKt.getPublisher(PerformanceWatcherImpl.kt:558)
+	at com.intellij.diagnostic.PerformanceWatcherImplKt.access$getPublisher(PerformanceWatcherImpl.kt:1)
+	at com.intellij.diagnostic.PerformanceWatcherImpl$FreezeCheckerTask.startFreezeReporting(PerformanceWatcherImpl.kt:351)
+	at com.intellij.diagnostic.PerformanceWatcherImpl$FreezeCheckerTask.edtFrozen(PerformanceWatcherImpl.kt:327)
+	at com.intellij.diagnostic.PerformanceWatcherImpl$1$1.invokeSuspend(PerformanceWatcherImpl.kt:96)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-53 @com.intellij.diagnostic.PerformanceWatcherImpl#996" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+	at java.base@17.0.9/java.util.concurrent.ConcurrentHashMap.get(ConcurrentHashMap.java:936)
+	at java.base@17.0.9/java.util.Properties.getProperty(Properties.java:1141)
+	at java.base@17.0.9/java.lang.System.getProperty(System.java:918)
+	at java.base@17.0.9/java.lang.Boolean.getBoolean(Boolean.java:282)
+	at com.intellij.diagnostic.ThreadDumper.isEDT(ThreadDumper.java:99)
+	at com.intellij.diagnostic.ThreadDumper.lambda$sort$1(ThreadDumper.java:118)
+	at com.intellij.diagnostic.ThreadDumper$$Lambda$1665/0x0000007000e0bd30.apply(Unknown Source)
+	at java.base@17.0.9/java.util.Comparator.lambda$comparing$77a9974f$1(Comparator.java:473)
+	at java.base@17.0.9/java.util.Comparator$$Lambda$148/0x00000070001fd3d0.compare(Unknown Source)
+	at java.base@17.0.9/java.util.Comparator.lambda$thenComparing$36697e65$1(Comparator.java:220)
+	at java.base@17.0.9/java.util.Comparator$$Lambda$250/0x00000070003e4960.compare(Unknown Source)
+	at java.base@17.0.9/java.util.Comparator.lambda$thenComparing$36697e65$1(Comparator.java:220)
+	at java.base@17.0.9/java.util.Comparator$$Lambda$250/0x00000070003e4960.compare(Unknown Source)
+	at java.base@17.0.9/java.util.Comparator.lambda$thenComparing$36697e65$1(Comparator.java:220)
+	at java.base@17.0.9/java.util.Comparator$$Lambda$250/0x00000070003e4960.compare(Unknown Source)
+	at java.base@17.0.9/java.util.TimSort.binarySort(TimSort.java:296)
+	at java.base@17.0.9/java.util.TimSort.sort(TimSort.java:239)
+	at java.base@17.0.9/java.util.Arrays.sort(Arrays.java:1233)
+	at com.intellij.diagnostic.ThreadDumper.sort(ThreadDumper.java:117)
+	at com.intellij.diagnostic.ThreadDumper.getThreadDumpInfo(ThreadDumper.java:56)
+	at com.intellij.diagnostic.SamplingTask$dumpThreads$2.invokeSuspend(SamplingTask.kt:55)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"BaseDataReader: error stream of fsnotifier" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+	at java.base@17.0.9/java.io.FileInputStream.readBytes(Native Method)
+	at java.base@17.0.9/java.io.FileInputStream.read(FileInputStream.java:276)
+	at java.base@17.0.9/java.io.BufferedInputStream.read1(BufferedInputStream.java:282)
+	at java.base@17.0.9/java.io.BufferedInputStream.read(BufferedInputStream.java:343)
+	at java.base@17.0.9/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:270)
+	at java.base@17.0.9/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:313)
+	at java.base@17.0.9/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:188)
+	at java.base@17.0.9/java.io.InputStreamReader.read(InputStreamReader.java:177)
+	at java.base@17.0.9/java.io.Reader.read(Reader.java:250)
+	at com.intellij.util.io.BaseOutputReader.readAvailableBlocking(BaseOutputReader.java:148)
+	at com.intellij.util.io.BaseDataReader.readAvailable(BaseDataReader.java:72)
+	at com.intellij.util.io.BaseDataReader.doRun(BaseDataReader.java:153)
+	at com.intellij.util.io.BaseDataReader$$Lambda$673/0x00000070006b1290.run(Unknown Source)
+	at com.intellij.util.ConcurrencyUtil.runUnderThreadName(ConcurrencyUtil.java:218)
+	at com.intellij.util.io.BaseDataReader.lambda$start$0(BaseDataReader.java:48)
+	at com.intellij.util.io.BaseDataReader$$Lambda$670/0x00000070006af170.run(Unknown Source)
+	at java.base@17.0.9/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"BaseDataReader: output stream of fsnotifier" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+	at java.base@17.0.9/java.io.FileInputStream.readBytes(Native Method)
+	at java.base@17.0.9/java.io.FileInputStream.read(FileInputStream.java:276)
+	at java.base@17.0.9/java.io.BufferedInputStream.read1(BufferedInputStream.java:282)
+	at java.base@17.0.9/java.io.BufferedInputStream.read(BufferedInputStream.java:343)
+	at java.base@17.0.9/sun.nio.cs.StreamDecoder.readBytes(StreamDecoder.java:270)
+	at java.base@17.0.9/sun.nio.cs.StreamDecoder.implRead(StreamDecoder.java:313)
+	at java.base@17.0.9/sun.nio.cs.StreamDecoder.read(StreamDecoder.java:188)
+	at java.base@17.0.9/java.io.InputStreamReader.read(InputStreamReader.java:177)
+	at java.base@17.0.9/java.io.Reader.read(Reader.java:250)
+	at com.intellij.util.io.BaseOutputReader.readAvailableBlocking(BaseOutputReader.java:148)
+	at com.intellij.util.io.BaseDataReader.readAvailable(BaseDataReader.java:72)
+	at com.intellij.util.io.BaseDataReader.doRun(BaseDataReader.java:153)
+	at com.intellij.util.io.BaseDataReader$$Lambda$673/0x00000070006b1290.run(Unknown Source)
+	at com.intellij.util.ConcurrencyUtil.runUnderThreadName(ConcurrencyUtil.java:218)
+	at com.intellij.util.io.BaseDataReader.lambda$start$0(BaseDataReader.java:48)
+	at com.intellij.util.io.BaseDataReader$$Lambda$670/0x00000070006af170.run(Unknown Source)
+	at java.base@17.0.9/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"ApplicationImpl pooled thread 4" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.unpark(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.unpark(LockSupport.java:177)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.finishCompletion(FutureTask.java:369)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.set(FutureTask.java:232)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.run(FutureTask.java:272)
+	at com.intellij.util.concurrency.BoundedTaskExecutor.doRun(BoundedTaskExecutor.java:244)
+	at com.intellij.util.concurrency.BoundedTaskExecutor.access$200(BoundedTaskExecutor.java:30)
+	at com.intellij.util.concurrency.BoundedTaskExecutor$1.executeFirstTaskAndHelpQueue(BoundedTaskExecutor.java:222)
+	at com.intellij.util.concurrency.BoundedTaskExecutor$1$$Lambda$612/0x00000070005e59a8.run(Unknown Source)
+	at com.intellij.util.ConcurrencyUtil.runUnderThreadName(ConcurrencyUtil.java:218)
+	at com.intellij.util.concurrency.BoundedTaskExecutor$1.run(BoundedTaskExecutor.java:210)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"DefaultDispatcher-worker-40 @com.intellij.diagnostic.PerformanceWatcherImpl#995" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+	at java.management@17.0.9/sun.management.ThreadImpl.dumpThreads0(Native Method)
+	at java.management@17.0.9/sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:521)
+	at java.management@17.0.9/sun.management.ThreadImpl.dumpAllThreads(ThreadImpl.java:509)
+	at com.intellij.diagnostic.ThreadDumper.getThreadInfos(ThreadDumper.java:75)
+	at com.intellij.diagnostic.SamplingTask.dumpThreads(SamplingTask.kt:45)
+	at com.intellij.diagnostic.SamplingTask.access$dumpThreads(SamplingTask.kt:14)
+	at com.intellij.diagnostic.SamplingTask$1.invokeSuspend(SamplingTask.kt:36)
+	at kotlin.coroutines.jvm.internal.BaseContinuationImpl.resumeWith(ContinuationImpl.kt:33)
+	at kotlinx.coroutines.DispatchedTask.run(DispatchedTask.kt:108)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler.runSafely(CoroutineScheduler.kt:584)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.executeTask(CoroutineScheduler.kt:793)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:697)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"Netty Builtin Server 1" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+	at java.base@17.0.9/sun.nio.ch.KQueue.poll(Native Method)
+	at java.base@17.0.9/sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:122)
+	at java.base@17.0.9/sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:129)
+	at java.base@17.0.9/sun.nio.ch.SelectorImpl.select(SelectorImpl.java:146)
+	at io.netty.channel.nio.SelectedSelectionKeySetSelector.select(SelectedSelectionKeySetSelector.java:68)
+	at io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:879)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:526)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"Netty Builtin Server 2" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+	at java.base@17.0.9/sun.nio.ch.KQueue.poll(Native Method)
+	at java.base@17.0.9/sun.nio.ch.KQueueSelectorImpl.doSelect(KQueueSelectorImpl.java:122)
+	at java.base@17.0.9/sun.nio.ch.SelectorImpl.lockAndDoSelect(SelectorImpl.java:129)
+	at java.base@17.0.9/sun.nio.ch.SelectorImpl.select(SelectorImpl.java:146)
+	at io.netty.channel.nio.SelectedSelectionKeySetSelector.select(SelectedSelectionKeySetSelector.java:68)
+	at io.netty.channel.nio.NioEventLoop.select(NioEventLoop.java:879)
+	at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:526)
+	at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997)
+	at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74)
+	at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"External Command Listener" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+	at java.base@17.0.9/sun.nio.ch.UnixDomainSockets.accept0(Native Method)
+	at java.base@17.0.9/sun.nio.ch.UnixDomainSockets.accept(UnixDomainSockets.java:173)
+	at java.base@17.0.9/sun.nio.ch.ServerSocketChannelImpl.implAccept(ServerSocketChannelImpl.java:419)
+	at java.base@17.0.9/sun.nio.ch.ServerSocketChannelImpl.accept(ServerSocketChannelImpl.java:391)
+	at com.intellij.platform.ide.bootstrap.DirectoryLock.acceptConnections(DirectoryLock.java:325)
+	at com.intellij.platform.ide.bootstrap.DirectoryLock$$Lambda$90/0x00000070001bc240.run(Unknown Source)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"process reaper (pid 11956)" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+	at java.base@17.0.9/java.lang.ProcessHandleImpl.waitForProcessExit0(Native Method)
+	at java.base@17.0.9/java.lang.ProcessHandleImpl$1.run(ProcessHandleImpl.java:150)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"Reference Handler" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+	at java.base@17.0.9/java.lang.ref.Reference.waitForReferencePendingList(Native Method)
+	at java.base@17.0.9/java.lang.ref.Reference.processPendingReferences(Reference.java:253)
+	at java.base@17.0.9/java.lang.ref.Reference$ReferenceHandler.run(Reference.java:215)
+
+"AppKit Thread" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+ (in native)
+
+"Notification Thread" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+
+"Signal Dispatcher" prio=0 tid=0x0 nid=0x0 runnable
+     java.lang.Thread.State: RUNNABLE
+
+
+"ApplicationImpl pooled thread 2" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.FutureTask@6d0a5856
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.awaitDone(FutureTask.java:444)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.get(FutureTask.java:203)
+	at com.intellij.indexing.shared.platform.impl.AttrBasedFileContentHashForwardIndex$Companion.flush(AttrBasedFileContentHashForwardIndex.kt:127)
+	at com.intellij.indexing.shared.platform.impl.AttrBasedFileContentHashForwardIndex$Companion.access$flush(AttrBasedFileContentHashForwardIndex.kt:39)
+	at com.intellij.indexing.shared.platform.impl.AttrBasedFileContentHashForwardIndex.force(AttrBasedFileContentHashForwardIndex.kt:292)
+	at com.intellij.util.indexing.impl.MapReduceIndex.doFlush(MapReduceIndex.java:190)
+	at com.intellij.util.indexing.impl.storage.VfsAwareMapReduceIndex.doFlush(VfsAwareMapReduceIndex.java:303)
+	at com.intellij.util.indexing.impl.MapReduceIndex.flush(MapReduceIndex.java:163)
+	at com.intellij.indexing.shared.platform.impl.CompositeInvertedIndex.flushSecondaryIndex(CompositeInvertedIndex.java:173)
+	at com.intellij.indexing.composite.CompositeInvertedIndexBase.flush(CompositeInvertedIndexBase.java:277)
+	at com.intellij.util.indexing.FileBasedIndexImpl$GentleIndexFlusher$IndexFlushingState.tryFlushIfNeeded(FileBasedIndexImpl.java:2290)
+	at com.intellij.util.indexing.FileBasedIndexImpl$GentleIndexFlusher.flushAsMuchAsPossibleWithinQuota(FileBasedIndexImpl.java:2199)
+	at com.intellij.openapi.util.io.GentleFlusherBase.run(GentleFlusherBase.java:144)
+	at java.base@17.0.9/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at com.intellij.util.concurrency.SchedulingWrapper$MyScheduledFutureTask.run(SchedulingWrapper.java:272)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"fsnotifier" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.lang.ProcessImpl@491b31b1
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.Object.wait(Object.java:338)
+	at java.base@17.0.9/java.lang.ProcessImpl.waitFor(ProcessImpl.java:434)
+	at com.intellij.execution.process.ProcessWaitFor.lambda$new$0(ProcessWaitFor.java:28)
+	at com.intellij.execution.process.ProcessWaitFor$$Lambda$657/0x000000700068db58.run(Unknown Source)
+	at com.intellij.util.ConcurrencyUtil.runUnderThreadName(ConcurrencyUtil.java:218)
+	at com.intellij.execution.process.ProcessWaitFor.lambda$new$1(ProcessWaitFor.java:23)
+	at com.intellij.execution.process.ProcessWaitFor$$Lambda$652/0x000000700068a7f0.run(Unknown Source)
+	at java.base@17.0.9/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:539)
+	at java.base@17.0.9/java.util.concurrent.FutureTask.run(FutureTask.java:264)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"AWTThreading pool-2-thread-1" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@cadbf6f
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.park(LockSupport.java:341)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack$SNode.block(SynchronousQueue.java:288)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinPool.unmanagedBlock(ForkJoinPool.java:3465)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinPool.managedBlock(ForkJoinPool.java:3436)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:397)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.take(SynchronousQueue.java:886)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"ApplicationImpl pooled thread 1" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@4837ca4d
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"ApplicationImpl pooled thread 3" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@4837ca4d
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"I/O pool 4" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@2e1cb6fe
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"I/O pool 5" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@2e1cb6fe
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"I/O pool 6" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@2e1cb6fe
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"I/O pool 7" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@2e1cb6fe
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"I/O pool 8" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@2e1cb6fe
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"I/O pool 9" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@2e1cb6fe
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:702)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1$1.run(Executors.java:699)
+	at java.base@17.0.9/java.security.AccessController.executePrivileged(AccessController.java:776)
+	at java.base@17.0.9/java.security.AccessController.doPrivileged(AccessController.java:399)
+	at java.base@17.0.9/java.util.concurrent.Executors$PrivilegedThreadFactory$1.run(Executors.java:699)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"main" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on kotlinx.coroutines.BlockingCoroutine@4a7a80f5
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at kotlinx.coroutines.BlockingCoroutine.joinBlocking(Builders.kt:88)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking(Builders.kt:59)
+	at kotlinx.coroutines.BuildersKt.runBlocking(Unknown Source)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:38)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at com.intellij.idea.Main.mainImpl(Main.kt:63)
+	at com.intellij.idea.Main.mainImpl$default(Main.kt:49)
+	at com.intellij.idea.Main.main(Main.kt:46)
+
+"PeriodicMetricReader" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@a3fa21b
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+	at java.base@17.0.9/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:1182)
+	at java.base@17.0.9/java.util.concurrent.ScheduledThreadPoolExecutor$DelayedWorkQueue.take(ScheduledThreadPoolExecutor.java:899)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1062)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"TimerQueue" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@1b05a34d
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.park(LockSupport.java:341)
+	at java.base@17.0.9/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionNode.block(AbstractQueuedSynchronizer.java:506)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinPool.unmanagedBlock(ForkJoinPool.java:3465)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinPool.managedBlock(ForkJoinPool.java:3436)
+	at java.base@17.0.9/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1623)
+	at java.base@17.0.9/java.util.concurrent.DelayQueue.take(DelayQueue.java:217)
+	at java.desktop/javax.swing.TimerQueue.run(TimerQueue.java:172)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"process reaper" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@56cc684d
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"process reaper" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.SynchronousQueue$TransferStack@56cc684d
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue$TransferStack.transfer(SynchronousQueue.java:401)
+	at java.base@17.0.9/java.util.concurrent.SynchronousQueue.poll(SynchronousQueue.java:903)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.getTask(ThreadPoolExecutor.java:1061)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1122)
+	at java.base@17.0.9/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"Coroutines Debugger Cleaner" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.lang.ref.ReferenceQueue$Lock@ec9c61
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:155)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:176)
+	at kotlinx.coroutines.debug.internal.ConcurrentWeakMap.runWeakRefQueueCleaningLoopUntilInterrupted(ConcurrentWeakMap.kt:73)
+	at kotlinx.coroutines.debug.internal.DebugProbesImpl$startWeakRefCleanerThread$1.invoke(DebugProbesImpl.kt:96)
+	at kotlinx.coroutines.debug.internal.DebugProbesImpl$startWeakRefCleanerThread$1.invoke(DebugProbesImpl.kt:95)
+	at kotlin.concurrent.ThreadsKt$thread$thread$1.run(Thread.kt:30)
+
+"DefaultDispatcher-worker-1" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-10" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-11" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-12" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-13" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-14" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-15" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-16" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-17" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-18" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-19" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-2" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-20" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-21" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-22" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-23" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-24" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-25" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-26" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-27" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-28" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-3" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-30" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-31" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-32" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-33" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-34" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-35" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-36" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-37" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-38" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-39" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-4" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-41" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-42" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-43" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-44" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-45" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-46" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-47" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-48" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-49" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-5" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-50" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-51" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-52" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-54" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-55" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-56" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-57" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-58" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-59" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-6" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-60" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-61" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-62" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-7" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-8" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"DefaultDispatcher-worker-9" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:376)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.park(CoroutineScheduler.kt:838)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.tryPark(CoroutineScheduler.kt:783)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.runWorker(CoroutineScheduler.kt:731)
+	at kotlinx.coroutines.scheduling.CoroutineScheduler$Worker.run(CoroutineScheduler.kt:684)
+
+"Common-Cleaner" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.lang.ref.ReferenceQueue$Lock@2b5727f
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:155)
+	at java.base@17.0.9/jdk.internal.ref.CleanerImpl.run(CleanerImpl.java:140)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+	at java.base@17.0.9/jdk.internal.misc.InnocuousThread.run(InnocuousThread.java:162)
+
+"Java2D Disposer" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.lang.ref.ReferenceQueue$Lock@7cac7a61
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:155)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:176)
+	at java.desktop/sun.java2d.Disposer.run(Disposer.java:145)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"JobScheduler FJ pool 0/7" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.ForkJoinPool@3e74cbcf
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkUntil(LockSupport.java:410)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinPool.awaitWork(ForkJoinPool.java:1726)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1623)
+	at java.base@17.0.9/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:165)
+
+"Periodic tasks thread" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject@2cdc4423
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at java.base@17.0.9/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.awaitNanos(AbstractQueuedSynchronizer.java:1672)
+	at java.base@17.0.9/java.util.concurrent.DelayQueue.take(DelayQueue.java:229)
+	at com.intellij.util.concurrency.AppDelayQueue$TransferThread.run(AppDelayQueue.java:81)
+
+"AWT-Shutdown" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.lang.Object@2895d03b
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.Object.wait(Object.java:338)
+	at java.desktop/sun.awt.AWTAutoShutdown.run(AWTAutoShutdown.java:291)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"FilePageCache housekeeper" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.lang.Object@4094fe82
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at com.intellij.util.io.FilePageCacheLockFree.cacheMaintenanceLoop(FilePageCacheLockFree.java:331)
+	at com.intellij.util.io.FilePageCacheLockFree$$Lambda$149/0x0000007000294db0.run(Unknown Source)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"Finalizer" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.lang.ref.ReferenceQueue$Lock@7aac3d69
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:155)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:176)
+	at java.base@17.0.9/java.lang.ref.Finalizer$FinalizerThread.run(Finalizer.java:172)
+
+"JNA Cleaner" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: WAITING
+ on java.lang.ref.ReferenceQueue$Lock@28acb50c
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:155)
+	at java.base@17.0.9/java.lang.ref.ReferenceQueue.remove(ReferenceQueue.java:176)
+	at com.sun.jna.internal.Cleaner$1.run(Cleaner.java:58)
+
+"kotlinx.coroutines.DefaultExecutor" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on kotlinx.coroutines.DefaultExecutor@553e87c
+	at java.base@17.0.9/jdk.internal.misc.Unsafe.park(Native Method)
+	at java.base@17.0.9/java.util.concurrent.locks.LockSupport.parkNanos(LockSupport.java:252)
+	at kotlinx.coroutines.DefaultExecutor.run(DefaultExecutor.kt:122)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"Java2D Queue Flusher" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on sun.java2d.metal.MTLRenderQueue$QueueFlusher@321fcd5d
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.desktop/sun.java2d.metal.MTLRenderQueue$QueueFlusher.run(MTLRenderQueue.java:210)
+	at java.base@17.0.9/java.lang.Thread.run(Thread.java:840)
+
+"Timer-0" prio=0 tid=0x0 nid=0x0 waiting on condition
+     java.lang.Thread.State: TIMED_WAITING
+ on java.util.TaskQueue@1e0fd9a1
+	at java.base@17.0.9/java.lang.Object.wait(Native Method)
+	at java.base@17.0.9/java.util.TimerThread.mainLoop(Timer.java:563)
+	at java.base@17.0.9/java.util.TimerThread.run(Timer.java:516)
+
+
+---------- Coroutine dump (stripped) ----------
+
+- "coroutine#1":BlockingCoroutine{Active}, state: SUSPENDED [CoroutineId(1), BlockingEventLoop@9c4537c]
+	at com.intellij.idea.Main$mainImpl$1.invokeSuspend(Main.kt:73)
+	at _COROUTINE._CREATION._(CoroutineDebugging.kt:34)
+	at kotlin.coroutines.intrinsics.IntrinsicsKt__IntrinsicsJvmKt.createCoroutineUnintercepted(IntrinsicsJvm.kt:161)
+	at kotlinx.coroutines.intrinsics.CancellableKt.startCoroutineCancellable(Cancellable.kt:30)
+	at kotlinx.coroutines.BuildersKt__BuildersKt.runBlocking$default(Builders.kt:38)
+	at kotlinx.coroutines.BuildersKt.runBlocking$default(Unknown Source)
+	at com.intellij.idea.Main.mainImpl(Main.kt:63)
+	at com.intellij.idea.Main.mainImpl$default(Main.kt:49)
+	at com.intellij.idea.Main.main(Main.kt:46)
+	- "Application":supervisor:ChildScope{Active}
+		- "ApplicationImpl@1495106256 container":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.plugins.textmate)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.copyright)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.platform.images)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.editorconfig.editorconfigjetbrains)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.plugins.yaml)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.intellij.plugins.markdown)":supervisor:ChildScope{Active}
+			-[x2 of] "(ApplicationImpl@1495106256 x org.jetbrains.plugins.terminal)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x hg4idea)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.properties)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.gradle)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x training)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x intellij.platform.ijent.impl)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.jetbrains.sh)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x cn.ilikexff.codepins)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.completion.ml.ranking)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.searcheverywhere.ml)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.settingsSync)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.jetbrains.space)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x tanvd.grazi)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x Git4Idea)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.plugins.github)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.plugins.gitlab)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.java)":supervisor:ChildScope{Active}
+				- "com.intellij.compiler.server.BuildManager":supervisor:ChildScope{Active}
+					-[x2 of] "com.intellij.compiler.server.BuildManager":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.tracing.ide)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.tasks)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.plugins.javaFX)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.intellij.intelliLang)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.intellij.groovy)":supervisor:ChildScope{Active}
+			-[x10 of] "(ApplicationImpl@1495106256 x org.jetbrains.kotlin)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.java-i18n)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.uiDesigner)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.idea.maven)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.jetbrains.plugins.gradle)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.java.ide)":supervisor:ChildScope{Active}
+				- "com.intellij.ide.RecentProjectsManagerBase":supervisor:ChildScope{Active}
+					- "com.intellij.ide.RecentProjectsManagerBase#342":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(342), Dispatchers.Default]
+						at com.intellij.ide.RecentProjectsManagerBase$1.invokeSuspend(RecentProjectsManagerBase.kt:106)
+						- "com.intellij.ide.RecentProjectsManagerBase#344":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(344), Dispatchers.Default]
+							at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+							at kotlinx.coroutines.flow.FlowKt__DelayKt$debounceInternal$1.invokeSuspend(Delay.kt:426)
+							at kotlinx.coroutines.flow.internal.FlowCoroutineKt$scopedFlow$1$1.invokeSuspend(FlowCoroutine.kt:51)
+							at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+							- "com.intellij.ide.RecentProjectsManagerBase#345":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(345), Dispatchers.Default]
+			- "(ApplicationImpl@1495106256 x org.jetbrains.idea.gradle.dsl)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x org.intellij.qodana)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.intellij.configurationScript)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x intellij.indexing.shared.core)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.jetbrains.codeWithMe)":supervisor:ChildScope{Active}
+				- "com.jetbrains.rdserver.unattendedHost.UnattendedHostManager":supervisor:ChildScope{Active}
+				- "com.jetbrains.rdserver.ui.actionPopupMenu.BackendActionManager":supervisor:ChildScope{Active}
+					- "com.jetbrains.rdserver.ui.actionPopupMenu.BackendActionManager":supervisor:ChildScope{Active}
+						- "com.jetbrains.rdserver.ui.actionPopupMenu.BackendActionManager#711":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(711), Dispatchers.Default]
+							at com.intellij.openapi.actionSystem.impl.ActionManagerImpl$MyTimer$2.invokeSuspend(ActionManagerImpl.kt:1314)
+							- "com.jetbrains.rdserver.ui.actionPopupMenu.BackendActionManager#712":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(712), Dispatchers.Default]
+								at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+								- "com.jetbrains.rdserver.ui.actionPopupMenu.BackendActionManager#830":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(830), Dispatchers.Default]
+									at com.intellij.openapi.actionSystem.impl.ActionManagerImpl$MyTimer$2$1.invokeSuspend(ActionManagerImpl.kt:1318)
+				- "com.intellij.remoteDev.tests.impl.DistributedTestHost":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x Subversion)":supervisor:ChildScope{Active}
+			- "(ApplicationImpl@1495106256 x com.jetbrains.performancePlugin.async)":supervisor:ChildScope{Active}
+			- "ApplicationImpl@1495106256 container":supervisor:ChildScope{Active}
+				- "ApplicationImpl@1495106256 container#160":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(160), Dispatchers.Default]
+					at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+					at com.intellij.platform.diagnostic.telemetry.BatchSpanProcessor$1.invokeSuspend(BatchSpanProcessor.kt:175)
+			- "ApplicationImpl@1495106256 container#193":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(193), Dispatchers.Default]
+				at com.intellij.ide.plugins.BundledPluginsState$execute$2.invokeSuspend(BundledPluginsState.kt:54)
+			- "ApplicationImpl@1495106256 container#211":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(211), Dispatchers.Default]
+				at com.intellij.openapi.vfs.newvfs.persistent.VFSHealthCheckServiceStarter$execute$2.invokeSuspend(VFSHealthChecker.kt:82)
+			- "auto-save icon cache#212":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(212), Dispatchers.Default]
+				at com.intellij.ide.ui.IconDbMaintainer$execute$2.invokeSuspend(IconDbMaintainer.kt:26)
+			- "com.intellij.configurationStore.statistic.eventLog.FeatureUsageSettingsEvents":supervisor:ChildScope{Active}
+				- "com.intellij.configurationStore.statistic.eventLog.FeatureUsageSettingsEvents#218":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(218), Dispatchers.Default]
+					at com.intellij.configurationStore.statistic.eventLog.FeatureUsageSettingsEvents$1.invokeSuspend(FeatureUsageSettingsEvents.kt:65)
+			- "ApplicationImpl@1495106256 container#219":StandaloneCoroutine{Completing} [CoroutineId(219), Dispatchers.Default]
+				- "ApplicationImpl@1495106256 container#222":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(222), Dispatchers.Default]
+					at com.intellij.internal.statistic.updater.StatisticsJobsSchedulerKt.checkPreviousExternalUploadResult(StatisticsJobsScheduler.kt:72)
+					at com.intellij.internal.statistic.updater.StatisticsJobsScheduler$execute$2$2.invokeSuspend(StatisticsJobsScheduler.kt:39)
+				- "ApplicationImpl@1495106256 container#223":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(223), Dispatchers.Default]
+					at com.intellij.internal.statistic.updater.StatisticsJobsSchedulerKt.runEventLogStatisticsService(StatisticsJobsScheduler.kt:78)
+					at com.intellij.internal.statistic.updater.StatisticsJobsScheduler$execute$2$3.invokeSuspend(StatisticsJobsScheduler.kt:42)
+				- "ApplicationImpl@1495106256 container#224":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(224), Dispatchers.Default]
+					at com.intellij.internal.statistic.updater.StatisticsJobsSchedulerKt.runValidationRulesUpdate(StatisticsJobsScheduler.kt:53)
+					at com.intellij.internal.statistic.updater.StatisticsJobsScheduler$execute$2$4.invokeSuspend(StatisticsJobsScheduler.kt:45)
+			- "com.intellij.internal.statistic.service.fus.collectors.FUStateUsagesLogger":supervisor:ChildScope{Active}
+				- "com.intellij.internal.statistic.service.fus.collectors.FUStateUsagesLogger#231":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(231), Dispatchers.Default]
+					at com.intellij.internal.statistic.service.fus.collectors.FUStateUsagesLogger.logApplicationStateRegularly(FUStateUsagesLogger.kt:154)
+					at com.intellij.internal.statistic.service.fus.collectors.FUStateUsagesLogger$1.invokeSuspend(FUStateUsagesLogger.kt:53)
+			- "ApplicationImpl@1495106256 container":ChildScope{Active}
+			- "com.intellij.openapi.vfs.newvfs.persistent.ExecuteOnCoroutine":supervisor:ChildScope{Active}
+				- "PersistentFsLoader":supervisor:ChildScope{Active} [Dispatchers.IO]
+			- "com.intellij.diagnostic.PerformanceWatcherImpl":supervisor:ChildScope{Active}
+				- "com.intellij.diagnostic.PerformanceWatcherImpl#293":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(293), Dispatchers.Default]
+					at com.intellij.diagnostic.PerformanceWatcherImpl$1.invokeSuspend(PerformanceWatcherImpl.kt:90)
+					- "com.intellij.diagnostic.PerformanceWatcherImpl#316":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(316), Dispatchers.Default]
+						at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+				- "com.intellij.diagnostic.PerformanceWatcherImpl#499":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(499), Dispatchers.Default]
+					at com.intellij.diagnostic.PerformanceWatcherImpl.samplePerformance(PerformanceWatcherImpl.kt:200)
+					at com.intellij.diagnostic.PerformanceWatcherImpl$startEdtSampling$1.invokeSuspend(PerformanceWatcherImpl.kt:124)
+				- "com.intellij.diagnostic.PerformanceWatcherImpl#994":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(994), Dispatchers.Default]
+					at com.intellij.diagnostic.SamplingTask$1.invokeSuspend(SamplingTask.kt:36)
+				- "com.intellij.diagnostic.PerformanceWatcherImpl#995":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(995), Dispatchers.Default]
+					at com.intellij.diagnostic.SamplingTask$1.invokeSuspend(SamplingTask.kt:36)
+				- "com.intellij.diagnostic.PerformanceWatcherImpl#996":StandaloneCoroutine{Active}, state: RUNNING [CoroutineId(996), Dispatchers.Default]
+					at java.base@17.0.9/java.lang.Thread.dumpThreads(Native Method)
+					at java.base@17.0.9/java.lang.Thread.getStackTrace(Thread.java:1610)
+					at kotlinx.coroutines.debug.internal.DebugProbesImpl.enhanceStackTraceWithThreadDumpImpl(DebugProbesImpl.kt:336)
+					at kotlinx.coroutines.debug.internal.DebugProbesImpl.enhanceStackTraceWithThreadDump(DebugProbesImpl.kt:321)
+					at com.intellij.diagnostic.CoroutineDumperKt.traceToDump(coroutineDumper.kt:305)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:278)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines(coroutineDumper.kt:118)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines(coroutineDumper.kt:53)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines$default(coroutineDumper.kt:45)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines(coroutineDumper.kt)
+					at com.intellij.diagnostic.ThreadDumper.getThreadDumpInfo(ThreadDumper.java:59)
+					at com.intellij.diagnostic.SamplingTask$dumpThreads$2.invokeSuspend(SamplingTask.kt:55)
+				- "com.intellij.diagnostic.PerformanceWatcherImpl#997":StandaloneCoroutine{Active}, state: RUNNING [CoroutineId(997), Dispatchers.Default]
+					at java.base/java.lang.Thread.getStackTrace(Thread.java:1619)
+					at kotlinx.coroutines.debug.internal.DebugProbesImpl.enhanceStackTraceWithThreadDumpImpl(DebugProbesImpl.kt:336)
+					at kotlinx.coroutines.debug.internal.DebugProbesImpl.enhanceStackTraceWithThreadDump(DebugProbesImpl.kt:321)
+					at com.intellij.diagnostic.CoroutineDumperKt.traceToDump(coroutineDumper.kt:305)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:278)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.toRepresentation(coroutineDumper.kt:280)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines(coroutineDumper.kt:118)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines(coroutineDumper.kt:53)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines$default(coroutineDumper.kt:45)
+					at com.intellij.diagnostic.CoroutineDumperKt.dumpCoroutines(coroutineDumper.kt)
+					at com.intellij.diagnostic.ThreadDumper.getThreadDumpInfo(ThreadDumper.java:59)
+					at com.intellij.diagnostic.SamplingTask$dumpThreads$2.invokeSuspend(SamplingTask.kt:55)
+			- "com.intellij.openapi.fileTypes.impl.FileTypeManagerImpl":supervisor:ChildScope{Active}
+				- "com.intellij.openapi.fileTypes.impl.FileTypeManagerImpl":supervisor:ChildScope{Active}
+			- "com.intellij.ide.IdeTooltipManager":supervisor:ChildScope{Active}
+			- "com.intellij.ui.jcef.JBCefStartup":supervisor:ChildScope{Active}
+			- "com.intellij.ide.plugins.marketplace.MarketplaceRequests":supervisor:ChildScope{Active}
+			- "com.intellij.configurationStore.SaveAndSyncHandlerImpl":supervisor:ChildScope{Active}
+				- "refresh requests flow processing#328":StandaloneCoroutine{Active}, state: SUSPENDED [ModalityState.NON_MODAL, CoroutineId(328), Dispatchers.Default]
+					at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+					at kotlinx.coroutines.flow.FlowKt__DelayKt$debounceInternal$1.invokeSuspend(Delay.kt:426)
+					at kotlinx.coroutines.flow.internal.FlowCoroutineKt$scopedFlow$1$1.invokeSuspend(FlowCoroutine.kt:51)
+					at com.intellij.configurationStore.SaveAndSyncHandlerImpl$1.invokeSuspend(SaveAndSyncHandlerImpl.kt:76)
+					- "refresh requests flow processing#333":ProducerCoroutine{Active}, state: SUSPENDED [ModalityState.NON_MODAL, CoroutineId(333), Dispatchers.Default]
+				- "save requests flow processing#329":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(329), Dispatchers.Default]
+					at com.intellij.configurationStore.SaveAndSyncHandlerImpl$2.invokeSuspend(SaveAndSyncHandlerImpl.kt:91)
+				- "com.intellij.configurationStore.SaveAndSyncHandlerImpl#330":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(330), Dispatchers.Default]
+					at com.intellij.configurationStore.SaveAndSyncHandlerImpl.listenIdleAndActivate(SaveAndSyncHandlerImpl.kt:173)
+					at com.intellij.configurationStore.SaveAndSyncHandlerImpl$3.invokeSuspend(SaveAndSyncHandlerImpl.kt:118)
+				- "com.intellij.configurationStore.SaveAndSyncHandlerImpl#331":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(331), Dispatchers.Default]
+					at com.intellij.util.CoroutinesKt$awaitCancellationAndInvoke$1.invokeSuspend(coroutines.kt:27)
+			- "com.intellij.openapi.progress.impl.PlatformTaskSupport":supervisor:ChildScope{Active}
+			- "com.intellij.util.indexing.FileBasedIndexImpl":supervisor:ChildScope{Active}
+			- "com.intellij.ide.ui.customization.CustomActionsSchema":supervisor:ChildScope{Active}
+			- "com.intellij.history.integration.LocalHistoryImpl":supervisor:ChildScope{Active}
+				- "com.intellij.history.integration.LocalHistoryImpl#367":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(367), Dispatchers.Default]
+					at com.intellij.history.integration.LocalHistoryImpl$init$3.invokeSuspend(LocalHistoryImpl.kt:94)
+			- "org.jetbrains.ide.BuiltInServerManagerImpl":supervisor:ChildScope{Active}
+			- "com.intellij.ide.ui.laf.LafManagerImpl":supervisor:ChildScope{Active}
+			- "com.intellij.ide.IdleTracker":supervisor:ChildScope{Active}
+				- "com.intellij.ide.IdleTracker":supervisor:ChildScope{Active}
+					- "Idle listener: com.intellij.compiler.server.BuildManager$$Lambda$674/0x000000700063f5a0#386":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(386), Dispatchers.Default]
+						at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+						at kotlinx.coroutines.flow.FlowKt__DelayKt$debounceInternal$1.invokeSuspend(Delay.kt:426)
+						at kotlinx.coroutines.flow.internal.FlowCoroutineKt$scopedFlow$1$1.invokeSuspend(FlowCoroutine.kt:51)
+						at com.intellij.ide.IdleTracker$addIdleListener$1.invokeSuspend(IdleTracker.kt:64)
+						- "Idle listener: com.intellij.compiler.server.BuildManager$$Lambda$674/0x000000700063f5a0#388":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(388), Dispatchers.Default]
+			- "com.intellij.openapi.vfs.newvfs.RefreshQueueImpl":supervisor:ChildScope{Active}
+				-[x2 of] "com.intellij.openapi.vfs.newvfs.RefreshQueueImpl":supervisor:ChildScope{Active}
+			- "com.intellij.ide.ui.laf.LafDynamicPluginManager":supervisor:ChildScope{Active}
+			- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder":supervisor:ChildScope{Active}
+				- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder#523":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(523), Dispatchers.Default]
+					at com.intellij.idea.SystemHealthMonitorKt$monitorDiskSpace$1.invokeSuspend(SystemHealthMonitor.kt:412)
+				- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder":supervisor:ChildScope{Active}
+					- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder#650":StandaloneCoroutine{Completing} [CoroutineId(650), Dispatchers.Default]
+						- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder#651":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(651), Dispatchers.Default]
+							at com.intellij.util.CoroutinesKt$awaitCancellationAndInvoke$1.invokeSuspend(coroutines.kt:27)
+					- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder":supervisor:ChildScope{Active}
+						- "IdeMenuBarHelper#653":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(653), Dispatchers.Default]
+							at com.intellij.platform.ide.menu.IdeMenuBarHelper$3.invokeSuspend(IdeMenuBarHelper.kt:111)
+						- "IdeMenuBarHelper#654":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(654), Dispatchers.Default]
+							at com.intellij.platform.ide.menu.IdeMenuBarHelper$4$1.invokeSuspend(IdeMenuBarHelper.kt:117)
+							at com.intellij.platform.ide.menu.IdeMenuBarHelper$4.invokeSuspend(IdeMenuBarHelper.kt:116)
+							- "IdeMenuBarHelper#701":ProducerCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(701), Dispatchers.EDT]
+								at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+								- "IdeMenuBarHelper#747":ProducerCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(747), Dispatchers.EDT]
+									at com.intellij.util.flow.FlowKt$throttle$1.invokeSuspend(flow.kt:46)
+									- "IdeMenuBarHelper#750":StandaloneCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(750), Dispatchers.EDT]
+										at com.intellij.util.flow.FlowKt$throttle$1$latchJob$1.invokeSuspend(flow.kt:42)
+									- "IdeMenuBarHelper#751":ProducerCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(751), Dispatchers.EDT]
+										at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+					- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder":supervisor:ChildScope{Active}
+						- "IdeMenuBarHelper#656":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(656), Dispatchers.Default]
+							at com.intellij.platform.ide.menu.IdeMenuBarHelper$3.invokeSuspend(IdeMenuBarHelper.kt:111)
+						- "IdeMenuBarHelper#657":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(657), Dispatchers.Default]
+							at com.intellij.platform.ide.menu.IdeMenuBarHelper$4$1.invokeSuspend(IdeMenuBarHelper.kt:117)
+							at com.intellij.platform.ide.menu.IdeMenuBarHelper$4.invokeSuspend(IdeMenuBarHelper.kt:116)
+							- "IdeMenuBarHelper#706":ProducerCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(706), Dispatchers.EDT]
+								at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+								- "IdeMenuBarHelper#749":ProducerCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(749), Dispatchers.EDT]
+									at com.intellij.util.flow.FlowKt$throttle$1.invokeSuspend(flow.kt:46)
+									- "IdeMenuBarHelper#752":StandaloneCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(752), Dispatchers.EDT]
+										at com.intellij.util.flow.FlowKt$throttle$1$latchJob$1.invokeSuspend(flow.kt:42)
+									- "IdeMenuBarHelper#753":ProducerCoroutine{Active}, state: SUSPENDED [ANY, CoroutineId(753), Dispatchers.EDT]
+										at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+				- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder":supervisor:ChildScope{Active}
+					- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder#648":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(648), Dispatchers.Default]
+						at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+						at kotlinx.coroutines.flow.FlowKt__DelayKt$debounceInternal$1.invokeSuspend(Delay.kt:426)
+						at kotlinx.coroutines.flow.internal.FlowCoroutineKt$scopedFlow$1$1.invokeSuspend(FlowCoroutine.kt:51)
+						at com.intellij.ui.BalloonLayoutImpl$1.invokeSuspend(BalloonLayoutImpl.kt:75)
+						- "com.intellij.platform.ide.CoreUiCoroutineScopeHolder#649":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(649), Dispatchers.Default]
+			- "com.intellij.openapi.updateSettings.impl.UpdateCheckerHelper":supervisor:ChildScope{Active}
+			- "com.intellij.ide.actionMacro.ActionMacroManager":supervisor:ChildScope{Active}
+			- "com.intellij.ide.ScreenReaderStateManager":supervisor:ChildScope{Active}
+				- "com.intellij.ide.ScreenReaderStateManager#625":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(625), Dispatchers.Default]
+					at com.intellij.ide.ScreenReaderStateManager$1.invokeSuspend(ScreenReaderStateManager.kt:18)
+			- "com.intellij.ide.ui.html.GlobalStyleSheetUpdateService":supervisor:ChildScope{Active}
+				- "com.intellij.ide.ui.html.GlobalStyleSheetUpdateService#684":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(684), Dispatchers.Default]
+					at com.intellij.ide.ui.html.GlobalStyleSheetUpdateService$init$2.invokeSuspend(GlobalStyleSheetHolder.kt:102)
+					- "com.intellij.ide.ui.html.GlobalStyleSheetUpdateService#686":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(686), Dispatchers.Default]
+						at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+						at kotlinx.coroutines.flow.FlowKt__DelayKt$debounceInternal$1.invokeSuspend(Delay.kt:426)
+						at kotlinx.coroutines.flow.internal.FlowCoroutineKt$scopedFlow$1$1.invokeSuspend(FlowCoroutine.kt:51)
+						at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+						- "com.intellij.ide.ui.html.GlobalStyleSheetUpdateService#687":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(687), Dispatchers.Default]
+			- "ApplicationImpl@1495106256 container#664":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(664), Dispatchers.Default]
+				at kotlinx.coroutines.selects.SelectImplementation.doSelectSuspend(Select.kt:431)
+				at kotlinx.coroutines.flow.FlowKt__DelayKt$debounceInternal$1.invokeSuspend(Delay.kt:426)
+				at kotlinx.coroutines.flow.internal.FlowCoroutineKt$scopedFlow$1$1.invokeSuspend(FlowCoroutine.kt:51)
+				at kotlinx.coroutines.flow.FlowKt__ReduceKt.first(Reduce.kt:183)
+				at com.intellij.featureStatistics.StatisticsStateCollectorsTrigger$welcomeScreenDisplayed$1.invokeSuspend(StatisticsStateCollectorsTrigger.kt:28)
+				- "ApplicationImpl@1495106256 container#667":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(667), Dispatchers.Default]
+			- "com.intellij.diagnostic.ThreadDumpService":supervisor:ChildScope{Active}
+
+- "coroutine#129":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(129), Dispatchers.Default]
+	at com.intellij.openapi.keymap.impl.IdeKeyEventDispatcher$1.invokeSuspend(IdeKeyEventDispatcher.kt:120)
+	- "coroutine#131":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(131), Dispatchers.Default]
+		at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+
+- SupervisorJobImpl{Active}
+	- SupervisorJobImpl{Active}
+		- "coroutine#308":StandaloneCoroutine{Active}, state: SUSPENDED [com.jetbrains.rd.util.threading.coroutines.RdCoroutineScope$coroutineContext$2$invoke$$inlined$CoroutineExceptionHandler$1@251afbc1, ANY, CoroutineId(308), Dispatchers.IO]
+			at com.jetbrains.rd.platform.codeWithMe.C.I.b.Q.launchWireCheck(WireStorage.kt)
+			at com.jetbrains.rd.platform.codeWithMe.C.I.b.i.invokeSuspend(WireStorage.kt)
+
+- "FileTypeIndex change notificator#468":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(468), Dispatchers.Default]
+	at com.intellij.psi.search.FileTypeIndexChangeNotifier$worker$1.invokeSuspend(FileTypeIndexChangeNotifier.kt:22)
+	- "FileTypeIndex change notificator#472":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(472), Dispatchers.Default]
+		at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+		- "FileTypeIndex change notificator#473":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(473), Dispatchers.Default]
+			at com.intellij.util.flow.FlowKt$throttle$1.invokeSuspend(flow.kt:46)
+			- "FileTypeIndex change notificator#474":StandaloneCoroutine{Active}, state: SUSPENDED [CoroutineId(474), Dispatchers.Default]
+				at com.intellij.util.flow.FlowKt$throttle$1$latchJob$1.invokeSuspend(flow.kt:41)
+			- "FileTypeIndex change notificator#475":ProducerCoroutine{Active}, state: SUSPENDED [CoroutineId(475), Dispatchers.Default]
+				at kotlinx.coroutines.flow.internal.ChannelFlowTransformLatest$flowCollect$3.invokeSuspend(Merge.kt:27)
+
+---------- Event counts ----------
+Posted: 250
+Posted (system): 163
+Returned: 170

@@ -91,7 +91,7 @@
         <toolWindow id="CodePins"
                     anchor="left"
                     factoryClass="cn.ilikexff.codepins.PinsToolWindow"
-                    icon="/icons/logo.svg"
+                    icon="/icons/logo_13x13.svg"
         />
 
         <!-- 注册服务类 -->
@@ -99,6 +99,10 @@
         <applicationService serviceImplementation="cn.ilikexff.codepins.settings.CodePinsSettings"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.GistService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.LicenseService"/>
+        <applicationService serviceImplementation="cn.ilikexff.codepins.services.IconPreloader"/>
+
+        <!-- 图标预加载器 -->
+        <postStartupActivity implementation="cn.ilikexff.codepins.services.IconPreloader"/>
 
         <!-- 注册设置页面 -->
         <applicationConfigurable parentId="tools" instance="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
@@ -112,7 +116,7 @@
                 class="cn.ilikexff.codepins.PinAction"
                 text="Pin This Line"
                 description="Pin current line for later reference"
-                icon="/icons/logo.svg">
+                icon="/icons/bookmark.svg">
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 

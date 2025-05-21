@@ -10,10 +10,10 @@ import cn.ilikexff.codepins.ui.SearchTextField;
 import cn.ilikexff.codepins.ui.ShareDialog;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
+import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.components.JBScrollPane;
@@ -197,12 +197,12 @@ public class PinsToolWindow implements ToolWindowFactory {
                     JPopupMenu menu = new JPopupMenu();
 
                     // 加载图标
-                    Icon codeIcon = IconLoader.getIcon("/icons/view.svg", getClass());
-                    Icon editIcon = IconLoader.getIcon("/icons/edit.svg", getClass());
-                    Icon tagIcon = IconLoader.getIcon("/icons/tag.svg", getClass());
-                    Icon shareIcon = IconLoader.getIcon("/icons/share.svg", getClass());
-                    Icon deleteIcon = IconLoader.getIcon("/icons/trash.svg", getClass());
-                    Icon refreshIcon = IconLoader.getIcon("/icons/refresh.svg", getClass());
+                    Icon codeIcon = IconUtil.loadIcon("/icons/view.svg", getClass());
+                    Icon editIcon = IconUtil.loadIcon("/icons/edit.svg", getClass());
+                    Icon tagIcon = IconUtil.loadIcon("/icons/tag.svg", getClass());
+                    Icon shareIcon = IconUtil.loadIcon("/icons/share.svg", getClass());
+                    Icon deleteIcon = IconUtil.loadIcon("/icons/trash.svg", getClass());
+                    Icon refreshIcon = IconUtil.loadIcon("/icons/refresh.svg", getClass());
 
                     // 根据图钉类型添加不同的菜单项
                     if (selected.isBlock) {
@@ -561,7 +561,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         DefaultActionGroup group = new DefaultActionGroup();
 
         // 导出按钮
-        Icon exportIcon = IconLoader.getIcon("/icons/folder-output.svg", getClass());
+        Icon exportIcon = IconUtil.loadIcon("/icons/folder-output.svg", getClass());
         group.add(new AnAction("导出图钉", "将图钉导出到文件", exportIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -576,7 +576,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         });
 
         // 导入按钮
-        Icon importIcon = IconLoader.getIcon("/icons/folder-input.svg", getClass());
+        Icon importIcon = IconUtil.loadIcon("/icons/folder-input.svg", getClass());
         group.add(new AnAction("导入图钉", "从文件导入图钉", importIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -598,7 +598,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         });
 
         // 分享按钮
-        Icon shareIcon = IconLoader.getIcon("/icons/share.svg", getClass());
+        Icon shareIcon = IconUtil.loadIcon("/icons/share.svg", getClass());
         group.add(new AnAction("分享图钉", "分享选中的图钉", shareIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
@@ -626,7 +626,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         });
 
         // 清空按钮
-        Icon clearIcon = IconLoader.getIcon("/icons/x-octagon.svg", getClass());
+        Icon clearIcon = IconUtil.loadIcon("/icons/x-octagon.svg", getClass());
         group.add(new AnAction("清空图钉", "清除所有图钉记录", clearIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
