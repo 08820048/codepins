@@ -52,6 +52,9 @@
         </ul>
 
         <p>CodePins seamlessly integrates with your development workflow, helping you stay organized and focused on what matters most - writing great code.</p>
+
+        <h3>License</h3>
+        <p>This plugin is available under the MIT License. See the project repository for more details.</p>
     ]]></description>
 
     <!-- 详细描述已包含在 description 标签中 -->
