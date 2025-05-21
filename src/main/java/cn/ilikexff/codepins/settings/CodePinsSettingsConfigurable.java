@@ -36,7 +36,6 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         boolean modified = !mySettingsComponent.getMaxPinsCount().equals(settings.maxPinsCount);
         modified |= !mySettingsComponent.getPreviewHeight().equals(settings.previewHeight);
-        modified |= mySettingsComponent.getAutoShowPreview() != settings.autoShowPreview;
         modified |= mySettingsComponent.getConfirmDelete() != settings.confirmDelete;
         modified |= mySettingsComponent.getTestPremiumMode() != settings.testPremiumMode;
         return modified;
@@ -47,7 +46,6 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         settings.maxPinsCount = mySettingsComponent.getMaxPinsCount();
         settings.previewHeight = mySettingsComponent.getPreviewHeight();
-        settings.autoShowPreview = mySettingsComponent.getAutoShowPreview();
         settings.confirmDelete = mySettingsComponent.getConfirmDelete();
         settings.testPremiumMode = mySettingsComponent.getTestPremiumMode();
 
@@ -60,7 +58,6 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         mySettingsComponent.setMaxPinsCount(settings.maxPinsCount);
         mySettingsComponent.setPreviewHeight(settings.previewHeight);
-        mySettingsComponent.setAutoShowPreview(settings.autoShowPreview);
         mySettingsComponent.setConfirmDelete(settings.confirmDelete);
         mySettingsComponent.setTestPremiumMode(settings.testPremiumMode);
     }

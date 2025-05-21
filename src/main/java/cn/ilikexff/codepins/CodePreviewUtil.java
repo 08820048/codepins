@@ -218,7 +218,13 @@ public class CodePreviewUtil {
             // 从设置中获取预览窗口高度
             int previewHeight = 300; // 默认高度
             try {
-                previewHeight = Integer.parseInt(CodePinsSettings.getInstance().previewHeight);
+                String heightSetting = CodePinsSettings.getInstance().previewHeight;
+                if (heightSetting != null && !heightSetting.isEmpty()) {
+                    previewHeight = Integer.parseInt(heightSetting);
+                    // 确保高度在合理范围内
+                    previewHeight = Math.max(100, Math.min(previewHeight, 800));
+                    System.out.println("[CodePins] 使用设置的预览窗口高度: " + previewHeight);
+                }
             } catch (NumberFormatException e) {
                 System.out.println("[CodePins] 解析预览窗口高度设置失败，使用默认值: " + e.getMessage());
             }

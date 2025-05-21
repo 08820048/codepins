@@ -22,7 +22,6 @@ import java.awt.*;
  */
 public class CodePinsSettingsComponent {
     private final JPanel mainPanel;
-    private final JBCheckBox autoShowPreviewCheckBox = new JBCheckBox("自动显示代码预览");
     private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox("删除图钉时确认");
     private final JBTextField maxPinsTextField = new JBTextField();
     private final JBTextField previewHeightTextField = new JBTextField();
@@ -33,7 +32,6 @@ public class CodePinsSettingsComponent {
         JPanel generalPanel = FormBuilder.createFormBuilder()
                 .addLabeledComponent(new JBLabel("最大图钉数量:"), maxPinsTextField, 1, false)
                 .addLabeledComponent(new JBLabel("预览窗口高度:"), previewHeightTextField, 1, false)
-                .addComponent(autoShowPreviewCheckBox)
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
         generalPanel.setBorder(BorderFactory.createTitledBorder("常规设置"));
@@ -146,7 +144,7 @@ public class CodePinsSettingsComponent {
     }
 
     public JComponent getPreferredFocusedComponent() {
-        return autoShowPreviewCheckBox;
+        return maxPinsTextField;
     }
 
     @NotNull
@@ -165,14 +163,6 @@ public class CodePinsSettingsComponent {
 
     public void setPreviewHeight(@NotNull String newText) {
         previewHeightTextField.setText(newText);
-    }
-
-    public boolean getAutoShowPreview() {
-        return autoShowPreviewCheckBox.isSelected();
-    }
-
-    public void setAutoShowPreview(boolean newStatus) {
-        autoShowPreviewCheckBox.setSelected(newStatus);
     }
 
     public boolean getConfirmDelete() {

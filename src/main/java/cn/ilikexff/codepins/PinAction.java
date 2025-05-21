@@ -102,18 +102,32 @@ public class PinAction extends AnAction {
                 tags
         );
 
-        PinStorage.addPin(pin);
+        boolean success = PinStorage.addPin(pin);
 
         // 状态栏和通知提示
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
-        if (statusBar != null) {
-            StatusBar.Info.set("✅ 图钉已添加", project);
+        if (success) {
+            // 添加成功
+            if (statusBar != null) {
+                StatusBar.Info.set("✅ 图钉已添加", project);
+            }
+            Notifications.Bus.notify(new Notification(
+                    "CodePins",
+                    "图钉添加成功",
+                    isBlock ? "已添加一段代码块图钉" : "已添加单行图钉",
+                    NotificationType.INFORMATION
+            ), project);
+        } else {
+            // 添加失败
+            if (statusBar != null) {
+                StatusBar.Info.set("❌ 图钉添加失败", project);
+            }
+            Notifications.Bus.notify(new Notification(
+                    "CodePins",
+                    "图钉添加失败",
+                    "已达到最大图钉数量限制，请删除一些图钉后再试",
+                    NotificationType.WARNING
+            ), project);
         }
-        Notifications.Bus.notify(new Notification(
-                "CodePins",
-                "图钉添加成功",
-                isBlock ? "已添加一段代码块图钉" : "已添加单行图钉",
-                NotificationType.INFORMATION
-        ), project);
     }
 }

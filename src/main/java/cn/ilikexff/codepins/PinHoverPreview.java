@@ -20,8 +20,12 @@ import java.util.Locale;
 public class PinHoverPreview {
 
     private static JBPopup currentPopup;
-    private static final int PREVIEW_DELAY_MS = 300; // 悬停延迟时间
+    private static final int INFO_PREVIEW_DELAY_MS = 300; // 基本信息预览延迟时间
+    private static final int CODE_PREVIEW_DELAY_MS = 3000; // 代码预览延迟时间（3秒）
     private static Timer hoverTimer;
+    private static Timer codePreviewTimer; // 代码预览计时器
+    private static PinEntry currentPin; // 当前悬停的图钉
+    private static Project currentProject; // 当前项目
 
     /**
      * 显示图钉预览弹窗
@@ -32,25 +36,32 @@ public class PinHoverPreview {
      * @param y 显示位置Y坐标
      */
     public static void showPreview(PinEntry pin, Project project, Component component, int x, int y) {
+        // 保存当前图钉和项目，用于代码预览
+        currentPin = pin;
+        currentProject = project;
+
         // 如果已有弹窗，先关闭
         hidePreview();
 
-        // 创建并启动延迟计时器
+        // 停止所有计时器
         if (hoverTimer != null) {
             hoverTimer.stop();
         }
+        if (codePreviewTimer != null) {
+            codePreviewTimer.stop();
+        }
 
-        // 使用 Timer 延迟显示预览，并确保在 EDT 线程上执行
+        // 使用 Timer 延迟显示基本信息预览，并确保在 EDT 线程上执行
         final PinEntry finalPin = pin; // 创建一个最终变量供 lambda 使用
         final Component finalComponent = component;
         final int finalX = x;
         final int finalY = y;
 
-        hoverTimer = new Timer(PREVIEW_DELAY_MS, e -> {
+        hoverTimer = new Timer(INFO_PREVIEW_DELAY_MS, e -> {
             // 在 EDT 线程上执行
             SwingUtilities.invokeLater(() -> {
                 try {
-                    System.out.println("[CodePins] 尝试显示自定义悬浮预览，图钉路径: " + finalPin.filePath);
+                    System.out.println("[CodePins] 尝试显示基本信息预览，图钉路径: " + finalPin.filePath);
 
                     // 创建预览面板（已在内部正确处理 ReadAction）
                     JPanel panel = createPreviewPanel(finalPin);
@@ -71,9 +82,12 @@ public class PinHoverPreview {
 
                     // 显示弹窗
                     currentPopup.showInScreenCoordinates(finalComponent, new Point(finalX, finalY));
-                    System.out.println("[CodePins] 自定义悬浮预览显示成功");
+                    System.out.println("[CodePins] 基本信息预览显示成功");
+
+                    // 创建并启动代码预览计时器（3秒后显示代码预览）
+                    startCodePreviewTimer(finalComponent, finalX, finalY);
                 } catch (Exception ex) {
-                    System.out.println("[CodePins] 显示自定义悬浮预览异常: " + ex.getMessage());
+                    System.out.println("[CodePins] 显示基本信息预览异常: " + ex.getMessage());
                     ex.printStackTrace();
                 }
             });
@@ -81,6 +95,45 @@ public class PinHoverPreview {
 
         hoverTimer.setRepeats(false);
         hoverTimer.start();
+    }
+
+    /**
+     * 启动代码预览计时器
+     */
+    private static void startCodePreviewTimer(Component component, int x, int y) {
+        if (codePreviewTimer != null) {
+            codePreviewTimer.stop();
+        }
+
+        codePreviewTimer = new Timer(CODE_PREVIEW_DELAY_MS - INFO_PREVIEW_DELAY_MS, e -> {
+            // 在 EDT 线程上执行
+            SwingUtilities.invokeLater(() -> {
+                try {
+                    if (currentPin == null || currentProject == null) {
+                        System.out.println("[CodePins] 无法显示代码预览：当前图钉或项目为空");
+                        return;
+                    }
+
+                    System.out.println("[CodePins] 尝试显示代码预览，图钉路径: " + currentPin.filePath);
+
+                    // 关闭当前预览
+                    if (currentPopup != null && !currentPopup.isDisposed()) {
+                        currentPopup.cancel();
+                        currentPopup = null;
+                    }
+
+                    // 显示代码预览
+                    CodePreviewUtil.showPreviewPopup(currentProject, currentPin);
+                    System.out.println("[CodePins] 代码预览显示成功");
+                } catch (Exception ex) {
+                    System.out.println("[CodePins] 显示代码预览异常: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            });
+        });
+
+        codePreviewTimer.setRepeats(false);
+        codePreviewTimer.start();
     }
 
     /**
@@ -96,6 +149,14 @@ public class PinHoverPreview {
         if (hoverTimer != null) {
             hoverTimer.stop();
         }
+
+        if (codePreviewTimer != null) {
+            codePreviewTimer.stop();
+        }
+
+        // 清除当前图钉和项目引用
+        currentPin = null;
+        currentProject = null;
     }
 
     /**

@@ -20,7 +20,6 @@ public class CodePinsSettings implements PersistentStateComponent<CodePinsSettin
     // 常规设置
     public String maxPinsCount = "100";
     public String previewHeight = "300";
-    public boolean autoShowPreview = true;
     public boolean confirmDelete = true;
 
     // 开发测试设置

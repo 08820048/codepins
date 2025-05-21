@@ -34,8 +34,21 @@ public class PinStorage {
 
     /**
      * 添加图钉（包括 UI 显示 + 持久化）
+     *
+     * @return 是否添加成功
      */
-    public static void addPin(PinEntry entry) {
+    public static boolean addPin(PinEntry entry) {
+        // 检查是否超过最大图钉数量限制
+        try {
+            int maxPins = Integer.parseInt(cn.ilikexff.codepins.settings.CodePinsSettings.getInstance().maxPinsCount);
+            if (pins.size() >= maxPins) {
+                System.out.println("[CodePins] 添加图钉失败：已达到最大图钉数量限制 (" + maxPins + ")");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("[CodePins] 解析最大图钉数量设置失败，使用默认值: " + e.getMessage());
+        }
+
         pins.add(entry);
 
         // 获取 Document 对象，计算当前行号（用于持久化）
@@ -70,6 +83,7 @@ public class PinStorage {
         }
 
         refreshModel();
+        return true;
     }
 
     /**
