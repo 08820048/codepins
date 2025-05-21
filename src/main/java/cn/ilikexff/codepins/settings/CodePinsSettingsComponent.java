@@ -5,13 +5,13 @@ import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
+import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
-import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 /**
@@ -33,23 +33,13 @@ public class CodePinsSettingsComponent {
                 .addComponent(autoShowPreviewCheckBox)
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
-        generalPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(JBColor.border()),
-                "常规设置",
-                TitledBorder.LEFT,
-                TitledBorder.TOP
-        ));
+        generalPanel.setBorder(BorderFactory.createTitledBorder("常规设置"));
 
         // 创建快捷键信息面板
         JPanel shortcutsInfoPanel = new JPanel(new BorderLayout());
-        shortcutsInfoPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(JBColor.border()),
-                "快捷键设置",
-                TitledBorder.LEFT,
-                TitledBorder.TOP
-        ));
+        shortcutsInfoPanel.setBorder(BorderFactory.createTitledBorder("快捷键设置"));
 
-        JTextArea shortcutsInfoText = new JTextArea(
+        JBTextArea shortcutsInfoText = new JBTextArea(
                 "CodePins 提供以下默认快捷键：\n\n" +
                 "- 添加图钉: Alt+Shift+P\n" +
                 "- 导航到下一个图钉: Alt+Shift+Right\n" +
@@ -72,18 +62,19 @@ public class CodePinsSettingsComponent {
 
         // 创建许可证状态面板
         LicenseStatusPanel licenseStatusPanel = new LicenseStatusPanel();
-        licenseStatusPanel.setBorder(BorderFactory.createTitledBorder(
-                BorderFactory.createLineBorder(JBColor.border()),
-                "许可证状态",
-                TitledBorder.LEFT,
-                TitledBorder.TOP
-        ));
+        licenseStatusPanel.setBorder(BorderFactory.createTitledBorder("许可证状态"));
+
+        // 创建快捷键信息面板的标签面板
+        JPanel labeledShortcutsPanel = new JPanel(new BorderLayout());
+        JLabel shortcutsLabel = new JBLabel("快捷键信息:");
+        labeledShortcutsPanel.add(shortcutsLabel, BorderLayout.NORTH);
+        labeledShortcutsPanel.add(shortcutsInfoPanel, BorderLayout.CENTER);
 
         // 创建主面板
         mainPanel = FormBuilder.createFormBuilder()
                 .addComponent(licenseStatusPanel)
                 .addComponent(generalPanel)
-                .addComponent(UI.PanelFactory.panel(shortcutsInfoPanel).withLabel("快捷键信息:").createPanel())
+                .addComponent(labeledShortcutsPanel)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
     }

@@ -32,6 +32,10 @@ java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(17))
 }
 
+tasks.withType<JavaCompile> {
+    options.compilerArgs.add("-Xlint:deprecation")
+}
+
 tasks {
     patchPluginXml {
         sinceBuild.set("241") // 支持 IntelliJ 2024.1 起
