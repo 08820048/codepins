@@ -54,6 +54,9 @@ public class PinsToolWindow implements ToolWindowFactory {
     private List<PinEntry> allPins;
     private JList<PinEntry> list;
     private final TagFilterPanel[] tagFilterPanelRef = new TagFilterPanel[1]; // 使用数组引用来解决前向引用问题
+    private SearchTextField searchField;
+    private CardLayout cardLayout;
+    private JPanel contentPanel;
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -367,8 +370,8 @@ public class PinsToolWindow implements ToolWindowFactory {
         EmptyStatePanel emptyStatePanel = new EmptyStatePanel();
 
         // 创建卡片布局，用于切换显示列表或空状态
-        CardLayout cardLayout = new CardLayout();
-        JPanel contentPanel = new JPanel(cardLayout);
+        this.cardLayout = new CardLayout();
+        this.contentPanel = new JPanel(cardLayout);
 
         // 创建列表面板（包含标签筛选和列表）
         JPanel listPanel = new JPanel(new BorderLayout());
@@ -440,7 +443,7 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     private JComponent createSearchField() {
         // 创建现代化搜索框
-        SearchTextField searchField = new SearchTextField("搜索图钉（支持备注与路径）");
+        this.searchField = new SearchTextField("搜索图钉（支持备注与路径）");
 
         // 创建容器面板，添加边距
         JPanel container = new JPanel(new BorderLayout());
@@ -965,6 +968,61 @@ public class PinsToolWindow implements ToolWindowFactory {
                 "已删除 " + selectedPins.size() + " 个图钉",
                 "批量删除"
         );
+    }
+
+    /**
+     * 更新列表模型
+     * 根据当前的筛选条件更新列表显示
+     */
+    private void updateListModel() {
+        // 获取当前的筛选标签
+        List<String> filterTags = new ArrayList<>();
+        if (tagFilterPanelRef[0] != null) {
+            filterTags = tagFilterPanelRef[0].getSelectedTags();
+        }
+
+        // 获取搜索文本
+        String searchText = searchField.getText().trim().toLowerCase();
+
+        // 根据标签和搜索文本筛选图钉
+        List<PinEntry> filteredPins;
+        if (filterTags.isEmpty()) {
+            filteredPins = new ArrayList<>(allPins);
+        } else {
+            filteredPins = PinStorage.filterByTags(filterTags);
+        }
+
+        // 应用搜索筛选
+        if (!searchText.isEmpty()) {
+            filteredPins = filteredPins.stream()
+                    .filter(pin -> {
+                        String fileName = new File(pin.filePath).getName().toLowerCase();
+                        String note = pin.note.toLowerCase();
+                        return fileName.contains(searchText) || note.contains(searchText);
+                    })
+                    .collect(Collectors.toList());
+        }
+
+        // 更新模型
+        model.clear();
+        for (PinEntry pin : filteredPins) {
+            model.addElement(pin);
+        }
+
+        // 更新空状态面板
+        if (contentPanel != null && cardLayout != null) {
+            updateContentView(cardLayout, contentPanel);
+        }
+    }
+
+    /**
+     * 更新空状态面板
+     * 根据当前列表是否为空决定显示空状态还是列表
+     */
+    private void updateEmptyState() {
+        if (contentPanel != null && cardLayout != null) {
+            updateContentView(cardLayout, contentPanel);
+        }
     }
 
     /**
