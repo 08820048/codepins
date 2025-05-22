@@ -193,8 +193,8 @@ public final class LicenseService {
             return true; // 已经是付费用户，不需要显示对话框
         }
 
-        // 显示升级对话框
-        return cn.ilikexff.codepins.ui.UpgradeDialog.showDialog(project, featureName);
+        // 显示高级升级对话框
+        return cn.ilikexff.codepins.ui.PremiumUpgradeDialog.showDialog(project, featureName);
     }
 
     /**
