@@ -223,6 +223,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     Icon editIcon = IconUtil.loadIcon("/icons/edit.svg", getClass());
                     Icon tagIcon = IconUtil.loadIcon("/icons/tag.svg", getClass());
                     Icon shareIcon = IconUtil.loadIcon("/icons/share.svg", getClass());
+                    Icon shareIconMini = IconUtil.loadIcon("/icons/share-mini.svg", getClass());
                     Icon deleteIcon = IconUtil.loadIcon("/icons/trash.svg", getClass());
                     Icon refreshIcon = IconUtil.loadIcon("/icons/refresh.svg", getClass());
 
@@ -284,7 +285,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     menu.add(copyItem);
 
                     // 添加分享项
-                    JMenuItem shareItem = new JMenuItem("分享图钉", shareIcon);
+                    JMenuItem shareItem = new JMenuItem("分享图钉", shareIconMini);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(shareItem);
                     shareItem.addActionListener(event -> {
