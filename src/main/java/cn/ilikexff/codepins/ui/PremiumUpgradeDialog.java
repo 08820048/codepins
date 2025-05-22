@@ -60,19 +60,14 @@ public class PremiumUpgradeDialog extends DialogWrapper {
             new Feature("自定义水印", "自定义或完全移除分享图片中的水印", "/icons/image.svg"),
             new Feature("优先支持", "获得优先的技术支持和问题解决", "/icons/headphones.svg"),
             new Feature("未来高级功能", "自动获得所有未来的高级功能", "/icons/zap.svg")
-
     );
 
     private boolean showingMoreFeatures = false;
     private JPanel extraFeaturesPanel;
     private JLabel toggleLabel;
-    // 添加一个变量来存储原始窗口高度
+    // 添加变量来存储原始窗口高度和展开后的高度
     private int originalWindowHeight;
-    private JPanel contentPanel;
-    private JPanel togglePanel;
-    private JPanel bottomPanel;
-    private int originalTogglePanelY;
-    private int originalBottomPanelY;
+    private int expandedWindowHeight;
 
     /**
      * 构造函数
@@ -85,6 +80,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         this.project = project;
         this.featureName = featureName;
         this.originalWindowHeight = 0; // 初始化原始高度
+        this.expandedWindowHeight = 0; // 初始化展开高度
 
         setTitle("升级到 CodePins 专业版");
         setResizable(false);
@@ -153,7 +149,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
      * 创建内容面板
      */
     private JPanel createContentPanel() {
-        contentPanel = new JPanel();
+        JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(bgColor);
         
@@ -170,7 +166,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         contentPanel.add(mainFeaturesGrid);
         
         // 添加"显示更多"链接
-        togglePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 8));
+        JPanel togglePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 8));
         togglePanel.setBackground(bgColor);
         togglePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
@@ -214,13 +210,6 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         
         contentPanel.add(extraFeaturesPanel);
         
-        // 在组件显示后记录原始位置
-        SwingUtilities.invokeLater(() -> {
-            if (togglePanel != null) {
-                originalTogglePanelY = togglePanel.getY();
-            }
-        });
-        
         return contentPanel;
     }
 
@@ -229,52 +218,38 @@ public class PremiumUpgradeDialog extends DialogWrapper {
      */
     private void toggleExtraFeatures() {
         showingMoreFeatures = !showingMoreFeatures;
+        extraFeaturesPanel.setVisible(showingMoreFeatures);
         
-        if (showingMoreFeatures) {
-            // 显示额外特性
-            toggleLabel.setText("隐藏更多功能 ▲");
-            extraFeaturesPanel.setVisible(true);
-        } else {
-            // 隐藏额外特性
-            toggleLabel.setText("显示更多功能 ▼");
-            extraFeaturesPanel.setVisible(false);
+        Window window = SwingUtilities.getWindowAncestor(extraFeaturesPanel);
+        if (window != null) {
+            // 第一次操作时保存原始高度
+            if (originalWindowHeight == 0) {
+                originalWindowHeight = window.getHeight();
+                // 计算展开后的高度（原始高度 + 固定增量）
+                expandedWindowHeight = originalWindowHeight + 150;
+            }
             
-            // 重置布局 - 关键修复
-            resetLayout();
+            if (showingMoreFeatures) {
+                toggleLabel.setText("隐藏更多功能 ▲");
+                // 使用预先计算的展开高度
+                window.setSize(new Dimension(window.getWidth(), expandedWindowHeight));
+            } else {
+                toggleLabel.setText("显示更多功能 ▼");
+                // 使用保存的原始高度
+                window.setSize(new Dimension(window.getWidth(), originalWindowHeight));
+            }
         }
         
         // 重新布局
-        contentPanel.revalidate();
-        contentPanel.repaint();
-    }
-    
-    /**
-     * 重置布局到初始状态
-     */
-    private void resetLayout() {
-        // 使用SwingUtilities.invokeLater确保在EDT线程上执行，并在所有挂起的事件处理完成后运行
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                // 移除并重新添加组件以重置布局
-                Container parent = contentPanel.getParent();
-                if (parent != null) {
-                    parent.remove(contentPanel);
-                    parent.add(contentPanel);
-                    
-                    // 强制重新布局
-                    parent.revalidate();
-                    parent.repaint();
-                }
-            }
-        });
+        extraFeaturesPanel.revalidate();
+        extraFeaturesPanel.repaint();
     }
 
     /**
      * 创建底部面板
      */
     private JPanel createBottomPanel() {
-        bottomPanel = new JPanel(new BorderLayout(0, 8));
+        JPanel bottomPanel = new JPanel(new BorderLayout(0, 8));
         bottomPanel.setBackground(bgColor);
         bottomPanel.setBorder(JBUI.Borders.emptyTop(8));
         
@@ -284,7 +259,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         priceLabel.setFont(priceLabel.getFont().deriveFont(Font.PLAIN, 12f));
         
         // 升级按钮
-        JButton upgradeButton = createPremiumButton("立即升级", null);
+        JButton upgradeButton = createPremiumButton("⭐ 立即升级", null);
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
             close(OK_EXIT_CODE);
@@ -293,13 +268,6 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         // 组装底部面板
         bottomPanel.add(priceLabel, BorderLayout.NORTH);
         bottomPanel.add(upgradeButton, BorderLayout.CENTER);
-        
-        // 在组件显示后记录原始位置
-        SwingUtilities.invokeLater(() -> {
-            if (bottomPanel != null) {
-                originalBottomPanelY = bottomPanel.getY();
-            }
-        });
         
         return bottomPanel;
     }

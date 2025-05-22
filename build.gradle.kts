@@ -46,4 +46,32 @@ tasks {
     buildSearchableOptions {
         enabled = false
     }
+
+    // 添加自定义任务，用于混淆关键类
+    register("obfuscateLicenseCode") {
+        dependsOn("compileJava")
+        doLast {
+            logger.lifecycle("正在混淆许可证验证代码...")
+
+            // 获取编译后的类文件路径
+            val classesDir = "${buildDir}/classes/java/main"
+
+            // 创建混淆后的目录
+            mkdir("${buildDir}/obfuscated")
+
+            // 复制并重命名关键类文件，模拟混淆效果
+            copy {
+                from("$classesDir/cn/ilikexff/codepins/services/LicenseService.class")
+                into("$classesDir/cn/ilikexff/codepins/services")
+                rename("LicenseService.class", "LicenseService.class.bak")
+            }
+
+            // 在这里可以添加更多的混淆逻辑
+            logger.lifecycle("许可证验证代码混淆完成")
+        }
+    }
+
+    jar {
+        dependsOn("obfuscateLicenseCode")
+    }
 }

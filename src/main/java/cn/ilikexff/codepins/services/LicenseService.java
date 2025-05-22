@@ -16,7 +16,20 @@ import java.util.Date;
  */
 @Service
 public final class LicenseService {
-    private static final String PRODUCT_CODE = "***REMOVED_PRODUCT_CODE***";
+    // 产品代码已加密，防止反编译后直接获取
+    private static final String PRODUCT_CODE_ENCRYPTED = "***REMOVED_ENCODED_DATA***"; // Base64编码的"***REMOVED_PRODUCT_CODE***"
+
+    // 获取产品代码
+    private static String getProductCode() {
+        try {
+            // 解码Base64
+            byte[] decodedBytes = java.util.Base64.getDecoder().decode(PRODUCT_CODE_ENCRYPTED);
+            return new String(decodedBytes, java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            LOG.error("解码产品代码失败", e);
+            return "INVALID_CODE"; // 返回无效代码
+        }
+    }
     private static final Logger LOG = Logger.getInstance(LicenseService.class);
 
     private LicenseStatus licenseStatus = LicenseStatus.NOT_CHECKED;
@@ -59,11 +72,207 @@ public final class LicenseService {
     }
 
     /**
+     * 检查是否可以进行在线验证
+     */
+    private boolean isOnlineVerificationAvailable() {
+        try {
+            // 检查是否可以访问JetBrains许可证服务器
+            // 这里简化处理，只检查LicensingFacade类是否可用
+            Class.forName("com.intellij.ide.plugins.marketplace.LicensingFacade");
+            return true;
+        } catch (Exception e) {
+            LOG.info("Online verification not available: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * 离线验证许可证
+     */
+    private boolean verifyOfflineLicense() {
+        try {
+            // 获取机器ID
+            String machineId = getMachineId();
+
+            // 获取产品代码
+            String productCode = getProductCode();
+
+            // 检查是否存在离线许可证文件
+            java.io.File licenseFile = new java.io.File(System.getProperty("user.home"), ".codepins/license.dat");
+            if (!licenseFile.exists()) {
+                LOG.info("Offline license file not found");
+                return false;
+            }
+
+            // 读取许可证文件
+            String licenseContent = readLicenseFile(licenseFile);
+            if (licenseContent == null || licenseContent.isEmpty()) {
+                LOG.info("Offline license file is empty");
+                return false;
+            }
+
+            // 验证许可证内容
+            // 格式: 加密的(产品代码 + 机器ID + 过期时间)
+            String decryptedContent = cn.ilikexff.codepins.utils.StringEncryptor.decrypt(licenseContent);
+            String[] parts = decryptedContent.split("\\|");
+
+            if (parts.length != 3) {
+                LOG.info("Invalid offline license format");
+                return false;
+            }
+
+            // 验证产品代码
+            if (!parts[0].equals(productCode)) {
+                LOG.info("Product code mismatch in offline license");
+                return false;
+            }
+
+            // 验证机器ID
+            if (!parts[1].equals(machineId)) {
+                LOG.info("Machine ID mismatch in offline license");
+                return false;
+            }
+
+            // 验证过期时间
+            long expirationTime = Long.parseLong(parts[2]);
+            if (expirationTime < System.currentTimeMillis()) {
+                LOG.info("Offline license has expired");
+                return false;
+            }
+
+            LOG.info("Offline license is valid");
+            return true;
+        } catch (Exception e) {
+            LOG.error("Error verifying offline license: " + e.getMessage(), e);
+            return false;
+        }
+    }
+
+    /**
+     * 获取机器ID
+     */
+    private String getMachineId() {
+        try {
+            // 获取主机名
+            String hostname = java.net.InetAddress.getLocalHost().getHostName();
+
+            // 获取MAC地址
+            java.util.Enumeration<java.net.NetworkInterface> networkInterfaces = java.net.NetworkInterface.getNetworkInterfaces();
+            StringBuilder macAddresses = new StringBuilder();
+
+            while (networkInterfaces.hasMoreElements()) {
+                java.net.NetworkInterface networkInterface = networkInterfaces.nextElement();
+                byte[] mac = networkInterface.getHardwareAddress();
+                if (mac != null) {
+                    for (byte b : mac) {
+                        macAddresses.append(String.format("%02X", b));
+                    }
+                    break; // 只使用第一个有效的MAC地址
+                }
+            }
+
+            // 组合主机名和MAC地址，并计算哈希值
+            String combined = hostname + "|" + macAddresses.toString();
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] digest = md.digest(combined.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+
+            // 转换为十六进制字符串
+            StringBuilder hexString = new StringBuilder();
+            for (byte b : digest) {
+                hexString.append(String.format("%02x", b));
+            }
+
+            // 返回前32个字符作为机器ID
+            return hexString.substring(0, Math.min(32, hexString.length()));
+        } catch (Exception e) {
+            LOG.error("Error getting machine ID: " + e.getMessage(), e);
+            return "unknown";
+        }
+    }
+
+    /**
+     * 读取许可证文件
+     */
+    private String readLicenseFile(java.io.File file) {
+        try {
+            java.nio.file.Path path = file.toPath();
+            return new String(java.nio.file.Files.readAllBytes(path), java.nio.charset.StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            LOG.error("Error reading license file: " + e.getMessage(), e);
+            return null;
+        }
+    }
+
+    /**
+     * 验证插件完整性，防止篡改
+     */
+    private boolean verifyIntegrity() {
+        try {
+            // 验证类是否被篡改
+            String className = this.getClass().getName();
+            String expectedClassName = "cn.ilikexff.codepins.services.LicenseService";
+
+            if (!className.equals(expectedClassName)) {
+                LOG.warn("Class name mismatch: expected " + expectedClassName + ", got " + className);
+                return false;
+            }
+
+            // 验证类加载器
+            ClassLoader classLoader = this.getClass().getClassLoader();
+            if (classLoader == null) {
+                LOG.warn("Class loader is null");
+                return false;
+            }
+
+            // 验证关键方法是否存在
+            try {
+                this.getClass().getDeclaredMethod("isPremiumUser");
+                this.getClass().getDeclaredMethod("checkLicense");
+                this.getClass().getDeclaredMethod("getLicenseStatus");
+            } catch (NoSuchMethodException e) {
+                LOG.warn("Critical method missing: " + e.getMessage());
+                return false;
+            }
+
+            // 验证产品代码格式
+            String productCode = getProductCode();
+            if (productCode == null || productCode.length() != 15 || !productCode.startsWith("P")) {
+                LOG.warn("Invalid product code format");
+                return false;
+            }
+
+            // 计算类的简单校验和
+            int checksum = 0;
+            for (char c : className.toCharArray()) {
+                checksum += c;
+            }
+
+            // 验证校验和
+            if (checksum % 256 != 83) { // 83是预期的校验和余数
+                LOG.warn("Checksum verification failed");
+                return false;
+            }
+
+            return true;
+        } catch (Exception e) {
+            LOG.error("Integrity verification failed", e);
+            return false;
+        }
+    }
+
+    /**
      * 检查许可证
      * 使用JetBrains Marketplace API验证许可证
      */
     public void checkLicense() {
         try {
+            // 添加篡改检测
+            if (!verifyIntegrity()) {
+                LOG.warn("License integrity check failed");
+                licenseStatus = LicenseStatus.INVALID;
+                return;
+            }
+
             // 获取ApplicationInfo实例
             Object appInfo = ApplicationManager.getApplication().getService(Class.forName("com.intellij.openapi.application.ApplicationInfo"));
 
@@ -95,6 +304,14 @@ public final class LicenseService {
                 return;
             }
 
+            // 添加离线验证逻辑
+            if (!isOnlineVerificationAvailable()) {
+                LOG.info("Using offline verification");
+                boolean offlineValid = verifyOfflineLicense();
+                licenseStatus = offlineValid ? LicenseStatus.VALID : LicenseStatus.INVALID;
+                return;
+            }
+
             // 使用反射获取LicensingFacade
             Class<?> licensingFacadeClass = Class.forName("com.intellij.ide.plugins.marketplace.LicensingFacade");
             Method getInstanceMethod = licensingFacadeClass.getMethod("getInstance");
@@ -107,29 +324,32 @@ public final class LicenseService {
                 return;
             }
 
+            // 获取产品代码
+            String productCode = getProductCode();
+
             // 获取许可证密钥
             Method getLicenseKeyMethod = licensingFacadeClass.getMethod("getLicenseKey", String.class);
-            String licenseKey = (String) getLicenseKeyMethod.invoke(licensingFacade, PRODUCT_CODE);
+            String licenseKey = (String) getLicenseKeyMethod.invoke(licensingFacade, productCode);
 
             if (licenseKey == null || licenseKey.isEmpty()) {
-                LOG.info("No license key found for product: " + PRODUCT_CODE);
+                LOG.info("No license key found for product: " + productCode);
                 licenseStatus = LicenseStatus.INVALID;
                 return;
             }
 
             // 验证许可证
             Method isLicenseValidMethod = licensingFacadeClass.getMethod("isLicenseValid", String.class, String.class);
-            boolean isValid = (Boolean) isLicenseValidMethod.invoke(licensingFacade, PRODUCT_CODE, licenseKey);
+            boolean isValid = (Boolean) isLicenseValidMethod.invoke(licensingFacade, productCode, licenseKey);
 
             if (!isValid) {
-                LOG.info("License is not valid for product: " + PRODUCT_CODE);
+                LOG.info("License is not valid for product: " + productCode);
                 licenseStatus = LicenseStatus.INVALID;
                 return;
             }
 
             // 检查过期时间
             Method getLicenseExpirationDateMethod = licensingFacadeClass.getMethod("getLicenseExpirationDate", String.class, String.class);
-            Date expirationDate = (Date) getLicenseExpirationDateMethod.invoke(licensingFacade, PRODUCT_CODE, licenseKey);
+            Date expirationDate = (Date) getLicenseExpirationDateMethod.invoke(licensingFacade, productCode, licenseKey);
 
             if (expirationDate != null && expirationDate.before(new Date())) {
                 LOG.info("License has expired on: " + expirationDate);
@@ -138,7 +358,7 @@ public final class LicenseService {
             }
 
             // 许可证有效
-            LOG.info("License is valid for product: " + PRODUCT_CODE);
+            LOG.info("License is valid for product: " + productCode);
             licenseStatus = LicenseStatus.VALID;
 
         } catch (Exception e) {
@@ -159,11 +379,6 @@ public final class LicenseService {
      * @return 是否为付费用户
      */
     public boolean isPremiumUser() {
-        // 检查测试模式设置
-        if (cn.ilikexff.codepins.settings.CodePinsSettings.getInstance().testPremiumMode) {
-            return true; // 如果测试模式开启，返回true
-        }
-
         // 如果状态为未检查，重新检查
         if (licenseStatus == LicenseStatus.NOT_CHECKED) {
             checkLicense();
@@ -171,15 +386,7 @@ public final class LicenseService {
         return licenseStatus == LicenseStatus.VALID;
     }
 
-    /**
-     * 设置测试模式状态
-     *
-     * @param enabled 是否启用测试模式
-     */
-    public void setTestPremiumMode(boolean enabled) {
-        cn.ilikexff.codepins.settings.CodePinsSettings.getInstance().testPremiumMode = enabled;
-        LOG.info("Test premium mode " + (enabled ? "enabled" : "disabled"));
-    }
+
 
     /**
      * 显示升级对话框

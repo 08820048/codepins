@@ -1,13 +1,20 @@
 package cn.ilikexff.codepins;
 
 import cn.ilikexff.codepins.settings.CodePinsSettings;
+import cn.ilikexff.codepins.ui.TagFilterPanel;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.openapi.wm.ToolWindow;
+import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.content.Content;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -552,6 +559,51 @@ public class PinStorage {
             model.clear();
             for (PinEntry pin : pins) {
                 model.addElement(pin);
+            }
+        }
+
+        // 刷新所有标签筛选面板
+        refreshTagFilterPanels();
+    }
+
+    /**
+     * 刷新所有标签筛选面板
+     * 在添加、删除、更新图钉标签后调用
+     */
+    private static void refreshTagFilterPanels() {
+        // 使用SwingUtilities.invokeLater确保在EDT线程中执行UI更新
+        SwingUtilities.invokeLater(() -> {
+            // 获取所有打开的项目
+            Project[] openProjects = ProjectManager.getInstance().getOpenProjects();
+            for (Project project : openProjects) {
+                // 获取CodePins工具窗口
+                ToolWindow toolWindow = ToolWindowManager.getInstance(project).getToolWindow("CodePins");
+                if (toolWindow != null && toolWindow.isAvailable()) {
+                    // 获取工具窗口内容
+                    Content[] contents = toolWindow.getContentManager().getContents();
+                    for (Content content : contents) {
+                        // 获取内容组件
+                        JComponent component = content.getComponent();
+                        // 递归查找TagFilterPanel
+                        findAndRefreshTagFilterPanels(component);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * 递归查找并刷新TagFilterPanel
+     */
+    private static void findAndRefreshTagFilterPanels(Component component) {
+        if (component instanceof TagFilterPanel) {
+            // 找到TagFilterPanel，刷新它
+            ((TagFilterPanel) component).refreshTagsView();
+        } else if (component instanceof Container) {
+            // 递归查找子组件
+            Component[] children = ((Container) component).getComponents();
+            for (Component child : children) {
+                findAndRefreshTagFilterPanels(child);
             }
         }
     }

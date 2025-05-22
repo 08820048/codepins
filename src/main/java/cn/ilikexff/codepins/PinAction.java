@@ -29,6 +29,12 @@ import java.util.Map;
  */
 public class PinAction extends AnAction {
 
+    public PinAction() {
+        // 注意：图标在plugin.xml中设置，这里不需要设置
+        // 使用空构造函数，避免覆盖plugin.xml中的设置
+        System.out.println("[CodePins] PinAction registered"); // 插件加载时输出
+    }
+
     @Override
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getProject();
