@@ -458,6 +458,27 @@ public class PinStorage {
     }
 
     /**
+     * 更新图钉排序顺序
+     *
+     * @param sortedPins 排序后的图钉列表
+     */
+    public static void updatePinsOrder(List<PinEntry> sortedPins) {
+        if (sortedPins == null || sortedPins.isEmpty()) {
+            return;
+        }
+
+        // 清空并重新添加所有图钉，保持新的排序顺序
+        pins.clear();
+        pins.addAll(sortedPins);
+
+        // 刷新 UI 模型
+        refreshModel();
+
+        // 保存自定义排序
+        saveCustomOrder();
+    }
+
+    /**
      * 交换两个图钉的位置
      *
      * @param fromIndex 起始索引

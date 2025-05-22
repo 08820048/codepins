@@ -38,9 +38,11 @@ import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionAdapter;
+import java.io.File;
 import java.io.IOException;
+import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,6 +64,9 @@ public class PinsToolWindow implements ToolWindowFactory {
 
         PinStorage.initFromSaved();
         allPins = PinStorage.getPins();
+
+        // 设置多选模式，允许批量操作
+        list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         // 使用自定义的现代卡片式渲染器
         PinListCellRenderer cellRenderer = new PinListCellRenderer();
@@ -683,6 +688,75 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
+        // 批量删除按钮
+        Icon deleteMultipleIcon = IconUtil.loadIcon("/icons/delete-multiple.svg", getClass());
+        group.add(new AnAction("批量删除", "删除选中的图钉", deleteMultipleIcon) {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                List<PinEntry> selectedPins = list.getSelectedValuesList();
+                if (selectedPins.isEmpty()) {
+                    Messages.showInfoMessage(
+                            project,
+                            "请先选择要删除的图钉",
+                            "批量删除"
+                    );
+                    return;
+                }
+
+                int confirm = JOptionPane.showConfirmDialog(null,
+                        "确定要删除选中的 " + selectedPins.size() + " 个图钉吗？",
+                        "确认删除", JOptionPane.YES_NO_OPTION);
+
+                if (confirm == JOptionPane.YES_OPTION) {
+                    deleteSelectedPins(selectedPins);
+                }
+            }
+
+            @Override
+            public void update(@NotNull AnActionEvent e) {
+                // 只有在有图钉时才启用此操作
+                e.getPresentation().setEnabled(!model.isEmpty());
+            }
+        });
+
+        // 排序按钮
+        Icon sortIcon = IconUtil.loadIcon("/icons/sort.svg", getClass());
+        DefaultActionGroup sortGroup = new DefaultActionGroup("排序", true);
+        sortGroup.getTemplatePresentation().setIcon(sortIcon);
+        sortGroup.getTemplatePresentation().setText("排序图钉");
+        sortGroup.getTemplatePresentation().setDescription("按不同条件排序图钉");
+
+        // 添加排序选项
+        sortGroup.add(new AnAction("按创建时间（新→旧）") {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                sortPins(SortType.TIME_DESC);
+            }
+        });
+
+        sortGroup.add(new AnAction("按创建时间（旧→新）") {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                sortPins(SortType.TIME_ASC);
+            }
+        });
+
+        sortGroup.add(new AnAction("按文件名") {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                sortPins(SortType.FILENAME);
+            }
+        });
+
+        sortGroup.add(new AnAction("按备注") {
+            @Override
+            public void actionPerformed(@NotNull AnActionEvent e) {
+                sortPins(SortType.NOTE);
+            }
+        });
+
+        group.add(sortGroup);
+
         // 清空按钮
         Icon clearIcon = IconUtil.loadIcon("/icons/x-octagon.svg", getClass());
         group.add(new AnAction("清空图钉", "清除所有图钉记录", clearIcon) {
@@ -793,6 +867,105 @@ public class PinsToolWindow implements ToolWindowFactory {
     }
 
     // 已移除 createListPopupMenu 方法，改为使用 MouseAdapter 动态创建菜单
+
+    /**
+     * 排序类型枚举
+     */
+    private enum SortType {
+        TIME_DESC,  // 按创建时间降序（新→旧）
+        TIME_ASC,   // 按创建时间升序（旧→新）
+        FILENAME,   // 按文件名
+        NOTE        // 按备注
+    }
+
+    /**
+     * 对图钉列表进行排序
+     *
+     * @param type 排序类型
+     */
+    private void sortPins(SortType type) {
+        if (allPins.isEmpty()) {
+            return;
+        }
+
+        List<PinEntry> sortedPins = new ArrayList<>(allPins);
+
+        switch (type) {
+            case TIME_DESC:
+                // 按创建时间降序（新→旧）
+                sortedPins.sort((p1, p2) -> Long.compare(p2.timestamp, p1.timestamp));
+                break;
+            case TIME_ASC:
+                // 按创建时间升序（旧→新）
+                sortedPins.sort(Comparator.comparingLong(p -> p.timestamp));
+                break;
+            case FILENAME:
+                // 按文件名
+                sortedPins.sort((p1, p2) -> {
+                    String fileName1 = new File(p1.filePath).getName();
+                    String fileName2 = new File(p2.filePath).getName();
+                    return fileName1.compareToIgnoreCase(fileName2);
+                });
+                break;
+            case NOTE:
+                // 按备注
+                sortedPins.sort(Comparator.comparing(p -> p.note, String.CASE_INSENSITIVE_ORDER));
+                break;
+        }
+
+        // 更新存储和模型
+        PinStorage.updatePinsOrder(sortedPins);
+        updateListModel();
+
+        // 显示排序成功消息
+        String sortTypeText = "";
+        switch (type) {
+            case TIME_DESC:
+                sortTypeText = "创建时间（新→旧）";
+                break;
+            case TIME_ASC:
+                sortTypeText = "创建时间（旧→新）";
+                break;
+            case FILENAME:
+                sortTypeText = "文件名";
+                break;
+            case NOTE:
+                sortTypeText = "备注";
+                break;
+        }
+        Messages.showInfoMessage(
+                project,
+                "已按" + sortTypeText + "排序图钉",
+                "排序完成"
+        );
+    }
+
+    /**
+     * 批量删除选中的图钉
+     *
+     * @param selectedPins 选中的图钉列表
+     */
+    private void deleteSelectedPins(List<PinEntry> selectedPins) {
+        for (PinEntry pin : selectedPins) {
+            PinStorage.removePin(pin);
+        }
+
+        // 更新列表
+        allPins = PinStorage.getPins();
+        updateListModel();
+
+        // 刷新标签筛选面板
+        if (tagFilterPanelRef[0] != null) {
+            tagFilterPanelRef[0].refreshTagsView();
+        }
+
+        // 显示删除成功消息
+        Messages.showInfoMessage(
+                project,
+                "已删除 " + selectedPins.size() + " 个图钉",
+                "批量删除"
+        );
+    }
 
     /**
      * 复制图钉
