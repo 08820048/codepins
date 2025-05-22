@@ -1,7 +1,1 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-    <path d="M5 3V2C5 1.44772 5.44772 1 6 1H10C10.5523 1 11 1.44772 11 2V3H14C14.5523 3 15 3.44772 15 4V5H1V4C1 3.44772 1.44772 3 2 3H5Z" stroke="#CED0D6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M3 5V13C3 13.5523 3.44772 14 4 14H12C12.5523 14 13 13.5523 13 13V5" stroke="#CED0D6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M6 8V11" stroke="#CED0D6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M10 8V11" stroke="#CED0D6" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7d7f82" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trash2-icon lucide-trash-2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
