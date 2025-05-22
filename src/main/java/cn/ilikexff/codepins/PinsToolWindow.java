@@ -12,8 +12,13 @@ import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.RangeMarker;
+import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.JBColor;
@@ -255,6 +260,20 @@ public class PinsToolWindow implements ToolWindowFactory {
                         }
                     });
                     menu.add(tagItem);
+
+                    // 添加复制图钉项
+                    Icon copyIcon = IconUtil.loadIcon("/icons/copy.svg", getClass());
+                    JMenuItem copyItem = new JMenuItem("复制图钉", copyIcon);
+                    // 应用自定义UI
+                    cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(copyItem);
+                    copyItem.addActionListener(event -> {
+                        // 添加按钮动画效果
+                        AnimationUtil.buttonClickEffect(copyItem);
+
+                        // 复制图钉
+                        copyPin(selected);
+                    });
+                    menu.add(copyItem);
 
                     // 添加分享项
                     JMenuItem shareItem = new JMenuItem("分享图钉", shareIcon);
@@ -774,4 +793,88 @@ public class PinsToolWindow implements ToolWindowFactory {
     }
 
     // 已移除 createListPopupMenu 方法，改为使用 MouseAdapter 动态创建菜单
+
+    /**
+     * 复制图钉
+     * 创建一个新的图钉，复制原图钉的所有属性，并添加到图钉列表中
+     *
+     * @param original 原始图钉
+     */
+    private void copyPin(PinEntry original) {
+        try {
+            // 获取文件
+            VirtualFile file = LocalFileSystem.getInstance().findFileByPath(original.filePath);
+            if (file == null || !file.exists()) {
+                Messages.showErrorDialog(
+                        project,
+                        "无法复制图钉，文件不存在或已被删除。",
+                        "复制失败"
+                );
+                return;
+            }
+
+            // 获取文档
+            Document document = FileDocumentManager.getInstance().getDocument(file);
+            if (document == null) {
+                Messages.showErrorDialog(
+                        project,
+                        "无法复制图钉，无法获取文件内容。",
+                        "复制失败"
+                );
+                return;
+            }
+
+            // 创建新的标记
+            RangeMarker newMarker;
+            if (original.isBlock) {
+                // 如果是代码块图钉，复制整个范围
+                newMarker = document.createRangeMarker(
+                        original.marker.getStartOffset(),
+                        original.marker.getEndOffset()
+                );
+            } else {
+                // 如果是单行图钉，复制当前行
+                int line = document.getLineNumber(original.marker.getStartOffset());
+                int lineStartOffset = document.getLineStartOffset(line);
+                int lineEndOffset = document.getLineEndOffset(line);
+                newMarker = document.createRangeMarker(lineStartOffset, lineEndOffset);
+            }
+
+            // 复制标签
+            List<String> tags = new ArrayList<>(original.getTags());
+
+            // 创建新的图钉
+            PinEntry newPin = new PinEntry(
+                    original.filePath,
+                    newMarker,
+                    original.note + " (复制)",  // 添加"(复制)"后缀以区分
+                    System.currentTimeMillis(), // 使用当前时间戳
+                    System.getProperty("user.name"),
+                    original.isBlock,
+                    tags
+            );
+
+            // 添加到存储
+            boolean success = PinStorage.addPin(newPin);
+            if (success) {
+                Messages.showInfoMessage(
+                        project,
+                        "图钉复制成功！",
+                        "复制成功"
+                );
+            } else {
+                Messages.showErrorDialog(
+                        project,
+                        "图钉复制失败，可能已达到免费版图钉数量限制。",
+                        "复制失败"
+                );
+            }
+        } catch (Exception e) {
+            Messages.showErrorDialog(
+                    project,
+                    "复制图钉时发生错误: " + e.getMessage(),
+                    "复制失败"
+            );
+        }
+    }
 }
