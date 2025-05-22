@@ -125,8 +125,7 @@
         <!-- 图标预加载器 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.services.IconPreloader"/>
 
-        <!-- What's New 对话框显示器 -->
-        <postStartupActivity implementation="cn.ilikexff.codepins.listeners.PluginActivationListener"/>
+
 
         <!-- 注册设置页面 -->
         <applicationConfigurable parentId="tools" instance="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
