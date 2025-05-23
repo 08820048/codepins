@@ -1,17 +1,23 @@
 package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.utils.IconUtil;
+import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.JBColor;
 import com.intellij.util.ui.JBUI;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * 空状态面板
  * 当没有图钉时显示友好的引导信息
  */
 public class EmptyStatePanel extends JPanel {
+
+    // 文档地址常量
+    private static final String DOCS_URL = "https://docs.codepins.cn/";
 
     public EmptyStatePanel() {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -35,7 +41,7 @@ public class EmptyStatePanel extends JPanel {
         descriptionPane.setText(
                 "<html><div style='text-align:center; font-size:12px; color:#BBBBBB;'>" +
                 "图钉可以帮助您标记重要的代码位置，<br/>并随时快速返回查看。<br/><br/>" +
-                "在编辑器中右键点击代码行，<br/>选择\"Pin This Line\"添加图钉。" +
+                "在编辑器中右键点击代码行，<br/>选择\"Add CodePin Here\"添加图钉。" +
                 "</div></html>"
         );
         descriptionPane.setEditable(false);
@@ -50,6 +56,14 @@ public class EmptyStatePanel extends JPanel {
 
         JButton helpButton = new JButton("查看帮助");
         helpButton.setFocusPainted(false);
+
+        // 添加点击事件，打开文档地址
+        helpButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                BrowserUtil.browse(DOCS_URL);
+            }
+        });
 
         buttonPanel.add(helpButton);
 

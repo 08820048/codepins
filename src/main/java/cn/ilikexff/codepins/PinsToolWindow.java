@@ -57,6 +57,7 @@ public class PinsToolWindow implements ToolWindowFactory {
     private SearchTextField searchField;
     private CardLayout cardLayout;
     private JPanel contentPanel;
+    private JComponent pinCountLabel; // 添加图钉数量标签引用
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
@@ -325,6 +326,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                         if (shouldDelete) {
                             PinStorage.removePin(selected);
                             allPins = PinStorage.getPins();
+                            // 更新图钉数量标签
+                            updatePinCountLabel();
                         }
                     });
                     menu.add(deleteItem);
@@ -420,7 +423,8 @@ public class PinsToolWindow implements ToolWindowFactory {
         rightPanel.setOpaque(false);
 
         // 添加图钉计数标签
-        rightPanel.add(createPinCountLabel(), BorderLayout.WEST);
+        pinCountLabel = createPinCountLabel();
+        rightPanel.add(pinCountLabel, BorderLayout.WEST);
 
         // 添加工具栏
         rightPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
@@ -483,6 +487,44 @@ public class PinsToolWindow implements ToolWindowFactory {
             cardLayout.show(contentPanel, "EMPTY");
         } else {
             cardLayout.show(contentPanel, "LIST");
+        }
+
+        // 更新图钉数量标签
+        updatePinCountLabel();
+    }
+
+    /**
+     * 更新图钉数量标签
+     */
+    private void updatePinCountLabel() {
+        if (pinCountLabel != null) {
+            // 获取最新的图钉数量信息
+            Map<String, Integer> countInfo = PinStorage.getPinsCountInfo();
+            int currentCount = countInfo.get("current");
+            int maxCount = countInfo.get("max");
+
+            // 创建新的图钉计数标签
+            JComponent newCountLabel = createPinCountLabel();
+
+            // 替换旧的标签
+            if (pinCountLabel.getParent() != null) {
+                Container parent = pinCountLabel.getParent();
+                int index = -1;
+                for (int i = 0; i < parent.getComponentCount(); i++) {
+                    if (parent.getComponent(i) == pinCountLabel) {
+                        index = i;
+                        break;
+                    }
+                }
+
+                if (index >= 0) {
+                    parent.remove(pinCountLabel);
+                    parent.add(newCountLabel, index);
+                    parent.revalidate();
+                    parent.repaint();
+                    pinCountLabel = newCountLabel;
+                }
+            }
         }
     }
 
@@ -660,6 +702,9 @@ public class PinsToolWindow implements ToolWindowFactory {
                     if (tagFilterPanelRef[0] != null) {
                         tagFilterPanelRef[0].refreshTagsView();
                     }
+
+                    // 更新图钉数量标签
+                    updatePinCountLabel();
                 }
             }
         });
@@ -777,6 +822,9 @@ public class PinsToolWindow implements ToolWindowFactory {
                     if (tagFilterPanelRef[0] != null) {
                         tagFilterPanelRef[0].refreshTagsView();
                     }
+
+                    // 更新图钉数量标签
+                    updatePinCountLabel();
                 }
             }
         });
@@ -963,6 +1011,9 @@ public class PinsToolWindow implements ToolWindowFactory {
             tagFilterPanelRef[0].refreshTagsView();
         }
 
+        // 更新图钉数量标签
+        updatePinCountLabel();
+
         // 显示删除成功消息
         Messages.showInfoMessage(
                 project,
@@ -1010,7 +1061,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             model.addElement(pin);
         }
 
-        // 更新空状态面板
+        // 更新空状态面板和图钉数量标签
         if (contentPanel != null && cardLayout != null) {
             updateContentView(cardLayout, contentPanel);
         }
@@ -1089,6 +1140,9 @@ public class PinsToolWindow implements ToolWindowFactory {
             // 添加到存储
             boolean success = PinStorage.addPin(newPin);
             if (success) {
+                // 更新图钉数量标签
+                updatePinCountLabel();
+
                 Messages.showInfoMessage(
                         project,
                         "图钉复制成功！",

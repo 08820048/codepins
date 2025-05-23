@@ -259,7 +259,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         priceLabel.setFont(priceLabel.getFont().deriveFont(Font.PLAIN, 12f));
         
         // 升级按钮
-        JButton upgradeButton = createPremiumButton("⭐ 立即升级", null);
+        JButton upgradeButton = createPremiumButton("立即升级", null);
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
             close(OK_EXIT_CODE);
