@@ -1,6 +1,6 @@
 package cn.ilikexff.codepins.settings;
 
-import cn.ilikexff.codepins.ui.LicenseStatusPanel;
+
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.JBColor;
@@ -60,16 +60,8 @@ public class CodePinsSettingsComponent {
         shortcutsInfoPanel.add(shortcutsInfoText, BorderLayout.CENTER);
         shortcutsInfoPanel.add(openKeyMapSettingsButton, BorderLayout.SOUTH);
 
-        // 创建许可证状态面板
-        JPanel licensePanel;
-        try {
-            LicenseStatusPanel licenseStatusPanel = new LicenseStatusPanel();
-            licenseStatusPanel.setBorder(BorderFactory.createTitledBorder("许可证状态"));
-            licensePanel = licenseStatusPanel;
-        } catch (Exception e) {
-            // 如果许可证面板创建失败，使用简单面板代替
-            licensePanel = createSimpleLicensePanel();
-        }
+        // 创建捐赠支持面板
+        JPanel donationPanel = createDonationPanel();
 
         // 创建快捷键信息面板的标签面板
         JPanel labeledShortcutsPanel = new JPanel(new BorderLayout());
@@ -79,7 +71,7 @@ public class CodePinsSettingsComponent {
 
         // 创建主面板
         mainPanel = FormBuilder.createFormBuilder()
-                .addComponent(licensePanel)
+                .addComponent(donationPanel)
                 .addComponent(generalPanel)
                 .addComponent(labeledShortcutsPanel)
                 .addComponentFillVertically(new JPanel(), 0)
@@ -96,34 +88,63 @@ public class CodePinsSettingsComponent {
     }
 
     /**
-     * 创建简单的许可证面板
-     * 当LicenseStatusPanel创建失败时使用
+     * 创建捐赠支持面板
      *
-     * @return 简单的许可证面板
+     * @return 捐赠面板
      */
-    private JPanel createSimpleLicensePanel() {
+    private JPanel createDonationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("许可证状态"));
+        panel.setBorder(BorderFactory.createTitledBorder("支持开发"));
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(JBUI.Borders.empty(10));
 
-        JLabel statusLabel = new JBLabel("<html><font color='gray'>您正在使用CodePins免费版</font></html>");
+        // 状态标签
+        JLabel statusLabel = new JBLabel("<html>" +
+                "<div style='color: #4CAF50; font-weight: bold;'>✓ CodePins 现在完全免费开源！</div>" +
+                "<br/>感谢您使用 CodePins！如果这个插件对您有帮助，" +
+                "<br/>请考虑通过以下方式支持我们的开发：" +
+                "<br/><br/>" +
+                "<div style='color: #2196F3; font-weight: bold;'>🤝 欢迎加入开源贡献！</div>" +
+                "<br/>我们诚挚邀请您一起维护这个开源项目：" +
+                "<br/>• 🐛 报告 Bug 和提出改进建议" +
+                "<br/>• 💡 贡献新功能和代码优化" +
+                "<br/>• 📖 完善文档和使用指南" +
+                "<br/>• 🌍 帮助翻译到更多语言" +
+                "<br/>• 📢 向其他开发者推荐 CodePins" +
+                "</html>");
         contentPanel.add(statusLabel, BorderLayout.CENTER);
 
+        // 按钮面板
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton upgradeButton = new JButton("立即升级");
+
+        // GitHub 按钮
+        JButton githubButton = new JButton("⭐ GitHub");
+        githubButton.addActionListener(e -> {
+            BrowserUtil.browse("https://github.com/08820048/codepins");
+        });
+
+        // 参与贡献按钮
+        JButton contributeButton = new JButton("🤝 参与贡献");
+        contributeButton.addActionListener(e -> {
+            BrowserUtil.browse("https://github.com/08820048/codepins/blob/main/CONTRIBUTING.md");
+        });
+
+        // 捐赠按钮
+        JButton donateButton = new JButton("☕ 请我喝咖啡");
+        donateButton.addActionListener(e -> {
+            BrowserUtil.browse("https://docs.codepins.cn/donate");
+        });
 
         // 加载图标
-        Icon upgradeIcon = IconUtil.loadIcon("/icons/logo.svg", getClass());
-        if (upgradeIcon != null) {
-            upgradeButton.setIcon(upgradeIcon);
+        Icon heartIcon = IconUtil.loadIcon("/icons/logo.svg", getClass());
+        if (heartIcon != null) {
+            donateButton.setIcon(heartIcon);
         }
 
-        upgradeButton.addActionListener(e -> {
-            BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
-        });
-        buttonPanel.add(upgradeButton);
+        buttonPanel.add(githubButton);
+        buttonPanel.add(contributeButton);
+        buttonPanel.add(donateButton);
 
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);
         panel.add(contentPanel, BorderLayout.CENTER);

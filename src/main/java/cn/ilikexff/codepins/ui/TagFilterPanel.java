@@ -123,18 +123,7 @@ public class TagFilterPanel extends JPanel {
 
             countPanel.add(countLabel);
 
-            // 添加升级链接
-            JLabel upgradeLabel = new JLabel("<html><a href='#'>升级</a></html>");
-            upgradeLabel.setFont(upgradeLabel.getFont().deriveFont(Font.PLAIN, 11f));
-            upgradeLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            upgradeLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(null, "无限标签");
-                }
-            });
-            countPanel.add(upgradeLabel);
+            // 插件现在完全免费，移除升级链接
 
             tagsContainer.add(countPanel);
         }

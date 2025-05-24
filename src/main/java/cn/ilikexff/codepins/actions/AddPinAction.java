@@ -133,19 +133,8 @@ public class AddPinAction extends AnAction {
             String failureReason;
             String featureName;
 
-            if (currentPins >= maxPins && maxPins != -1) {
-                failureReason = "免费版限制" + maxPins + "个图钉，升级到专业版可获得无限图钉";
-                featureName = "无限图钉";
-            } else if (tags.size() > maxTagsPerPin && maxTagsPerPin != -1) {
-                failureReason = "免费版每个图钉最多只能添加" + maxTagsPerPin + "个标签，升级到专业版可获得无限标签";
-                featureName = "无限标签";
-            } else if (currentTagTypes >= maxTagTypes && maxTagTypes != -1) {
-                failureReason = "免费版最多只能创建" + maxTagTypes + "种不同标签，升级到专业版可获得无限标签";
-                featureName = "无限标签";
-            } else {
-                failureReason = "添加图钉失败，请稍后重试";
-                featureName = "专业版功能";
-            }
+            // 插件现在完全免费，这里不应该出现限制错误
+            failureReason = "添加图钉失败，请稍后重试";
 
             // 显示错误消息
             Messages.showWarningDialog(
@@ -154,7 +143,7 @@ public class AddPinAction extends AnAction {
                     "添加图钉失败"
             );
 
-            // 创建带有升级链接的通知
+            // 创建通知
             Notification notification = new Notification(
                     "CodePins",
                     "图钉添加失败",
@@ -162,15 +151,7 @@ public class AddPinAction extends AnAction {
                     NotificationType.WARNING
             );
 
-            // 添加升级按钮
-            final String finalFeatureName = featureName;
-            notification.addAction(new AnAction("立即升级") {
-                @Override
-                public void actionPerformed(@NotNull AnActionEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, finalFeatureName);
-                }
-            });
+            // 插件现在完全免费，移除升级按钮
 
             Notifications.Bus.notify(notification, project);
         }

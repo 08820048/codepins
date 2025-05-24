@@ -372,11 +372,7 @@ public class ShareDialog extends DialogWrapper {
             }
 
             // 显示文件保存对话框
-            FileSaverDescriptor descriptor = new FileSaverDescriptor(
-                    "分享图钉",
-                    "选择保存位置",
-                    extension
-            );
+            FileSaverDescriptor descriptor = new FileSaverDescriptor("分享图钉", "选择保存位置", extension);
 
             FileSaverDialog dialog = FileChooserFactory.getInstance().createSaveFileDialog(descriptor, project);
             VirtualFileWrapper wrapper = dialog.save((com.intellij.openapi.vfs.VirtualFile)null, "codepins_share." + extension);

@@ -111,27 +111,7 @@ public class SocialShareDialog extends DialogWrapper {
 
         platformPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // 如果用户不是付费用户，禁用付费平台
-        if (!isPremium) {
-            SocialSharingUtil.SocialPlatform[] freePlatforms = SocialSharingUtil.getSupportedPlatforms(false);
-            for (int i = 0; i < platforms.length; i++) {
-                boolean isPlatformFree = false;
-                for (SocialSharingUtil.SocialPlatform freePlatform : freePlatforms) {
-                    if (platforms[i] == freePlatform) {
-                        isPlatformFree = true;
-                        break;
-                    }
-                }
-
-                if (!isPlatformFree) {
-                    final int platformIndex = i; // 创建一个最终变量供匿名类使用
-                    platformRadios[i].setEnabled(false);
-                    platformRadios[i].setText(platformRadios[i].getText() + " (专业版功能)");
-
-                    // 移除升级对话框点击事件
-                }
-            }
-        }
+        // 插件现在完全免费，移除所有平台限制
 
         // 创建链接选项面板
         JPanel linkPanel = new JPanel(new BorderLayout(0, 5)); // 减小垂直间距
@@ -152,14 +132,7 @@ public class SocialShareDialog extends DialogWrapper {
         expirationComboBox.setEnabled(false);
         expirationPanel.add(new JBLabel(" (长期有效，限制功能将在未来版本中提供)"));
 
-        // 添加点击事件，显示升级对话框
-        expirationComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // 显示升级对话框
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "链接有效期限制");
-            }
-        });
+        // 插件现在完全免费，移除升级对话框点击事件
 
         linkPanel.add(expirationPanel, BorderLayout.NORTH);
 
@@ -179,22 +152,7 @@ public class SocialShareDialog extends DialogWrapper {
         passwordField.setEnabled(false);
         passwordPanel.add(new JBLabel(" (未来功能，专业版)"));
 
-        // 添加点击事件，显示升级对话框
-        passwordCheckBox.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // 显示升级对话框
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "密码保护");
-            }
-        });
-
-        passwordField.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                // 显示升级对话框
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "密码保护");
-            }
-        });
+        // 插件现在完全免费，移除升级对话框点击事件
 
         linkPanel.add(passwordPanel, BorderLayout.CENTER);
 

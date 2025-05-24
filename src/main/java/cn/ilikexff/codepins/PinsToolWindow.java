@@ -883,31 +883,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             countLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
             countLabel.setToolTipText("免费版限制100个图钉，点击升级到专业版获取无限图钉");
 
-            countLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    // 显示升级对话框
-                    cn.ilikexff.codepins.services.LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "无限图钉");
-                }
-
-                @Override
-                public void mouseEntered(MouseEvent e) {
-                    countLabel.setForeground(hoverColor);
-                }
-
-                @Override
-                public void mouseExited(MouseEvent e) {
-                    // 恢复原来的颜色
-                    float usageRatio = (float) currentCount / maxCount;
-                    if (usageRatio >= 0.9) {
-                        countLabel.setForeground(errorColor);
-                    } else if (usageRatio >= 0.7) {
-                        countLabel.setForeground(warningColor);
-                    } else {
-                        countLabel.setForeground(textColor);
-                    }
-                }
-            });
+            // 插件现在完全免费，移除升级相关的鼠标事件
         }
 
         // 创建容器面板，使用半透明背景

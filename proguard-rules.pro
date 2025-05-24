@@ -93,25 +93,18 @@
 # 不混淆资源文件
 -keepdirectories resources
 
-# 不混淆许可证验证相关类
+# 保留简化的许可证服务（用于兼容性）
 -keep class cn.ilikexff.codepins.services.LicenseService {
     public boolean isPremiumUser();
-    public boolean showUpgradeDialogIfNeeded(com.intellij.openapi.project.Project, java.lang.String);
     public static cn.ilikexff.codepins.services.LicenseService getInstance();
-    public void checkLicense();
     public cn.ilikexff.codepins.services.LicenseService$LicenseStatus getLicenseStatus();
     public java.lang.String getLicenseStatusDescription();
 }
 
-# 不混淆许可证状态枚举
+# 保留许可证状态枚举
 -keep class cn.ilikexff.codepins.services.LicenseService$LicenseStatus {
     public static final cn.ilikexff.codepins.services.LicenseService$LicenseStatus *;
     public java.lang.String getDisplayName();
-}
-
-# 不混淆升级对话框
--keep class cn.ilikexff.codepins.ui.PremiumUpgradeDialog {
-    public static boolean showDialog(com.intellij.openapi.project.Project, java.lang.String);
 }
 
 # 不混淆设置类
@@ -126,11 +119,7 @@
 -keep class com.google.zxing.** { *; }
 -keep class org.kohsuke.** { *; }
 
-# 不优化特定的包
--dontoptimize cn.ilikexff.codepins.services.LicenseService
-
-# 不混淆特定的包
--dontobfuscate cn.ilikexff.codepins.ui.PremiumUpgradeDialog
+# 插件现在完全免费，移除特定的优化和混淆规则
 
 # 保留所有的接口
 -keep interface * extends *

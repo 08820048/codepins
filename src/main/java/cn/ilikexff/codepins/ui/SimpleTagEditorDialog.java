@@ -234,37 +234,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private void addNewTag() {
         String tag = newTagField.getText().trim();
         if (!tag.isEmpty() && !tagsModel.contains(tag)) {
-            // 检查是否为专业版用户
-            boolean isPremiumUser = LicenseService.getInstance().isPremiumUser();
-
-            // 如果不是专业版用户，检查标签数量限制
-            if (!isPremiumUser) {
-                // 获取标签限制信息
-                Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
-                int maxTagsPerPin = tagsInfo.get("perPin");
-                int maxTagTypes = tagsInfo.get("max");
-                int currentTagTypes = tagsInfo.get("current");
-
-                // 检查每个图钉的标签数量限制
-                if (currentTags.size() >= maxTagsPerPin) {
-                    Messages.showWarningDialog(
-                            "免费版用户每个图钉最多只能添加 " + maxTagsPerPin + " 个标签。\n" +
-                            "升级到专业版可获得无限标签功能。",
-                            "标签数量限制"
-                    );
-                    return;
-                }
-
-                // 检查是否是新标签，以及是否会超出总标签种类限制
-                if (!existingTags.contains(tag) && currentTagTypes >= maxTagTypes) {
-                    Messages.showWarningDialog(
-                            "免费版用户最多只能创建 " + maxTagTypes + " 种不同标签。\n" +
-                            "升级到专业版可获得无限标签功能。",
-                            "标签种类限制"
-                    );
-                    return;
-                }
-            }
+            // 插件现在完全免费，移除所有标签限制检查
 
             // 添加标签
             tagsModel.addElement(tag);

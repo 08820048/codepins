@@ -112,32 +112,7 @@ public class WatermarkSettingsDialog extends DialogWrapper {
             textPanel.setVisible(false);
         });
 
-        // 检查是否为付费用户
-        boolean isPremium = SocialSharingUtil.isPremiumUser();
-        if (!isPremium) {
-            // 非付费用户禁用无水印选项
-            noWatermarkRadio.setEnabled(false);
-            noWatermarkRadio.setText(noWatermarkRadio.getText() + " (专业版功能)");
-
-            // 添加点击事件，显示升级对话框
-            noWatermarkRadio.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "移除水印");
-                }
-            });
-
-            // 禁用文本水印的自定义选项
-            textField.setEnabled(false);
-            positionComboBox.setEnabled(false);
-            colorPanel.setEnabled(false);
-            opacitySlider.setEnabled(false);
-
-            // 移除升级对话框点击事件
-
-            // 移除升级提示
-        }
+        // 插件现在完全免费，移除所有付费功能限制
 
         // 组装面板
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -166,11 +141,7 @@ public class WatermarkSettingsDialog extends DialogWrapper {
                 type = WatermarkManager.WatermarkType.TEXT;
             }
 
-            // 如果用户选择了付费功能但不是付费用户，显示升级对话框
-            if (!isPremium && noWatermarkRadio.isSelected()) {
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "移除水印");
-                return; // 不关闭对话框
-            }
+            // 插件现在完全免费，移除付费功能检查
 
             // TODO: 保存水印设置到配置
 
