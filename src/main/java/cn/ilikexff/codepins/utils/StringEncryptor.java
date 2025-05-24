@@ -7,19 +7,23 @@ import javax.crypto.spec.SecretKeySpec;
 
 /**
  * 字符串加密工具类
- * 用于加密和解密敏感信息
+ *
+ * @deprecated 此类已废弃。插件现在完全免费开源，不再需要加密功能。
+ *             保留此类仅用于向后兼容，解密可能存在的旧数据。
  */
+@Deprecated
 public class StringEncryptor {
 
-    // 加密密钥，16字节，用于AES-128加密
-    private static final String SECRET_KEY = "***REMOVED_SECRET_KEY***";
-    
+    // 注意：此类已废弃，插件现在完全免费开源，不再需要加密功能
+    // 保留此密钥仅用于向后兼容，解密旧数据
+    private static final String SECRET_KEY = "DEPRECATED_KEY_16";
+
     // 加密算法
     private static final String ALGORITHM = "AES";
-    
+
     // 加密模式和填充方式
     private static final String TRANSFORMATION = "AES/ECB/PKCS5Padding";
-    
+
     /**
      * 加密字符串
      *
@@ -39,7 +43,7 @@ public class StringEncryptor {
             return plainText;
         }
     }
-    
+
     /**
      * 解密字符串
      *
@@ -60,7 +64,7 @@ public class StringEncryptor {
             return encryptedText;
         }
     }
-    
+
     /**
      * 混淆字符串（简单的字符替换）
      * 这是一种简单的混淆方法，不是真正的加密
@@ -72,7 +76,7 @@ public class StringEncryptor {
         if (input == null || input.isEmpty()) {
             return input;
         }
-        
+
         StringBuilder result = new StringBuilder();
         for (char c : input.toCharArray()) {
             // 简单的字符替换规则
@@ -80,7 +84,7 @@ public class StringEncryptor {
         }
         return result.toString();
     }
-    
+
     /**
      * 解混淆字符串
      *
@@ -91,7 +95,7 @@ public class StringEncryptor {
         if (input == null || input.isEmpty()) {
             return input;
         }
-        
+
         StringBuilder result = new StringBuilder();
         for (char c : input.toCharArray()) {
             // 反向字符替换

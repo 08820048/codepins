@@ -40,3 +40,39 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+
+### Security - 敏感信息 ###
+# 密钥文件
+*.key
+*.pem
+*.p12
+*.keystore
+*.jks
+
+# 敏感配置文件
+secrets.properties
+local.properties
+.env
+.env.local
+.env.production
+config/secrets/
+
+# 许可证和证书
+license.dat
+*.license
+*.cert
+
+# API 密钥和令牌
+api-keys.txt
+tokens.txt
+credentials.json
+
+# 临时敏感文件
+temp-secrets/
+.secrets/
+
+### IDE 敏感文件 ###
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries/
+.idea/shelf/
