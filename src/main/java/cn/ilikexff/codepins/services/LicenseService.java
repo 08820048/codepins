@@ -400,7 +400,7 @@ public final class LicenseService {
             return true; // 已经是付费用户，不需要显示对话框
         }
 
-        // 显示高级升级对话框
+        // 显示升级对话框（已移除价格信息和升级按钮）
         return cn.ilikexff.codepins.ui.PremiumUpgradeDialog.showDialog(project, featureName);
     }
 

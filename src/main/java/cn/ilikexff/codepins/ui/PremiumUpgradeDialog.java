@@ -95,10 +95,10 @@ public class PremiumUpgradeDialog extends DialogWrapper {
 
         // 添加标题
         dialogPanel.add(createTitlePanel(), BorderLayout.NORTH);
-        
+
         // 添加内容面板
         dialogPanel.add(createContentPanel(), BorderLayout.CENTER);
-        
+
         // 添加底部面板
         dialogPanel.add(createBottomPanel(), BorderLayout.SOUTH);
 
@@ -115,33 +115,33 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         JPanel titlePanel = new JPanel(new BorderLayout(12, 0));
         titlePanel.setBackground(bgColor);
         titlePanel.setBorder(JBUI.Borders.emptyBottom(12));
-        
+
         // 图标
         Icon crownIcon = IconUtil.loadIcon("/icons/crown.svg", getClass());
         JLabel iconLabel = new JLabel(crownIcon);
-        
+
         // 标题
         JLabel titleLabel = new JLabel("升级到 CodePins 专业版");
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 18f));
-        
+
         titlePanel.add(iconLabel, BorderLayout.WEST);
         titlePanel.add(titleLabel, BorderLayout.CENTER);
-        
+
         // 如果有特定功能名称，添加提示
         if (featureName != null && !featureName.isEmpty()) {
             JLabel subtitleLabel = new JLabel("您正在尝试使用「" + featureName + "」，这是专业版专属功能");
             subtitleLabel.setForeground(new Color(255, 107, 0));
             subtitleLabel.setFont(subtitleLabel.getFont().deriveFont(Font.PLAIN, 12f));
             subtitleLabel.setBorder(JBUI.Borders.emptyTop(4));
-            
+
             JPanel textPanel = new JPanel(new BorderLayout(0, 0));
             textPanel.setBackground(bgColor);
             textPanel.add(titleLabel, BorderLayout.NORTH);
             textPanel.add(subtitleLabel, BorderLayout.CENTER);
-            
+
             titlePanel.add(textPanel, BorderLayout.CENTER);
         }
-        
+
         return titlePanel;
     }
 
@@ -152,64 +152,64 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
         contentPanel.setBackground(bgColor);
-        
+
         // 添加主要特性网格
         JPanel mainFeaturesGrid = new JPanel(new GridLayout(2, 2, 12, 12));
         mainFeaturesGrid.setBackground(bgColor);
         mainFeaturesGrid.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         // 添加主要特性卡片
         for (Feature feature : mainFeatures) {
             mainFeaturesGrid.add(createFeatureCard(feature));
         }
-        
+
         contentPanel.add(mainFeaturesGrid);
-        
+
         // 添加"显示更多"链接
         JPanel togglePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 8));
         togglePanel.setBackground(bgColor);
         togglePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        
+
         toggleLabel = new JLabel("显示更多功能 ▼");
         toggleLabel.setForeground(linkColor);
         toggleLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         toggleLabel.setFont(toggleLabel.getFont().deriveFont(Font.PLAIN, 12f));
-        
+
         toggleLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 toggleExtraFeatures();
             }
-            
+
             @Override
             public void mouseEntered(MouseEvent e) {
                 toggleLabel.setText(toggleLabel.getText().replace("▼", "▼").replace("▲", "▲"));
                 toggleLabel.setFont(toggleLabel.getFont().deriveFont(Font.BOLD));
             }
-            
+
             @Override
             public void mouseExited(MouseEvent e) {
                 toggleLabel.setFont(toggleLabel.getFont().deriveFont(Font.PLAIN));
             }
         });
-        
+
         togglePanel.add(toggleLabel);
         contentPanel.add(togglePanel);
-        
+
         // 创建额外特性面板（初始隐藏）
         extraFeaturesPanel = new JPanel();
         extraFeaturesPanel.setLayout(new BoxLayout(extraFeaturesPanel, BoxLayout.Y_AXIS));
         extraFeaturesPanel.setBackground(bgColor);
         extraFeaturesPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         extraFeaturesPanel.setVisible(false);
-        
+
         // 添加额外特性
         for (Feature feature : extraFeatures) {
             extraFeaturesPanel.add(createExtraFeatureItem(feature));
         }
-        
+
         contentPanel.add(extraFeaturesPanel);
-        
+
         return contentPanel;
     }
 
@@ -219,7 +219,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
     private void toggleExtraFeatures() {
         showingMoreFeatures = !showingMoreFeatures;
         extraFeaturesPanel.setVisible(showingMoreFeatures);
-        
+
         Window window = SwingUtilities.getWindowAncestor(extraFeaturesPanel);
         if (window != null) {
             // 第一次操作时保存原始高度
@@ -228,7 +228,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
                 // 计算展开后的高度（原始高度 + 固定增量）
                 expandedWindowHeight = originalWindowHeight + 150;
             }
-            
+
             if (showingMoreFeatures) {
                 toggleLabel.setText("隐藏更多功能 ▲");
                 // 使用预先计算的展开高度
@@ -239,7 +239,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
                 window.setSize(new Dimension(window.getWidth(), originalWindowHeight));
             }
         }
-        
+
         // 重新布局
         extraFeaturesPanel.revalidate();
         extraFeaturesPanel.repaint();
@@ -252,23 +252,17 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         JPanel bottomPanel = new JPanel(new BorderLayout(0, 8));
         bottomPanel.setBackground(bgColor);
         bottomPanel.setBorder(JBUI.Borders.emptyTop(8));
-        
-        // 价格信息
-        JLabel priceLabel = new JLabel("年度订阅: $19.99/年    永久授权: $49.99");
-        priceLabel.setForeground(new Color(120, 120, 120));
-        priceLabel.setFont(priceLabel.getFont().deriveFont(Font.PLAIN, 12f));
-        
-        // 升级按钮
+
+        // 升级按钮（不显示价格信息）
         JButton upgradeButton = createPremiumButton("立即升级", null);
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
             close(OK_EXIT_CODE);
         });
-        
+
         // 组装底部面板
-        bottomPanel.add(priceLabel, BorderLayout.NORTH);
         bottomPanel.add(upgradeButton, BorderLayout.CENTER);
-        
+
         return bottomPanel;
     }
 
@@ -281,45 +275,45 @@ public class PremiumUpgradeDialog extends DialogWrapper {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
+
                 // 绘制圆角矩形背景
                 g2.setColor(cardBgColor);
                 g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 8, 8));
-                
+
                 // 绘制边框
                 g2.setColor(new JBColor(new Color(230, 230, 230), new Color(60, 60, 65)));
                 g2.setStroke(new BasicStroke(1.0f));
                 g2.draw(new RoundRectangle2D.Float(0, 0, getWidth() - 1, getHeight() - 1, 8, 8));
-                
+
                 g2.dispose();
             }
         };
-        
+
         card.setOpaque(false);
         card.setBorder(JBUI.Borders.empty(12));
-        
+
         // 图标
         Icon icon = IconUtil.loadIcon(feature.iconPath, getClass());
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setVerticalAlignment(JLabel.TOP);
         iconLabel.setBorder(JBUI.Borders.emptyTop(2));
-        
+
         // 文本内容
         JPanel textPanel = new JPanel(new BorderLayout(0, 4));
         textPanel.setOpaque(false);
-        
+
         JLabel titleLabel = new JLabel(feature.title);
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-        
-        JLabel descLabel = new JLabel("<html><div style='color: #808080; font-size: 11px;'>" + 
+
+        JLabel descLabel = new JLabel("<html><div style='color: #808080; font-size: 11px;'>" +
                 feature.description + "</div></html>");
-        
+
         textPanel.add(titleLabel, BorderLayout.NORTH);
         textPanel.add(descLabel, BorderLayout.CENTER);
-        
+
         card.add(iconLabel, BorderLayout.WEST);
         card.add(textPanel, BorderLayout.CENTER);
-        
+
         return card;
     }
 
@@ -331,28 +325,28 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         item.setBackground(bgColor);
         item.setBorder(JBUI.Borders.empty(6, 12, 6, 12));
         item.setMaximumSize(new Dimension(Integer.MAX_VALUE, 50));
-        
+
         // 图标
         Icon icon = IconUtil.loadIcon(feature.iconPath, getClass());
         JLabel iconLabel = new JLabel(icon);
         iconLabel.setVerticalAlignment(JLabel.TOP);
-        
+
         // 文本内容
         JPanel textPanel = new JPanel(new BorderLayout(0, 2));
         textPanel.setOpaque(false);
-        
+
         JLabel titleLabel = new JLabel(feature.title);
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD));
-        
-        JLabel descLabel = new JLabel("<html><div style='color: #808080; font-size: 11px;'>" + 
+
+        JLabel descLabel = new JLabel("<html><div style='color: #808080; font-size: 11px;'>" +
                 feature.description + "</div></html>");
-        
+
         textPanel.add(titleLabel, BorderLayout.NORTH);
         textPanel.add(descLabel, BorderLayout.CENTER);
-        
+
         item.add(iconLabel, BorderLayout.WEST);
         item.add(textPanel, BorderLayout.CENTER);
-        
+
         return item;
     }
 
@@ -365,7 +359,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
             protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
+
                 // 绘制渐变背景
                 Color buttonColor;
                 if (getModel().isPressed()) {
@@ -375,21 +369,21 @@ public class PremiumUpgradeDialog extends DialogWrapper {
                 } else {
                     buttonColor = accentColor;
                 }
-                
+
                 g2.setColor(buttonColor);
                 g2.fill(new RoundRectangle2D.Float(0, 0, getWidth(), getHeight(), 8, 8));
-                
+
                 g2.dispose();
                 super.paintComponent(g);
             }
         };
-        
+
         // 设置图标
         if (iconPath != null) {
             button.setIcon(IconUtil.loadIcon(iconPath, getClass()));
             button.setIconTextGap(8);
         }
-        
+
         // 设置样式
         button.setForeground(Color.WHITE);
         button.setFont(button.getFont().deriveFont(Font.BOLD, 13f));
@@ -398,7 +392,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         button.setContentAreaFilled(false);
         button.setCursor(new Cursor(Cursor.HAND_CURSOR));
         button.setBorder(JBUI.Borders.empty(8, 16));
-        
+
         return button;
     }
 
@@ -409,7 +403,7 @@ public class PremiumUpgradeDialog extends DialogWrapper {
         final String title;
         final String description;
         final String iconPath;
-        
+
         Feature(String title, String description, String iconPath) {
             this.title = title;
             this.description = description;

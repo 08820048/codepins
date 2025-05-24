@@ -112,7 +112,7 @@ public class CodePinsSettingsComponent {
         contentPanel.add(statusLabel, BorderLayout.CENTER);
 
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        JButton upgradeButton = new JButton("升级到专业版");
+        JButton upgradeButton = new JButton("立即升级");
 
         // 加载图标
         Icon upgradeIcon = IconUtil.loadIcon("/icons/logo.svg", getClass());

@@ -108,23 +108,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         instructionLabel.setBorder(JBUI.Borders.emptyBottom(10));
 
-        // 添加超链接点击事件
-        if (!isPremiumUser) {
-            instructionLabel.addMouseListener(new MouseAdapter() {
-                @Override
-                public void mouseClicked(MouseEvent e) {
-                    String text = instructionLabel.getText();
-                    if (text.contains("<a href='upgrade'>") &&
-                            e.getX() >= text.indexOf("<a href='upgrade'>") &&
-                            e.getX() <= text.indexOf("</a>")) {
-                        // 显示升级对话框
-                        LicenseService.getInstance().showUpgradeDialogIfNeeded(
-                                project,
-                                "无限标签");
-                    }
-                }
-            });
-        }
+        // 移除升级链接点击事件
 
         mainPanel.add(instructionLabel);
 

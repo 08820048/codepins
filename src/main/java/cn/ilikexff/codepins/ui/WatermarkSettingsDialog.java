@@ -134,51 +134,9 @@ public class WatermarkSettingsDialog extends DialogWrapper {
             colorPanel.setEnabled(false);
             opacitySlider.setEnabled(false);
 
-            // 添加点击事件，显示升级对话框
-            textField.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "自定义文本水印");
-                }
-            });
+            // 移除升级对话框点击事件
 
-            positionComboBox.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "自定义水印位置");
-                }
-            });
-
-            colorPanel.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "自定义水印颜色");
-                }
-            });
-
-            opacitySlider.addMouseListener(new java.awt.event.MouseAdapter() {
-                @Override
-                public void mouseClicked(java.awt.event.MouseEvent e) {
-                    // 显示升级对话框
-                    LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "自定义水印透明度");
-                }
-            });
-
-            // 添加升级提示
-            JPanel upgradePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            Icon infoIcon = IconLoader.getIcon("/icons/info.svg", getClass());
-            JButton upgradeButton = new JButton("升级到专业版", infoIcon);
-            upgradeButton.addActionListener(e -> {
-                // 显示升级对话框
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "水印设置");
-            });
-            upgradePanel.add(upgradeButton);
-
-            // 添加到对话框
-            dialogPanel.add(upgradePanel, BorderLayout.SOUTH);
+            // 移除升级提示
         }
 
         // 组装面板

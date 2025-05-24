@@ -164,7 +164,7 @@ public class AddPinAction extends AnAction {
 
             // 添加升级按钮
             final String finalFeatureName = featureName;
-            notification.addAction(new AnAction("升级到专业版") {
+            notification.addAction(new AnAction("立即升级") {
                 @Override
                 public void actionPerformed(@NotNull AnActionEvent e) {
                     // 显示升级对话框

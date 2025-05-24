@@ -69,7 +69,7 @@ public class LicenseStatusPanel extends JPanel {
         });
 
         // 创建升级按钮 - 使用默认按钮样式
-        upgradeButton = new JButton("升级到专业版");
+        upgradeButton = new JButton("立即升级");
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
         });

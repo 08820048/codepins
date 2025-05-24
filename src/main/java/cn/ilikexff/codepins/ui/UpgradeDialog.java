@@ -103,14 +103,10 @@ public class UpgradeDialog extends DialogWrapper {
         JPanel bottomPanel = new JPanel(new BorderLayout());
         bottomPanel.setBorder(JBUI.Borders.emptyTop(10));
 
-        // 创建价格信息
-        JLabel priceLabel = new JBLabel("<html>CodePins专业版 - 每年仅需 $19.99<br>一次性购买 $49.99</html>");
-        priceLabel.setFont(priceLabel.getFont().deriveFont(Font.BOLD));
-
         // 创建按钮面板
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
-        // 创建升级按钮 - 使用默认按钮样式
+        // 创建升级按钮 - 使用默认按钮样式（不显示价格信息）
         JButton upgradeButton = new JButton("立即升级");
         upgradeButton.addActionListener(e -> {
             BrowserUtil.browse("https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks/pricing");
@@ -121,7 +117,6 @@ public class UpgradeDialog extends DialogWrapper {
         buttonPanel.add(upgradeButton);
 
         // 添加到底部面板
-        bottomPanel.add(priceLabel, BorderLayout.WEST);
         bottomPanel.add(buttonPanel, BorderLayout.EAST);
 
         // 组装面板

@@ -128,15 +128,7 @@ public class SocialShareDialog extends DialogWrapper {
                     platformRadios[i].setEnabled(false);
                     platformRadios[i].setText(platformRadios[i].getText() + " (专业版功能)");
 
-                    // 添加点击事件，显示升级对话框
-                    platformRadios[i].addMouseListener(new java.awt.event.MouseAdapter() {
-                        @Override
-                        public void mouseClicked(java.awt.event.MouseEvent e) {
-                            // 显示升级对话框
-                            LicenseService.getInstance().showUpgradeDialogIfNeeded(project,
-                                    "使用" + platforms[platformIndex].getDisplayName() + "分享");
-                        }
-                    });
+                    // 移除升级对话框点击事件
                 }
             }
         }
@@ -228,18 +220,7 @@ public class SocialShareDialog extends DialogWrapper {
         infoScrollPane.setPreferredSize(new Dimension(-1, 80)); // 设置固定高度
         infoPanel.add(infoScrollPane, BorderLayout.CENTER);
 
-        // 如果不是付费用户，添加升级提示
-        if (!isPremium) {
-            JPanel upgradePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-            Icon infoIcon = IconLoader.getIcon("/icons/info.svg", getClass());
-            JButton upgradeButton = new JButton("升级到专业版", infoIcon);
-            upgradeButton.addActionListener(e -> {
-                // 显示升级对话框
-                LicenseService.getInstance().showUpgradeDialogIfNeeded(project, "社交分享高级功能");
-            });
-            upgradePanel.add(upgradeButton);
-            infoPanel.add(upgradePanel, BorderLayout.SOUTH);
-        }
+        // 移除升级提示
 
         // 组装面板
         JPanel optionsPanel = new JPanel(new BorderLayout(0, 10));
