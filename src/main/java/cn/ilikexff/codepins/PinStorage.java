@@ -532,6 +532,14 @@ public class PinStorage {
     }
 
     /**
+     * 刷新UI显示
+     * 供外部类调用，以刷新图钉列表显示
+     */
+    public static void refreshUI() {
+        refreshModel();
+    }
+
+    /**
      * 刷新所有标签筛选面板
      * 在添加、删除、更新图钉标签后调用
      */

@@ -192,6 +192,18 @@ public class PinEntry {
         // 使用 ReadAction 包装文档访问操作，确保线程安全
         return com.intellij.openapi.application.ReadAction.compute(() -> {
             try {
+                if (marker == null || !marker.isValid()) {
+                    // marker无效时，显示警告信息
+                    String typeLabel = isBlock ? "[代码块]" : "[单行]";
+                    String tagsStr = "";
+                    if (!tags.isEmpty()) {
+                        tagsStr = " [" + String.join(", ", tags) + "]";
+                    }
+                    return typeLabel + " " + filePath + " @ Line ? (无效标记)" 
+                           + (note != null && !note.isEmpty() ? " - " + note : "")
+                           + tagsStr;
+                }
+                
                 Document doc = marker.getDocument();
                 String lineInfo;
 
@@ -227,7 +239,7 @@ public class PinEntry {
                 if (!tags.isEmpty()) {
                     tagsStr = " [" + String.join(", ", tags) + "]";
                 }
-                return typeLabel + " " + filePath +
+                return typeLabel + " " + filePath + " @ Line ? (异常: " + e.getMessage() + ")" +
                        (note != null && !note.isEmpty() ? " - " + note : "") +
                        tagsStr;
             }
@@ -416,6 +428,60 @@ public class PinEntry {
     }
     
     /**
+     * 显示导航错误消息，并询问用户是否删除图钉或尝试恢复
+     */
+    private void showNavigationError(Project project, String message) {
+        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+            // 检查是否能通过恢复解决问题
+            boolean showRecoverOption = false;
+            VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
+            if (file != null && file.exists() && originalCode != null && !originalCode.isEmpty()) {
+                // 检查文件中是否存在原始代码，以决定是否显示恢复选项
+                showRecoverOption = checkIfCodeExists(file);
+            }
+            
+            String[] options;
+            if (showRecoverOption) {
+                options = new String[]{"删除图钉", "尝试恢复", "取消"};
+            } else {
+                options = new String[]{"删除图钉", "取消"};
+            }
+            
+            int result = Messages.showDialog(
+                    project,
+                    message + "\n\n您想要执行什么操作？",
+                    "跳转失败",
+                    options,
+                    0, // 默认选项
+                    Messages.getErrorIcon()
+            );
+
+            if (result == 0) {
+                // 删除图钉
+                PinStorage.removePin(this);
+            } else if (showRecoverOption && result == 1) {
+                // 尝试恢复
+                VirtualFile virtualFile = LocalFileSystem.getInstance().findFileByPath(filePath);
+                if (virtualFile != null && virtualFile.exists()) {
+                    boolean recovered = tryRecoverMarkerWithNewRangeMarker(project, virtualFile);
+                    if (recovered) {
+                        // 恢复成功后重新刷新UI显示并尝试导航
+                        PinStorage.refreshUI();
+                        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                            navigate(project);
+                        });
+                    } else {
+                        Messages.showErrorDialog(project, "无法恢复图钉位置，请确保代码已恢复。", "恢复失败");
+                    }
+                } else {
+                    Messages.showErrorDialog(project, "文件不存在或无法访问。", "恢复失败");
+                }
+            }
+            // 如果选择"取消"，则不执行任何操作
+        });
+    }
+
+    /**
      * 显示代码已恢复对话框
      */
     private void showCodeRestoredDialog(Project project, VirtualFile file) {
@@ -434,7 +500,8 @@ public class PinEntry {
                 // 直接尝试使用新方法恢复，避免使用可能失败的反射方法
                 boolean recovered = tryRecoverMarkerWithNewRangeMarker(project, file);
                 if (recovered) {
-                    // 成功恢复后立即重新尝试导航
+                    // 成功恢复后立即重新刷新UI显示并尝试导航
+                    PinStorage.refreshUI();
                     com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
                         navigate(project);
                     });
@@ -445,43 +512,6 @@ public class PinEntry {
         });
     }
 
-    /**
-     * 显示导航错误消息，并询问用户是否删除图钉或尝试恢复
-     */
-    private void showNavigationError(Project project, String message) {
-        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-            String[] options = {"删除图钉", "尝试恢复", "取消"};
-            int result = Messages.showDialog(
-                    project,
-                    message + "\n\n您想要执行什么操作？",
-                    "跳转失败",
-                    options,
-                    0, // 默认选项
-                    Messages.getErrorIcon()
-            );
-
-            if (result == 0) {
-                // 删除图钉
-                PinStorage.removePin(this);
-            } else if (result == 1) {
-                // 尝试恢复
-                VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
-                if (file != null && file.exists()) {
-                    boolean recovered = tryRecoverMarkerWithNewRangeMarker(project, file);
-                    if (recovered) {
-                        // 重新尝试导航
-                        navigate(project);
-                    } else {
-                        Messages.showErrorDialog(project, "无法恢复图钉位置，请确保代码已恢复。", "恢复失败");
-                    }
-                } else {
-                    Messages.showErrorDialog(project, "文件不存在或无法访问。", "恢复失败");
-                }
-            }
-            // 如果选择"取消"，则不执行任何操作
-        });
-    }
-    
     /**
      * 尝试通过创建新的RangeMarker来恢复图钉
      * 这种方法适用于反射失败的情况
@@ -573,9 +603,16 @@ public class PinEntry {
                             newEndOffset = document.getTextLength();
                         }
                         
+                        // 创建一个新的可靠的RangeMarker
                         RangeMarker newMarker = document.createRangeMarker(foundOffset, newEndOffset);
                         newMarker.setGreedyToLeft(true);
                         newMarker.setGreedyToRight(true);
+                        
+                        // 更新原始代码为当前找到的代码段，确保下次比较能够匹配
+                        if (!useOriginalCode) {
+                            // 如果使用修剪后的代码匹配成功，更新原始代码
+                            originalCode = document.getText(new TextRange(foundOffset, newEndOffset));
+                        }
                         
                         // 创建一个新的PinEntry替换当前的
                         PinEntry newPin = new PinEntry(
