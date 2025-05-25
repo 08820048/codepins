@@ -3,6 +3,7 @@ package cn.ilikexff.codepins;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.RangeMarker;
+import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -301,25 +302,25 @@ public class PinEntry {
                     return;
                 }
 
-                // 检查文档中是否存在原始代码（即使marker无效）
+                // 检查RangeMarker状态，尝试自动恢复
+                boolean markerValid = marker != null && marker.isValid();
                 boolean codeExists = checkIfCodeExists(file);
                 
-                // 如果代码存在但marker无效，主动提示用户恢复
-                if (codeExists && (marker == null || !marker.isValid())) {
-                    showCodeRestoredDialog(project, file);
-                    return;
-                }
-                
-                // 尝试恢复/验证图钉位置
-                boolean recovered = tryRecoverMarker(project, file);
-                
-                // 如果恢复失败且标记无效，才显示错误
-                if (!recovered && (marker == null || !marker.isValid())) {
+                // 简化恢复逻辑: 如果marker无效但代码存在，直接尝试恢复而不弹窗
+                if (!markerValid && codeExists) {
+                    boolean recovered = tryRecoverMarker(project, file);
+                    if (!recovered) {
+                        // 仅当恢复失败时才显示一次恢复对话框
+                        showCodeRestoredDialog(project, file);
+                        return;
+                    }
+                } else if (!markerValid) {
+                    // 如果marker无效且代码不存在，显示错误
                     showNavigationError(project, "无法跳转到图钉位置，代码可能已被删除或修改。");
                     return;
                 }
 
-                // 此时图钉标记已有效，继续导航
+                // 此时图钉标记应该有效，继续导航
                 if (isBlock && marker.getStartOffset() != marker.getEndOffset()) {
                     // 如果是代码块图钉，则定位到起始位置并选中整个代码块
                     final int startOffset = marker.getStartOffset();
@@ -430,13 +431,15 @@ public class PinEntry {
             );
             
             if (result == 0) {
-                // 尝试恢复
+                // 直接尝试使用新方法恢复，避免使用可能失败的反射方法
                 boolean recovered = tryRecoverMarkerWithNewRangeMarker(project, file);
                 if (recovered) {
-                    // 重新尝试导航
-                    navigate(project);
+                    // 成功恢复后立即重新尝试导航
+                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                        navigate(project);
+                    });
                 } else {
-                    Messages.showErrorDialog(project, "无法恢复图钉位置。", "恢复失败");
+                    Messages.showErrorDialog(project, "无法恢复图钉位置，尝试取消再重做您的操作。", "恢复失败");
                 }
             }
         });
@@ -492,6 +495,7 @@ public class PinEntry {
                         com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().getDocument(file);
                     
                     if (document == null || originalCode == null || originalCode.isEmpty()) {
+                        System.out.println("[CodePins] 恢复失败: 文档或原始代码为空");
                         return false;
                     }
                     
@@ -507,6 +511,27 @@ public class PinEntry {
                             foundOffset = docText.indexOf(trimmedCode);
                             if (foundOffset >= 0) {
                                 useOriginalCode = false;
+                                System.out.println("[CodePins] 使用修剪后的代码匹配成功");
+                            }
+                        }
+                    }
+                    
+                    // 如果仍然找不到，尝试使用更宽松的匹配策略
+                    if (foundOffset < 0) {
+                        // 尝试匹配代码的前几行（对于多行代码块）
+                        String[] lines = originalCode.split("\n");
+                        if (lines.length > 1) {
+                            String firstTwoLines = lines[0];
+                            if (lines.length > 1) {
+                                firstTwoLines += "\n" + lines[1];
+                            }
+                            
+                            if (!firstTwoLines.trim().isEmpty()) {
+                                foundOffset = docText.indexOf(firstTwoLines.trim());
+                                if (foundOffset >= 0) {
+                                    useOriginalCode = false;
+                                    System.out.println("[CodePins] 使用代码前几行匹配成功");
+                                }
                             }
                         }
                     }
@@ -514,7 +539,7 @@ public class PinEntry {
                     if (foundOffset >= 0) {
                         // 找到匹配的代码
                         System.out.println("[CodePins] 在文档中找到匹配的" + 
-                                          (useOriginalCode ? "原始" : "修剪后的") + 
+                                          (useOriginalCode ? "原始" : "部分") + 
                                           "代码，位置: " + foundOffset);
                         
                         // 创建新的RangeMarker
@@ -522,7 +547,30 @@ public class PinEntry {
                         if (useOriginalCode) {
                             newEndOffset = foundOffset + originalCode.length();
                         } else {
-                            newEndOffset = foundOffset + originalCode.trim().length();
+                            // 尝试找到合适的结束位置
+                            String[] lines = originalCode.split("\n");
+                            if (lines.length > 1) {
+                                // 对于多行代码，尝试找到最后一行
+                                String lastLine = lines[lines.length - 1].trim();
+                                if (!lastLine.isEmpty()) {
+                                    int lastLinePos = docText.indexOf(lastLine, foundOffset);
+                                    if (lastLinePos > foundOffset) {
+                                        newEndOffset = lastLinePos + lastLine.length();
+                                    } else {
+                                        // 如果找不到最后一行，至少包含找到的部分
+                                        newEndOffset = foundOffset + originalCode.trim().length();
+                                    }
+                                } else {
+                                    newEndOffset = foundOffset + originalCode.trim().length();
+                                }
+                            } else {
+                                newEndOffset = foundOffset + originalCode.trim().length();
+                            }
+                        }
+                        
+                        // 确保偏移量不超出文档范围
+                        if (newEndOffset > document.getTextLength()) {
+                            newEndOffset = document.getTextLength();
                         }
                         
                         RangeMarker newMarker = document.createRangeMarker(foundOffset, newEndOffset);
