@@ -3,7 +3,7 @@
     <id>cn.ilikexff.codepins</id>
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 
     <!-- 插件现在完全免费开源，移除产品描述符 -->
 
@@ -70,6 +70,16 @@
 
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
+<h2>Version 2.1.0</h2>
+<ul>
+    <li><b>📌 行号槽区域图钉：</b> 点击编辑器左侧行号区域的图钉图标可以快速添加/移除图钉</li>
+    <li><b>👆 选择文本浮动按钮：</b> 选中代码后自动显示添加图钉的浮动按钮</li>
+    <li><b>💬 注释标记自动识别：</b> 支持通过 @pin 或 @pin: 备注内容 格式的注释自动创建图钉</li>
+    <li><b>🔧 用户体验优化：</b> 提供更多直观、便捷的图钉添加方式</li>
+    <li><b>🤝 团队协作增强：</b> 通过注释标记功能增强团队协作体验</li>
+    <li><b>🎨 界面优化：</b> 新增浮动按钮和行号区图标，提升可见性</li>
+</ul>
+
 <h2>Version 2.0.0</h2>
 <ul>
     <li><b>🎉 FREE & OPEN SOURCE:</b> CodePins is now completely free! All features unlocked for everyone</li>
