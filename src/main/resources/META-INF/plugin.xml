@@ -135,6 +135,9 @@
 
         <!-- 行号槽区域图钉标记提供者 -->
         <codeInsight.lineMarkerProvider language="" implementationClass="cn.ilikexff.codepins.extensions.PinLineMarkerProvider"/>
+        
+        <!-- 选择文本后的浮动操作按钮初始化器 -->
+        <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinSelectionPopupInitializer"/>
 
 
         <!-- 注册设置页面 -->
