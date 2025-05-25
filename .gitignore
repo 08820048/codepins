@@ -37,6 +37,7 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+._*
 
 ### Security - 敏感信息 ###
 # 密钥文件
@@ -67,9 +68,11 @@ credentials.json
 # 临时敏感文件
 temp-secrets/
 .secrets/
+*.tmp
+tmp/
 
-### IDE 敏感文件 ###
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/dictionaries/
-.idea/shelf/
+# 日志文件
+*.log
+
+# 个人测试文件
+*Test.class
