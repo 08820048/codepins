@@ -409,25 +409,25 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // 创建顶部面板（搜索和工具栏）
-        JPanel topPanel = new JPanel(new BorderLayout(8, 0));
-        topPanel.setBorder(JBUI.Borders.empty(4, 4, 4, 4));
+        // 创建顶部面板（搜索和工具栏），使用更紧凑的布局
+        JPanel topPanel = new JPanel(new BorderLayout(2, 0));
+        topPanel.setBorder(JBUI.Borders.empty(2, 4, 2, 4)); // 减少上下边距，保持左右边距
 
         // 创建搜索面板，包含搜索框
         JPanel searchPanel = new JPanel(new BorderLayout());
         searchPanel.setOpaque(false);
         searchPanel.add(createSearchField(), BorderLayout.CENTER);
 
-        // 创建右侧面板，包含图钉计数和工具栏
-        JPanel rightPanel = new JPanel(new BorderLayout(8, 0));
+        // 创建右侧面板，包含图钉计数和工具栏，使用极其紧凑的布局
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // 移除水平和垂直间距
         rightPanel.setOpaque(false);
 
         // 添加图钉计数标签
         pinCountLabel = createPinCountLabel();
-        rightPanel.add(pinCountLabel, BorderLayout.WEST);
+        rightPanel.add(pinCountLabel);
 
         // 添加工具栏
-        rightPanel.add(createToolbar().getComponent(), BorderLayout.EAST);
+        rightPanel.add(createToolbar().getComponent());
 
         // 添加到顶部面板
         topPanel.add(searchPanel, BorderLayout.CENTER);
@@ -854,9 +854,9 @@ public class PinsToolWindow implements ToolWindowFactory {
         // 设置标签文本和样式
         if (maxCount == -1) {
             // 专业版用户，无限制
-            countLabel.setText(currentCount + " 图钉");
+            countLabel.setText("当前钉数:"+currentCount);
             countLabel.setForeground(successColor);
-            countLabel.setIcon(IconUtil.loadIcon("/icons/premium-small.svg", getClass()));
+//            countLabel.setIcon(IconUtil.loadIcon("/icons/premium-small.svg", getClass()));
         } else {
             // 免费版用户，有限制
             countLabel.setText(currentCount + "/" + maxCount);
@@ -873,10 +873,10 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         }
 
-        // 设置字体和边距
+        // 设置字体和边距，使用更紧凑的边距
         countLabel.setFont(countLabel.getFont().deriveFont(Font.PLAIN, 12f));
-        countLabel.setBorder(JBUI.Borders.empty(0, 8, 0, 4));
-        countLabel.setIconTextGap(4);
+        countLabel.setBorder(JBUI.Borders.empty(0, 4, 0, 2)); // 减少左右边距，使布局更紧凑
+        countLabel.setIconTextGap(2); // 减少图标和文本间距
 
         // 添加鼠标点击事件，点击时显示升级对话框
         if (maxCount != -1) {

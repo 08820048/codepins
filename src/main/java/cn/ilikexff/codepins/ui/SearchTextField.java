@@ -52,7 +52,7 @@ public class SearchTextField extends JPanel {
         };
 
         // 设置文本框样式 - 降低高度，增加精致感
-        textField.setBorder(JBUI.Borders.empty(4, 5, 4, 25));
+        textField.setBorder(JBUI.Borders.empty(2, 5, 2, 25));
         textField.setOpaque(true);
         textField.setFont(textField.getFont().deriveFont(12f)); // 调整字体大小，增加精致感
 

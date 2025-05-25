@@ -72,8 +72,8 @@ public class SocialShareDialog extends DialogWrapper {
                 JBUI.Borders.empty(5, 5, 5, 5))); // 添加内边距
 
         // 获取支持的平台
-        boolean isPremium = SocialSharingUtil.isPremiumUser();
-        SocialSharingUtil.SocialPlatform[] platforms = SocialSharingUtil.getSupportedPlatforms(isPremium);
+        // 插件现在完全免费，所有平台都可用
+        SocialSharingUtil.SocialPlatform[] platforms = SocialSharingUtil.getSupportedPlatforms(false);
         platformRadios = new JRadioButton[platforms.length];
         ButtonGroup platformGroup = new ButtonGroup();
 
@@ -150,7 +150,7 @@ public class SocialShareDialog extends DialogWrapper {
         // 禁用密码保护选项，标记为未来开发功能
         passwordCheckBox.setEnabled(false);
         passwordField.setEnabled(false);
-        passwordPanel.add(new JBLabel(" (未来功能，专业版)"));
+        passwordPanel.add(new JBLabel(" (未来功能)"));
 
         // 插件现在完全免费，移除升级对话框点击事件
 
@@ -171,7 +171,7 @@ public class SocialShareDialog extends DialogWrapper {
         infoArea.setBackground(JBColor.background());
         infoArea.setText("将分享 " + pins.size() + " 个图钉到社交媒体。\n\n" +
                 "注意：分享链接使用GitHub Gist服务存储，链接长期有效。\n" +
-                "自定义过期时间和密码保护功能将在未来版本中提供，并作为专业版功能。");
+                "自定义过期时间和密码保护功能将在未来版本中提供。");
 
         // 设置固定高度，避免文本区域过大
         JScrollPane infoScrollPane = new JScrollPane(infoArea);
@@ -211,8 +211,8 @@ public class SocialShareDialog extends DialogWrapper {
         try {
             // 获取选择的平台
             SocialSharingUtil.SocialPlatform selectedPlatform = null;
-            boolean isPremium = SocialSharingUtil.isPremiumUser();
-            SocialSharingUtil.SocialPlatform[] platforms = SocialSharingUtil.getSupportedPlatforms(isPremium);
+            // 插件现在完全免费，所有平台都可用
+            SocialSharingUtil.SocialPlatform[] platforms = SocialSharingUtil.getSupportedPlatforms(false);
 
             for (int i = 0; i < platformRadios.length; i++) {
                 if (platformRadios[i].isSelected()) {

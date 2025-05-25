@@ -75,15 +75,8 @@ public class SocialSharingUtil {
         }
     }
 
-    // 免费版支持的平台
-    private static final SocialPlatform[] FREE_PLATFORMS = {
-            SocialPlatform.TWITTER,
-            SocialPlatform.LINKEDIN,
-            SocialPlatform.FACEBOOK
-    };
-
-    // 付费版支持的平台
-    private static final SocialPlatform[] PREMIUM_PLATFORMS = {
+    // 插件现在完全免费，所有平台对所有用户开放
+    private static final SocialPlatform[] ALL_PLATFORMS = {
             SocialPlatform.TWITTER,
             SocialPlatform.LINKEDIN,
             SocialPlatform.FACEBOOK,
@@ -95,12 +88,13 @@ public class SocialSharingUtil {
 
     /**
      * 获取支持的社交媒体平台
+     * 插件现在完全免费，所有平台对所有用户开放
      *
-     * @param isPremium 是否为付费版
+     * @param isPremium 是否为付费版（保留参数用于兼容性，但不再使用）
      * @return 支持的社交媒体平台数组
      */
     public static SocialPlatform[] getSupportedPlatforms(boolean isPremium) {
-        return isPremium ? PREMIUM_PLATFORMS : FREE_PLATFORMS;
+        return ALL_PLATFORMS; // 返回所有平台，不再区分付费状态
     }
 
     /**
