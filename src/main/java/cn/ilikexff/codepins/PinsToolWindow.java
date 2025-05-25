@@ -12,6 +12,7 @@ import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.actionSystem.*;
+import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
@@ -24,7 +25,6 @@ import com.intellij.openapi.wm.ToolWindowFactory;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.content.Content;
-import com.intellij.ui.content.ContentFactory;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
@@ -448,7 +448,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         mainPanel.add(contentPanel, BorderLayout.CENTER);
 
         // 添加到工具窗口
-        Content content = ContentFactory.getInstance().createContent(mainPanel, "", false);
+        Content content = toolWindow.getContentManager().getFactory().createContent(mainPanel, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
@@ -840,7 +840,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        return ActionManager.getInstance().createActionToolbar("CodePinsToolbar", group, true);
+        return ActionManager.getInstance().createActionToolbar(ActionPlaces.TOOLBAR, group, true);
     }
 
     /**
