@@ -105,7 +105,7 @@
 ## ✨ 贡献者
 
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 感谢这些优秀的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
@@ -117,6 +117,7 @@
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/08820048"><img src="https://avatars.githubusercontent.com/u/08820048" width="100px;" alt="08820048"/><br /><sub><b>08820048</b></sub></a><br /><a href="#code-08820048" title="Code">💻</a> <a href="#doc-08820048" title="Documentation">📖</a> <a href="#maintenance-08820048" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Auroral0810"><img src="https://avatars.githubusercontent.com/u/Auroral0810" width="100px;" alt="Auroral0810"/><br /><sub><b>Auroral0810</b></sub></a><br /><a href="#code-Auroral0810" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
