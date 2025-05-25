@@ -1,4 +1,4 @@
-package cn.ilikexff.codepins;
+package cn.ilikexff.codepins.core;
 
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
@@ -8,6 +8,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import cn.ilikexff.codepins.core.PinStorage;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -202,156 +203,108 @@ public class PinEntry {
     }
 
     /**
-     * 导航到源代码（供外部调用）
-     */
-    public void navigateToSource(Project project) {
-        navigate(project);
-    }
-    
-    /**
-     * 创建新的图钉并添加到存储中
-     * 
-     * @param project 项目
-     * @param filePath 文件路径
-     * @param document 文档
-     * @param startOffset 起始偏移量
-     * @param endOffset 结束偏移量
-     * @param note 备注
-     * @param isBlock 是否为代码块
-     * @return 创建的图钉对象
+     * 创建一个新的图钉并添加到存储中
      */
     public static PinEntry createPin(Project project, String filePath, Document document, int startOffset, int endOffset, String note, boolean isBlock) {
         RangeMarker marker = document.createRangeMarker(startOffset, endOffset);
         marker.setGreedyToLeft(true);
         marker.setGreedyToRight(true);
-        
-        PinEntry pin = new PinEntry(
-                filePath,
-                marker,
-                note,
-                System.currentTimeMillis(),
-                System.getProperty("user.name"),
-                isBlock
-        );
-        
+        PinEntry pin = new PinEntry(filePath, marker, note, System.currentTimeMillis(), System.getProperty("user.name"), isBlock);
         PinStorage.addPin(pin);
         return pin;
     }
 
     /**
-     * 执行跳转：打开文件并定位到当前行号
-     * 如果是代码块，则定位到起始行并选中整个代码块
-     * 如果代码已被删除，则显示错误消息并询问用户是否删除图钉
+     * 导航到图钉位置
      */
     public void navigate(Project project) {
-        // 使用 ReadAction 包装文档访问操作，确保线程安全
-        com.intellij.openapi.application.ReadAction.run(() -> {
-            try {
-                VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
-                if (file == null || !file.exists()) {
-                    // 文件不存在，显示错误消息
-                    showNavigationError(project, "无法跳转到图钉位置，文件不存在或已被删除。");
-                    return;
-                }
-
-                // 检查标记是否有效
-                if (marker == null || !marker.isValid()) {
-                    // 标记无效，可能是代码已被删除或修改
-                    showNavigationError(project, "无法跳转到图钉位置，代码可能已被删除或修改。");
-                    return;
-                }
-
-                if (isBlock && marker.getStartOffset() != marker.getEndOffset()) {
-                    // 如果是代码块图钉，则定位到起始位置并选中整个代码块
-                    final int startOffset = marker.getStartOffset();
-                    final int endOffset = marker.getEndOffset();
-
-                    // 检查偏移量是否有效
-                    Document doc = marker.getDocument();
-                    if (doc == null || startOffset < 0 || endOffset > doc.getTextLength()) {
-                        showNavigationError(project, "无法跳转到图钉位置，代码可能已被删除或修改。");
-                        return;
-                    }
-
-                    // 在 EDT 线程上执行导航操作
-                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-                        OpenFileDescriptor descriptor = new OpenFileDescriptor(
-                                project,
-                                file,
-                                startOffset
-                        );
-                        if (descriptor.canNavigate()) {
-                            descriptor.navigate(true);
-                            
-                            // 如果需要选中代码块，可以在导航后获取编辑器并设置选择
-                            try {
-                                FileEditorManager manager = FileEditorManager.getInstance(project);
-                                Editor editor = manager.getSelectedTextEditor();
-                                if (editor != null && endOffset > startOffset) {
-                                    editor.getSelectionModel().setSelection(startOffset, endOffset);
-                                    System.out.println("[CodePins] 代码块选中成功");
-                                }
-                            } catch (Exception e) {
-                                System.out.println("[CodePins] 选中代码块失败: " + e.getMessage());
-                            }
-                            
-                            System.out.println("[CodePins] 导航成功");
-                        } else {
-                            showNavigationError(project, "无法跳转到图钉位置，请检查文件是否已被修改。");
-                        }
-                    });
+        try {
+            VirtualFile vFile = LocalFileSystem.getInstance().findFileByPath(filePath);
+            if (vFile != null && vFile.exists()) {
+                Document document = com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().getDocument(vFile);
+                if (document != null && marker.isValid()) {
+                    int offset = marker.getStartOffset();
+                    new OpenFileDescriptor(project, vFile, offset).navigate(true);
                 } else {
-                    // 如果是单行图钉，则只定位到当前行
-                    Document doc = marker.getDocument();
-                    if (doc == null) {
-                        showNavigationError(project, "无法跳转到图钉位置，文档不可用。");
-                        return;
-                    }
-
-                    // 使用标记的起始偏移量而不是行号
-                    final int startOffset = marker.getStartOffset();
-                    
-                    if (startOffset < 0 || startOffset >= doc.getTextLength()) {
-                        showNavigationError(project, "无法跳转到图钉位置，代码位置已被修改。");
-                        return;
-                    }
-
-                    // 在 EDT 线程上执行导航操作
-                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-                        // 直接使用偏移量创建描述符，而不是行号和列
-                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, startOffset);
-                        
-                        if (descriptor.canNavigate()) {
-                            descriptor.navigate(true);
-                        } else {
-                            showNavigationError(project, "无法跳转到图钉位置，请检查文件是否已被修改。");
-                        }
-                    });
+                    Messages.showErrorDialog("无法打开文件或标记已失效", "导航错误");
                 }
-            } catch (Exception e) {
-                showNavigationError(project, "导航失败: " + e.getMessage());
+            } else {
+                Messages.showErrorDialog("找不到文件: " + filePath, "导航错误");
             }
-        });
+        } catch (Exception e) {
+            Messages.showErrorDialog("导航时发生错误: " + e.getMessage(), "导航错误");
+            e.printStackTrace();
+        }
     }
 
     /**
-     * 显示导航错误消息，并询问用户是否删除图钉
+     * 获取图钉的代码内容
      */
-    private void showNavigationError(Project project, String message) {
-        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-            int result = Messages.showYesNoDialog(
-                    project,
-                    message + "\n\n是否要删除这个图钉？",
-                    "跳转失败",
-                    "删除图钉",
-                    "取消",
-                    Messages.getErrorIcon()
-            );
+    public String getCodeContent() {
+        if (!marker.isValid()) {
+            return "代码标记已失效";
+        }
 
-            if (result == Messages.YES) {
-                // 删除图钉
-                PinStorage.removePin(this);
+        try {
+            Document doc = marker.getDocument();
+            if (doc != null) {
+                int startOffset = marker.getStartOffset();
+                int endOffset = marker.getEndOffset();
+                if (startOffset >= 0 && endOffset <= doc.getTextLength() && startOffset <= endOffset) {
+                    return doc.getText(new com.intellij.openapi.util.TextRange(startOffset, endOffset));
+                }
             }
-        });
+            return "无法获取代码内容";
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "获取代码内容时发生错误: " + e.getMessage();
+        }
+    }
+
+    /**
+     * 获取图钉的行号范围（从1开始）
+     */
+    public String getLineRange() {
+        if (!marker.isValid()) {
+            return "未知";
+        }
+
+        try {
+            Document doc = marker.getDocument();
+            if (doc != null) {
+                int startLine = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
+                int endLine = doc.getLineNumber(marker.getEndOffset()) + 1;     // 转为从1开始的行号
+
+                if (startLine == endLine) {
+                    return String.valueOf(startLine);
+                } else {
+                    return startLine + "-" + endLine;
+                }
+            }
+            return "未知";
+        } catch (Exception e) {
+            return "未知";
+        }
+    }
+
+    /**
+     * 获取图钉的简短描述（用于工具提示等）
+     */
+    public String getShortDescription() {
+        String typeLabel = isBlock ? "代码块" : "单行";
+        String lineInfo = getLineRange();
+        return typeLabel + " @ " + lineInfo + (note != null && !note.isEmpty() ? " - " + note : "");
+    }
+
+    /**
+     * 创建一个带标签的图钉
+     */
+    public static PinEntry createPinWithTags(Project project, String filePath, Document document, int startOffset, int endOffset, String note, boolean isBlock, List<String> tags) {
+        RangeMarker marker = document.createRangeMarker(startOffset, endOffset);
+        marker.setGreedyToLeft(true);
+        marker.setGreedyToRight(true);
+        PinEntry pin = new PinEntry(filePath, marker, note, System.currentTimeMillis(), System.getProperty("user.name"), isBlock, tags);
+        PinStorage.addPin(pin);
+        return pin;
     }
 }

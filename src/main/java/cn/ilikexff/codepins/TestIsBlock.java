@@ -1,5 +1,7 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.core.PinEntry;
+
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.editor.Document;

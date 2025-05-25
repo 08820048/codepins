@@ -1,7 +1,7 @@
 package cn.ilikexff.codepins.actions;
 
-import cn.ilikexff.codepins.PinEntry;
-import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.core.PinStorage;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;

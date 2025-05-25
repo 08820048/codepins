@@ -1,4 +1,4 @@
-package cn.ilikexff.codepins;
+package cn.ilikexff.codepins.core;
 
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;

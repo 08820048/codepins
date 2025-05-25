@@ -1,7 +1,9 @@
-package cn.ilikexff.codepins;
+package cn.ilikexff.codepins.core;
 
 import cn.ilikexff.codepins.settings.CodePinsSettings;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
+import cn.ilikexff.codepins.core.PinState;
+import cn.ilikexff.codepins.core.PinStateService;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileDocumentManager;

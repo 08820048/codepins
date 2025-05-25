@@ -1,8 +1,8 @@
 package cn.ilikexff.codepins.actions;
 
 import cn.ilikexff.codepins.PinAction;
-import cn.ilikexff.codepins.PinEntry;
-import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.core.PinStorage;
 import cn.ilikexff.codepins.services.LicenseService;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.notification.Notification;
