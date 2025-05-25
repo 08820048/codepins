@@ -3,14 +3,12 @@ package cn.ilikexff.codepins.settings;
 
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -24,6 +22,13 @@ public class CodePinsSettingsComponent {
     private final JPanel mainPanel;
     private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox("删除图钉时确认");
     private final JBTextField previewHeightTextField = new JBTextField();
+    private final JBCheckBox showNoteDialogOnQuickAddCheckBox = new JBCheckBox("快捷添加图钉时显示备注和标签对话框");
+    
+    // 注释指令添加图钉设置控件
+    private final JBCheckBox showNoteDialogOnCommentPinCheckBox = new JBCheckBox("注释指令添加图钉时显示备注和标签对话框");
+    private final JBCheckBox autoAddQuickTagCheckBox = new JBCheckBox("自动添加“快捷添加”标签");
+    private final JBCheckBox useCompletionSymbolCheckBox = new JBCheckBox("使用完成指令符号");
+    private final JBTextField completionSymbolTextField = new JBTextField();
 
     public CodePinsSettingsComponent() {
         // 创建常规设置面板
@@ -32,6 +37,25 @@ public class CodePinsSettingsComponent {
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
         generalPanel.setBorder(BorderFactory.createTitledBorder("常规设置"));
+        
+        // 创建图钉添加设置面板
+        JPanel pinAddPanel = FormBuilder.createFormBuilder()
+                .addComponent(showNoteDialogOnQuickAddCheckBox)
+                .addComponent(new JBLabel("<html><small>开启后，使用选择文本浮动按钮添加图钉时，将显示备注和标签对话框</small></html>"))
+                .getPanel();
+        pinAddPanel.setBorder(BorderFactory.createTitledBorder("图钉添加设置"));
+        
+        // 创建注释指令设置面板
+        JPanel commentPinPanel = FormBuilder.createFormBuilder()
+                .addComponent(showNoteDialogOnCommentPinCheckBox)
+                .addComponent(new JBLabel("<html><small>开启后，使用注释指令添加图钉时，将显示备注和标签对话框</small></html>"))
+                .addComponent(autoAddQuickTagCheckBox)
+                .addComponent(new JBLabel("<html><small>开启后，使用注释指令添加图钉时，自动添加“快捷添加”标签</small></html>"))
+                .addComponent(useCompletionSymbolCheckBox)
+                .addLabeledComponent(new JBLabel("完成指令符号:"), completionSymbolTextField, 1, false)
+                .addComponent(new JBLabel("<html><small>开启后，只有在注释指令后输入完成符号时才会触发图钉添加，避免自动保存导致过早触发</small></html>"))
+                .getPanel();
+        commentPinPanel.setBorder(BorderFactory.createTitledBorder("注释指令设置"));
 
 
 
@@ -73,6 +97,8 @@ public class CodePinsSettingsComponent {
         mainPanel = FormBuilder.createFormBuilder()
                 .addComponent(donationPanel)
                 .addComponent(generalPanel)
+                .addComponent(pinAddPanel)
+                .addComponent(commentPinPanel)
                 .addComponent(labeledShortcutsPanel)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
@@ -176,6 +202,45 @@ public class CodePinsSettingsComponent {
     public void setConfirmDelete(boolean newStatus) {
         confirmDeleteCheckBox.setSelected(newStatus);
     }
-
-
+    
+    public boolean getShowNoteDialogOnQuickAdd() {
+        return showNoteDialogOnQuickAddCheckBox.isSelected();
+    }
+    
+    public void setShowNoteDialogOnQuickAdd(boolean newStatus) {
+        showNoteDialogOnQuickAddCheckBox.setSelected(newStatus);
+    }
+    
+    public boolean getShowNoteDialogOnCommentPin() {
+        return showNoteDialogOnCommentPinCheckBox.isSelected();
+    }
+    
+    public void setShowNoteDialogOnCommentPin(boolean newStatus) {
+        showNoteDialogOnCommentPinCheckBox.setSelected(newStatus);
+    }
+    
+    public boolean getAutoAddQuickTag() {
+        return autoAddQuickTagCheckBox.isSelected();
+    }
+    
+    public void setAutoAddQuickTag(boolean newStatus) {
+        autoAddQuickTagCheckBox.setSelected(newStatus);
+    }
+    
+    public boolean getUseCompletionSymbol() {
+        return useCompletionSymbolCheckBox.isSelected();
+    }
+    
+    public void setUseCompletionSymbol(boolean newStatus) {
+        useCompletionSymbolCheckBox.setSelected(newStatus);
+    }
+    
+    @NotNull
+    public String getCompletionSymbol() {
+        return completionSymbolTextField.getText();
+    }
+    
+    public void setCompletionSymbol(@NotNull String newText) {
+        completionSymbolTextField.setText(newText);
+    }
 }

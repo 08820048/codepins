@@ -36,6 +36,14 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         boolean modified = !mySettingsComponent.getPreviewHeight().equals(settings.previewHeight);
         modified |= mySettingsComponent.getConfirmDelete() != settings.confirmDelete;
+        modified |= mySettingsComponent.getShowNoteDialogOnQuickAdd() != settings.showNoteDialogOnQuickAdd;
+        
+        // 检查注释指令设置是否修改
+        modified |= mySettingsComponent.getShowNoteDialogOnCommentPin() != settings.showNoteDialogOnCommentPin;
+        modified |= mySettingsComponent.getAutoAddQuickTag() != settings.autoAddQuickTag;
+        modified |= mySettingsComponent.getUseCompletionSymbol() != settings.useCompletionSymbol;
+        modified |= !mySettingsComponent.getCompletionSymbol().equals(settings.completionSymbol);
+        
         return modified;
     }
 
@@ -44,6 +52,13 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         settings.previewHeight = mySettingsComponent.getPreviewHeight();
         settings.confirmDelete = mySettingsComponent.getConfirmDelete();
+        settings.showNoteDialogOnQuickAdd = mySettingsComponent.getShowNoteDialogOnQuickAdd();
+        
+        // 保存注释指令设置
+        settings.showNoteDialogOnCommentPin = mySettingsComponent.getShowNoteDialogOnCommentPin();
+        settings.autoAddQuickTag = mySettingsComponent.getAutoAddQuickTag();
+        settings.useCompletionSymbol = mySettingsComponent.getUseCompletionSymbol();
+        settings.completionSymbol = mySettingsComponent.getCompletionSymbol();
     }
 
     @Override
@@ -51,6 +66,13 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         mySettingsComponent.setPreviewHeight(settings.previewHeight);
         mySettingsComponent.setConfirmDelete(settings.confirmDelete);
+        mySettingsComponent.setShowNoteDialogOnQuickAdd(settings.showNoteDialogOnQuickAdd);
+        
+        // 重置注释指令设置
+        mySettingsComponent.setShowNoteDialogOnCommentPin(settings.showNoteDialogOnCommentPin);
+        mySettingsComponent.setAutoAddQuickTag(settings.autoAddQuickTag);
+        mySettingsComponent.setUseCompletionSymbol(settings.useCompletionSymbol);
+        mySettingsComponent.setCompletionSymbol(settings.completionSymbol);
     }
 
     @Override
