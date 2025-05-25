@@ -69,15 +69,31 @@ public class PinEntry {
             if (doc != null) {
                 try {
                     int start = marker.getStartOffset();
-                    int end = isBlock ? marker.getEndOffset() : start + 1;
+                    // 对于单行图钉，获取整行内容而不仅仅是一个字符
+                    int end;
+                    if (isBlock) {
+                        end = marker.getEndOffset();
+                    } else {
+                        // 获取行的开始和结束
+                        int line = doc.getLineNumber(start);
+                        start = doc.getLineStartOffset(line);
+                        end = doc.getLineEndOffset(line);
+                    }
                     
                     // 确保不越界
                     if (start >= 0 && end <= doc.getTextLength()) {
                         this.originalCode = doc.getText(new TextRange(start, end));
                         System.out.println("[CodePins] 保存原始代码：" + this.originalCode);
+                        
+                        // 记录行号信息，用于调试
+                        int startLine = doc.getLineNumber(start) + 1;
+                        int endLine = doc.getLineNumber(end) + 1;
+                        System.out.println("[CodePins] 原始代码位置：行 " + startLine + 
+                                (startLine != endLine ? "-" + endLine : ""));
                     }
                 } catch (Exception e) {
                     System.out.println("[CodePins] 保存原始代码失败：" + e.getMessage());
+                    e.printStackTrace();
                 }
             }
         }
@@ -249,8 +265,6 @@ public class PinEntry {
         // 使用 ReadAction 包装文档访问操作，确保线程安全
         com.intellij.openapi.application.ReadAction.run(() -> {
             try {
-                System.out.println("[CodePins] 开始导航到图钉: " + filePath);
-                
                 VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
                 if (file == null || !file.exists()) {
                     // 文件不存在，显示错误消息
@@ -258,127 +272,274 @@ public class PinEntry {
                     return;
                 }
 
-                // 在任何操作前尝试恢复图钉标记 - 即使它当前是有效的，也尝试更新位置
+                // 检查文档中是否存在原始代码（即使marker无效）
+                boolean codeExists = checkIfCodeExists(file);
+                
+                // 如果代码存在但marker无效，主动提示用户恢复
+                if (codeExists && (marker == null || !marker.isValid())) {
+                    showCodeRestoredDialog(project, file);
+                    return;
+                }
+                
+                // 尝试恢复/验证图钉位置
                 boolean recovered = tryRecoverMarker(project, file);
                 
-                // 如果恢复失败且标记无效，显示错误
+                // 如果恢复失败且标记无效，才显示错误
                 if (!recovered && (marker == null || !marker.isValid())) {
                     showNavigationError(project, "无法跳转到图钉位置，代码可能已被删除或修改。");
                     return;
                 }
 
-                // 获取文档对象
-                com.intellij.openapi.editor.Document doc = 
-                    com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().getDocument(file);
-                
-                if (doc == null) {
-                    showNavigationError(project, "无法跳转到图钉位置，文档不可用。");
-                    return;
-                }
-                
-                final int startOffset = marker.getStartOffset();
-                final int endOffset = marker.getEndOffset();
-                
-                // 验证偏移量是否有效
-                if (startOffset < 0 || startOffset >= doc.getTextLength()) {
-                    System.out.println("[CodePins] 偏移量无效: " + startOffset + ", 文档长度: " + doc.getTextLength());
-                    // 尝试再次修复
-                    if (tryRecoverMarker(project, file)) {
-                        // 递归调用导航，使用修复后的marker
-                        navigate(project);
-                        return;
-                    } else {
-                        showNavigationError(project, "无法跳转到图钉位置，代码位置已被修改。");
+                // 此时图钉标记已有效，继续导航
+                if (isBlock && marker.getStartOffset() != marker.getEndOffset()) {
+                    // 如果是代码块图钉，则定位到起始位置并选中整个代码块
+                    final int startOffset = marker.getStartOffset();
+                    final int endOffset = marker.getEndOffset();
+
+                    // 检查偏移量是否有效
+                    Document doc = marker.getDocument();
+                    if (doc == null || startOffset < 0 || endOffset > doc.getTextLength()) {
+                        showNavigationError(project, "无法跳转到图钉位置，代码可能已被删除或修改。");
                         return;
                     }
-                }
-                
-                // 在 EDT 线程上执行导航操作
-                com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-                    OpenFileDescriptor descriptor = new OpenFileDescriptor(
-                            project,
-                            file,
-                            startOffset
-                    );
-                    
-                    if (descriptor.canNavigate()) {
-                        descriptor.navigate(true);
-                        
-                        // 如果是代码块且有选择范围，则设置选择
-                        if (isBlock && endOffset > startOffset) {
+
+                    // 在 EDT 线程上执行导航操作
+                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                        OpenFileDescriptor descriptor = new OpenFileDescriptor(
+                                project,
+                                file,
+                                startOffset
+                        );
+                        if (descriptor.canNavigate()) {
+                            descriptor.navigate(true);
+                            
+                            // 如果需要选中代码块，可以在导航后获取编辑器并设置选择
                             try {
                                 FileEditorManager manager = FileEditorManager.getInstance(project);
                                 Editor editor = manager.getSelectedTextEditor();
-                                if (editor != null) {
+                                if (editor != null && endOffset > startOffset) {
                                     editor.getSelectionModel().setSelection(startOffset, endOffset);
                                     System.out.println("[CodePins] 代码块选中成功");
                                 }
                             } catch (Exception e) {
                                 System.out.println("[CodePins] 选中代码块失败: " + e.getMessage());
                             }
-                        }
-                        
-                        System.out.println("[CodePins] 导航成功");
-                    } else {
-                        System.out.println("[CodePins] 导航描述符无法导航");
-                        // 尝试通过FileEditorManager直接打开文件
-                        try {
-                            FileEditorManager.getInstance(project).openFile(file, true);
-                            System.out.println("[CodePins] 已打开文件，但无法定位到指定位置");
-                        } catch (Exception e) {
+                            
+                            System.out.println("[CodePins] 导航成功");
+                        } else {
                             showNavigationError(project, "无法跳转到图钉位置，请检查文件是否已被修改。");
                         }
+                    });
+                } else {
+                    // 如果是单行图钉，则只定位到当前行
+                    Document doc = marker.getDocument();
+                    if (doc == null) {
+                        showNavigationError(project, "无法跳转到图钉位置，文档不可用。");
+                        return;
                     }
-                });
+
+                    // 使用标记的起始偏移量而不是行号
+                    final int startOffset = marker.getStartOffset();
+                    
+                    if (startOffset < 0 || startOffset >= doc.getTextLength()) {
+                        showNavigationError(project, "无法跳转到图钉位置，代码位置已被修改。");
+                        return;
+                    }
+
+                    // 在 EDT 线程上执行导航操作
+                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                        // 直接使用偏移量创建描述符，而不是行号和列
+                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, startOffset);
+                        
+                        if (descriptor.canNavigate()) {
+                            descriptor.navigate(true);
+                        } else {
+                            showNavigationError(project, "无法跳转到图钉位置，请检查文件是否已被修改。");
+                        }
+                    });
+                }
             } catch (Exception e) {
-                System.out.println("[CodePins] 导航异常: " + e.getMessage());
-                e.printStackTrace();
                 showNavigationError(project, "导航失败: " + e.getMessage());
+            }
+        });
+    }
+    
+    /**
+     * 检查文件中是否存在原始代码
+     */
+    private boolean checkIfCodeExists(VirtualFile file) {
+        if (originalCode == null || originalCode.isEmpty()) {
+            return false;
+        }
+        
+        try {
+            Document document = com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().getDocument(file);
+            if (document == null) {
+                return false;
+            }
+            
+            String docText = document.getText();
+            return docText.contains(originalCode) || docText.contains(originalCode.trim());
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * 显示代码已恢复对话框
+     */
+    private void showCodeRestoredDialog(Project project, VirtualFile file) {
+        com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+            String[] options = {"恢复图钉", "取消"};
+            int result = Messages.showDialog(
+                    project,
+                    "检测到图钉位置的代码已恢复，但图钉标记仍然无效。\n是否要恢复图钉位置？",
+                    "代码已恢复",
+                    options,
+                    0, // 默认选项
+                    Messages.getInformationIcon()
+            );
+            
+            if (result == 0) {
+                // 尝试恢复
+                boolean recovered = tryRecoverMarkerWithNewRangeMarker(project, file);
+                if (recovered) {
+                    // 重新尝试导航
+                    navigate(project);
+                } else {
+                    Messages.showErrorDialog(project, "无法恢复图钉位置。", "恢复失败");
+                }
             }
         });
     }
 
     /**
-     * 显示导航错误消息，并询问用户是否删除图钉
+     * 显示导航错误消息，并询问用户是否删除图钉或尝试恢复
      */
     private void showNavigationError(Project project, String message) {
         com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-            String[] options = {"删除图钉", "保留图钉", "尝试恢复"};
+            String[] options = {"删除图钉", "尝试恢复", "取消"};
             int result = Messages.showDialog(
                     project,
                     message + "\n\n您想要执行什么操作？",
                     "跳转失败",
                     options,
-                    0, // 默认选项：删除图钉
+                    0, // 默认选项
                     Messages.getErrorIcon()
             );
 
             if (result == 0) {
                 // 删除图钉
-                System.out.println("[CodePins] 用户选择删除图钉");
                 PinStorage.removePin(this);
-            } else if (result == 2) {
+            } else if (result == 1) {
                 // 尝试恢复
-                System.out.println("[CodePins] 用户选择尝试恢复图钉");
                 VirtualFile file = LocalFileSystem.getInstance().findFileByPath(filePath);
                 if (file != null && file.exists()) {
-                    boolean recovered = tryRecoverMarker(project, file);
+                    boolean recovered = tryRecoverMarkerWithNewRangeMarker(project, file);
                     if (recovered) {
-                        // 恢复成功，再次尝试导航
-                        System.out.println("[CodePins] 恢复成功，再次尝试导航");
+                        // 重新尝试导航
                         navigate(project);
                     } else {
-                        // 恢复失败
-                        Messages.showErrorDialog(
-                                project,
-                                "无法恢复图钉位置。\n可能的原因：\n1. 代码已被完全删除\n2. 代码已经被大幅修改\n3. 文件结构变化过大",
-                                "恢复失败"
-                        );
+                        Messages.showErrorDialog(project, "无法恢复图钉位置，请确保代码已恢复。", "恢复失败");
                     }
+                } else {
+                    Messages.showErrorDialog(project, "文件不存在或无法访问。", "恢复失败");
                 }
             }
-            // 用户选择保留图钉不做任何操作
+            // 如果选择"取消"，则不执行任何操作
         });
+    }
+    
+    /**
+     * 尝试通过创建新的RangeMarker来恢复图钉
+     * 这种方法适用于反射失败的情况
+     */
+    private boolean tryRecoverMarkerWithNewRangeMarker(Project project, VirtualFile file) {
+        try {
+            return com.intellij.openapi.application.ReadAction.compute(() -> {
+                try {
+                    // 获取文件的文档
+                    com.intellij.openapi.editor.Document document = 
+                        com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().getDocument(file);
+                    
+                    if (document == null || originalCode == null || originalCode.isEmpty()) {
+                        return false;
+                    }
+                    
+                    // 在整个文档中查找原始代码
+                    String docText = document.getText();
+                    int foundOffset = docText.indexOf(originalCode);
+                    boolean useOriginalCode = true;
+                    
+                    // 如果找不到原始代码，尝试使用修剪后的代码
+                    if (foundOffset < 0) {
+                        String trimmedCode = originalCode.trim();
+                        if (!trimmedCode.isEmpty()) {
+                            foundOffset = docText.indexOf(trimmedCode);
+                            if (foundOffset >= 0) {
+                                useOriginalCode = false;
+                            }
+                        }
+                    }
+                    
+                    if (foundOffset >= 0) {
+                        // 找到匹配的代码
+                        System.out.println("[CodePins] 在文档中找到匹配的" + 
+                                          (useOriginalCode ? "原始" : "修剪后的") + 
+                                          "代码，位置: " + foundOffset);
+                        
+                        // 创建新的RangeMarker
+                        int newEndOffset;
+                        if (useOriginalCode) {
+                            newEndOffset = foundOffset + originalCode.length();
+                        } else {
+                            newEndOffset = foundOffset + originalCode.trim().length();
+                        }
+                        
+                        RangeMarker newMarker = document.createRangeMarker(foundOffset, newEndOffset);
+                        newMarker.setGreedyToLeft(true);
+                        newMarker.setGreedyToRight(true);
+                        
+                        // 创建一个新的PinEntry替换当前的
+                        PinEntry newPin = new PinEntry(
+                            filePath, 
+                            newMarker, 
+                            note, 
+                            timestamp, 
+                            author, 
+                            isBlock, 
+                            getTags()
+                        );
+                        
+                        // 如果有名称，也复制过来
+                        if (name != null) {
+                            newPin.name = name;
+                        }
+                        
+                        // 使用PinStorage的replacePin方法替换图钉
+                        if (PinStorage.replacePin(this, newPin)) {
+                            int newLineNumber = document.getLineNumber(foundOffset) + 1;
+                            System.out.println("[CodePins] 图钉标记已成功恢复到行 " + newLineNumber);
+                            return true;
+                        } else {
+                            System.out.println("[CodePins] 无法在存储中替换图钉");
+                            return false;
+                        }
+                    } else {
+                        System.out.println("[CodePins] 恢复失败: 在文档中找不到匹配的代码");
+                        return false;
+                    }
+                } catch (Exception e) {
+                    System.out.println("[CodePins] 恢复失败: " + e.getMessage());
+                    e.printStackTrace();
+                    return false;
+                }
+            });
+        } catch (Exception e) {
+            System.out.println("[CodePins] 恢复操作异常: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**
@@ -394,8 +555,6 @@ public class PinEntry {
             // 使用ReadAction包装文档访问，确保线程安全
             return com.intellij.openapi.application.ReadAction.compute(() -> {
                 try {
-                    System.out.println("[CodePins] 开始尝试恢复图钉: " + filePath);
-                    
                     // 获取文件的文档
                     com.intellij.openapi.editor.Document document = 
                         com.intellij.openapi.fileEditor.FileDocumentManager.getInstance().getDocument(file);
@@ -414,70 +573,29 @@ public class PinEntry {
                     // 如果没有保存原始代码，无法进行内容比较
                     if (originalCode == null || originalCode.isEmpty()) {
                         System.out.println("[CodePins] 恢复失败: 没有原始代码记录");
-                        // 尝试先刷新原始代码
-                        saveOriginalCode();
-                        if (originalCode == null || originalCode.isEmpty()) {
-                            return false;
-                        }
-                    }
-
-                    // 尝试几种不同的恢复策略
-                    
-                    // 策略1: 原位置检查
-                    int originalOffset = marker.getStartOffset();
-                    if (originalOffset >= 0 && originalOffset < document.getTextLength()) {
-                        int endOffset = Math.min(originalOffset + originalCode.length(), document.getTextLength());
-                        String currentCode = document.getText(new TextRange(originalOffset, endOffset));
-                        
-                        if (originalCode.equals(currentCode) || 
-                            (currentCode.length() > 0 && originalCode.startsWith(currentCode))) {
-                            System.out.println("[CodePins] 原位置代码匹配，直接恢复");
-                            updateMarkerState(originalOffset, endOffset);
-                            return true;
-                        }
-                    }
-
-                    // 策略2: 完全匹配搜索
-                    int exactMatchPos = document.getText().indexOf(originalCode);
-                    if (exactMatchPos >= 0) {
-                        System.out.println("[CodePins] 找到完全匹配的代码，位置: " + exactMatchPos);
-                        int endPos = exactMatchPos + originalCode.length();
-                        updateMarkerState(exactMatchPos, endPos);
-                        return true;
-                    }
-
-                    // 策略3: 部分匹配搜索 (只匹配前10个字符，适用于长代码段被部分修改的情况)
-                    if (originalCode.length() > 10) {
-                        String codePrefix = originalCode.substring(0, 10);
-                        int prefixPos = document.getText().indexOf(codePrefix);
-                        if (prefixPos >= 0) {
-                            System.out.println("[CodePins] 找到部分匹配的代码前缀，位置: " + prefixPos);
-                            int estimatedEnd = Math.min(prefixPos + originalCode.length(), document.getTextLength());
-                            updateMarkerState(prefixPos, estimatedEnd);
-                            return true;
-                        }
-                    }
-
-                    // 策略4: 行号恢复 (根据保存的行号信息尝试恢复)
-                    try {
-                        java.lang.reflect.Field lineField = this.getClass().getDeclaredField("line");
-                        lineField.setAccessible(true);
-                        Integer savedLine = (Integer) lineField.get(this);
-                        
-                        if (savedLine != null && savedLine >= 0 && savedLine < document.getLineCount()) {
-                            int lineStart = document.getLineStartOffset(savedLine);
-                            int lineEnd = document.getLineEndOffset(savedLine);
-                            System.out.println("[CodePins] 尝试通过行号恢复: " + savedLine + ", 位置: " + lineStart);
-                            updateMarkerState(lineStart, lineEnd);
-                            return true;
-                        }
-                    } catch (Exception e) {
-                        // 没有保存行号信息，继续使用其他恢复策略
-                        System.out.println("[CodePins] 无法通过行号恢复: " + e.getMessage());
+                        return false;
                     }
                     
-                    System.out.println("[CodePins] 恢复失败: 无法找到匹配的代码内容");
-                    return false;
+                    // 先检查marker是否仍然有效
+                    if (marker != null && marker.isValid()) {
+                        // 验证当前位置的代码是否与原始代码匹配
+                        int startOffset = marker.getStartOffset();
+                        int endOffset = marker.getEndOffset();
+                        
+                        // 确保不越界
+                        if (endOffset <= document.getTextLength()) {
+                            String currentCode = document.getText(new TextRange(startOffset, endOffset));
+                            if (originalCode.equals(currentCode)) {
+                                // 当前位置的代码与原始代码匹配，不需要恢复
+                                System.out.println("[CodePins] 图钉位置有效且代码匹配，无需恢复");
+                                return true;
+                            }
+                        }
+                    }
+                    
+                    // 由于无法使用反射修改marker内部状态，直接调用新方法创建新的marker
+                    System.out.println("[CodePins] 尝试通过创建新marker替换恢复图钉");
+                    return tryRecoverMarkerWithNewRangeMarker(project, file);
                 } catch (Exception e) {
                     System.out.println("[CodePins] 恢复失败: " + e.getMessage());
                     e.printStackTrace();
@@ -488,32 +606,6 @@ public class PinEntry {
             System.out.println("[CodePins] 恢复操作异常: " + e.getMessage());
             e.printStackTrace();
             return false;
-        }
-    }
-    
-    /**
-     * 更新标记状态
-     */
-    private void updateMarkerState(int startOffset, int endOffset) {
-        try {
-            // 使用反射修改marker的内部状态
-            java.lang.reflect.Field validField = marker.getClass().getDeclaredField("valid");
-            validField.setAccessible(true);
-            validField.set(marker, true);
-            
-            // 更新偏移量
-            java.lang.reflect.Field startOffsetField = marker.getClass().getDeclaredField("startOffset");
-            startOffsetField.setAccessible(true);
-            startOffsetField.set(marker, startOffset);
-            
-            java.lang.reflect.Field endOffsetField = marker.getClass().getDeclaredField("endOffset");
-            endOffsetField.setAccessible(true);
-            endOffsetField.set(marker, endOffset);
-            
-            System.out.println("[CodePins] 图钉标记已成功恢复到位置: " + startOffset + "-" + endOffset);
-        } catch (Exception e) {
-            System.out.println("[CodePins] 恢复失败: 无法重置标记状态: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }

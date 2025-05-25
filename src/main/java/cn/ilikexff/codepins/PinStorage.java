@@ -428,6 +428,51 @@ public class PinStorage {
     }
 
     /**
+     * 替换指定图钉
+     * 用于图钉恢复功能，在RangeMarker无效时替换为新的图钉
+     *
+     * @param oldPin 要替换的图钉
+     * @param newPin 新图钉
+     * @return 是否替换成功
+     */
+    public static boolean replacePin(PinEntry oldPin, PinEntry newPin) {
+        int index = pins.indexOf(oldPin);
+        if (index < 0) {
+            System.out.println("[CodePins] 替换图钉失败: 找不到原始图钉");
+            return false;
+        }
+        
+        // 替换内存中的图钉
+        pins.set(index, newPin);
+        
+        // 更新持久化存储中的数据
+        Document doc = newPin.marker.getDocument();
+        int oldLine = oldPin.getCurrentLine(doc);
+        int newLine = newPin.getCurrentLine(doc);
+        
+        for (PinState p : PinStateService.getInstance().getPins()) {
+            if (p.filePath.equals(oldPin.filePath) && p.line == oldLine) {
+                // 更新行号
+                p.line = newLine;
+                
+                // 如果是代码块图钉，更新偏移量
+                if (newPin.isBlock) {
+                    p.startOffset = newPin.marker.getStartOffset();
+                    p.endOffset = newPin.marker.getEndOffset();
+                }
+                
+                System.out.println("[CodePins] 图钉持久化数据已更新，行号: " + oldLine + " -> " + newLine);
+                break;
+            }
+        }
+        
+        // 刷新模型
+        refreshModel();
+        
+        return true;
+    }
+
+    /**
      * 保存自定义排序
      */
     private static void saveCustomOrder() {
