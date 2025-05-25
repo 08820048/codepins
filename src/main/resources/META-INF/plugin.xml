@@ -133,6 +133,8 @@
         <!-- 图标预加载器 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.services.IconPreloader"/>
 
+        <!-- 行号槽区域图钉标记提供者 -->
+        <codeInsight.lineMarkerProvider language="" implementationClass="cn.ilikexff.codepins.extensions.PinLineMarkerProvider"/>
 
 
         <!-- 注册设置页面 -->
