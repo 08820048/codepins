@@ -1,7 +1,7 @@
 package cn.ilikexff.codepins.extensions;
 
-import cn.ilikexff.codepins.PinEntry;
-import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.core.PinStorage;
 import cn.ilikexff.codepins.settings.CodePinsSettings;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.openapi.actionSystem.ActionManager;

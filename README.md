@@ -52,8 +52,9 @@
 - **快捷键**：使用快捷键 `Alt+Shift+P` 添加图钉
 - **选择文本**：选中代码后，点击出现的浮动操作按钮添加为图钉
 - **注释标记**：在代码中添加特定格式的注释自动创建图钉
-  - 单行标记：`@pin` 或 `@pin: 备注内容`
-  - 代码块标记：`@pin-block` 或 `@pin:block: 备注内容`
+  - 单行标记：`@cp` 或 `@cp: 备注内容`（也兼容旧格式 `@pin`）
+  - 代码块标记：`@cpb` 或 `@cpb: 备注内容`（也兼容旧格式 `@pin-block`）
+  - 指定行号范围：`@cpb1-20: 备注内容`（创建从第1行到第20行的代码块图钉）
 
 ### 🔄 图钉管理
 - ✏️ **编辑图钉**：双击图钉编辑备注和标签（如 #important, #bug, #todo）
@@ -101,6 +102,33 @@
 5. **团队协作**
    - 使用导入导出功能在团队成员间共享图钉
    - 支持多种导出格式，满足不同需求
+
+## ✨ 贡献者
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+感谢这些优秀的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/08820048"><img src="https://avatars.githubusercontent.com/u/08820048" width="100px;" alt="08820048"/><br /><sub><b>08820048</b></sub></a><br /><a href="#code-08820048" title="Code">💻</a> <a href="#doc-08820048" title="Documentation">📖</a> <a href="#maintenance-08820048" title="Maintenance">🚧</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Auroral0810"><img src="https://avatars.githubusercontent.com/u/Auroral0810" width="100px;" alt="Auroral0810"/><br /><sub><b>Auroral0810</b></sub></a><br /><a href="#code-Auroral0810" title="Code">💻</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+该项目遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范。欢迎任何形式的贡献！
 
 ## 🤝 贡献指南
 

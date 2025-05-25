@@ -1,6 +1,6 @@
 package cn.ilikexff.codepins.ui;
 
-import cn.ilikexff.codepins.PinEntry;
+import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.services.LicenseService;
 import cn.ilikexff.codepins.utils.*;
 import com.intellij.openapi.util.IconLoader;

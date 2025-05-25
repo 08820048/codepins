@@ -1,6 +1,6 @@
 package cn.ilikexff.codepins.utils;
 
-import cn.ilikexff.codepins.PinEntry;
+import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.ui.GithubTokenDialog;
 import com.intellij.openapi.project.Project;
 

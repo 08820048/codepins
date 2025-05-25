@@ -1,8 +1,8 @@
 package cn.ilikexff.codepins.utils;
 
-import cn.ilikexff.codepins.PinEntry;
-import cn.ilikexff.codepins.PinState;
-import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.core.PinState;
+import cn.ilikexff.codepins.core.PinStorage;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;

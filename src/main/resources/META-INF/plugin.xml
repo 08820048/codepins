@@ -135,7 +135,7 @@
         />
 
         <!-- 注册服务类 -->
-        <applicationService serviceImplementation="cn.ilikexff.codepins.PinStateService"/>
+        <applicationService serviceImplementation="cn.ilikexff.codepins.core.PinStateService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.settings.CodePinsSettings"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.GistService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.LicenseService"/>

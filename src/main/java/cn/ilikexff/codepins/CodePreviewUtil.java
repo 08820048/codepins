@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.settings.CodePinsSettings;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.EditorFactory;

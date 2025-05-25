@@ -1,5 +1,7 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.core.PinEntry;
+
 import com.intellij.openapi.editor.Document;
 
 import java.text.SimpleDateFormat;

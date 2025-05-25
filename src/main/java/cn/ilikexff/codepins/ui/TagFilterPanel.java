@@ -1,7 +1,7 @@
 package cn.ilikexff.codepins.ui;
 
-import cn.ilikexff.codepins.PinEntry;
-import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.core.PinStorage;
 import cn.ilikexff.codepins.services.LicenseService;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ui.JBColor;

@@ -1,6 +1,6 @@
 package cn.ilikexff.codepins.ui;
 
-import cn.ilikexff.codepins.PinEntry;
+import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.utils.AnimationUtil;
 import cn.ilikexff.codepins.utils.ImageGenerator;
 import cn.ilikexff.codepins.utils.SensitiveInfoDetector;

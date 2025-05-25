@@ -1,7 +1,7 @@
 package cn.ilikexff.codepins.ui;
 
-import cn.ilikexff.codepins.PinEntry;
-import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.core.PinStorage;
 // 移除不再需要的许可证服务引用
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.project.Project;
