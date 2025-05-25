@@ -119,6 +119,16 @@ public class PinStateService implements PersistentStateComponent<PinStateService
     }
 
     /**
+     * 移除全局标签
+     * @param tag 标签
+     */
+    public void removeGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            state.globalTags.remove(tag.trim());
+        }
+    }
+
+    /**
      * 获取全局标签
      * @return 全局标签集合的副本
      */

@@ -333,6 +333,19 @@ public class PinStorage {
     }
 
     /**
+     * 从全局标签集合中删除标签
+     */
+    public static void removeGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            String trimmedTag = tag.trim();
+            allTags.remove(trimmedTag);
+            
+            // 从持久化存储中删除
+            PinStateService.getInstance().removeGlobalTag(trimmedTag);
+        }
+    }
+
+    /**
      * 根据标签筛选图钉
      */
     public static List<PinEntry> filterByTags(List<String> tags) {
