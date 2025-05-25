@@ -36,6 +36,7 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         boolean modified = !mySettingsComponent.getPreviewHeight().equals(settings.previewHeight);
         modified |= mySettingsComponent.getConfirmDelete() != settings.confirmDelete;
+        modified |= mySettingsComponent.getShowNoteDialogOnQuickAdd() != settings.showNoteDialogOnQuickAdd;
         return modified;
     }
 
@@ -44,6 +45,7 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         settings.previewHeight = mySettingsComponent.getPreviewHeight();
         settings.confirmDelete = mySettingsComponent.getConfirmDelete();
+        settings.showNoteDialogOnQuickAdd = mySettingsComponent.getShowNoteDialogOnQuickAdd();
     }
 
     @Override
@@ -51,6 +53,7 @@ public class CodePinsSettingsConfigurable implements Configurable {
         CodePinsSettings settings = CodePinsSettings.getInstance();
         mySettingsComponent.setPreviewHeight(settings.previewHeight);
         mySettingsComponent.setConfirmDelete(settings.confirmDelete);
+        mySettingsComponent.setShowNoteDialogOnQuickAdd(settings.showNoteDialogOnQuickAdd);
     }
 
     @Override

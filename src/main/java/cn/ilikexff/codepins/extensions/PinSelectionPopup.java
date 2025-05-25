@@ -1,15 +1,21 @@
 package cn.ilikexff.codepins.extensions;
 
 import cn.ilikexff.codepins.PinEntry;
+import cn.ilikexff.codepins.PinStorage;
+import cn.ilikexff.codepins.settings.CodePinsSettings;
+import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.SelectionModel;
 import com.intellij.openapi.editor.event.SelectionEvent;
 import com.intellij.openapi.editor.event.SelectionListener;
+import com.intellij.openapi.editor.event.EditorMouseListener;
+import com.intellij.openapi.editor.event.EditorMouseEvent;
 import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -21,7 +27,9 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -51,7 +59,16 @@ public class PinSelectionPopup implements SelectionListener {
      * @param project 项目
      */
     public static void installOn(Editor editor, Project project) {
-        editor.getSelectionModel().addSelectionListener(new PinSelectionPopup(editor, project));
+        PinSelectionPopup popup = new PinSelectionPopup(editor, project);
+        editor.getSelectionModel().addSelectionListener(popup);
+        
+        // 添加鼠标点击监听器，在点击编辑器时关闭弹出窗口
+        editor.addEditorMouseListener(new EditorMouseListener() {
+            @Override
+            public void mouseClicked(@NotNull EditorMouseEvent event) {
+                closePopupFor(editor);
+            }
+        });
     }
 
     @Override
@@ -174,8 +191,56 @@ public class PinSelectionPopup implements SelectionListener {
 
         int startOffset = selectionModel.getSelectionStart();
         int endOffset = selectionModel.getSelectionEnd();
+        
+        // 检查用户设置，决定是否显示备注框和标签框
+        boolean showNoteDialog = CodePinsSettings.getInstance().showNoteDialogOnQuickAdd;
+        
+        if (showNoteDialog) {
+            // 显示备注框和标签框
+            // 请求用户输入备注
+            String note = Messages.showInputDialog(
+                    project,
+                    "请输入图钉备注（可选）：",
+                    "添加图钉",
+                    null
+            );
 
-        // 创建图钉
-        PinEntry.createPin(project, file.getPath(), document, startOffset, endOffset, "", true);
+            // 如果用户取消了输入，不添加图钉
+            if (note == null) {
+                return;
+            }
+
+            // 创建标签对话框，请求用户输入标签
+            List<String> tags = new ArrayList<>();
+            SimpleTagEditorDialog tagDialog = new SimpleTagEditorDialog(project, new PinEntry(
+                    file.getPath(),
+                    document.createRangeMarker(0, 0), // 临时标记，仅用于对话框
+                    note,
+                    System.currentTimeMillis(),
+                    System.getProperty("user.name"),
+                    true,
+                    tags
+            ));
+
+            if (tagDialog.showAndGet()) {
+                // 如果用户点击了确定，获取标签
+                tags = tagDialog.getTags();
+            }
+
+            // 添加图钉
+            PinEntry pinEntry = new PinEntry(
+                    file.getPath(),
+                    document.createRangeMarker(startOffset, endOffset),
+                    note,
+                    System.currentTimeMillis(),
+                    System.getProperty("user.name"),
+                    true,
+                    tags
+            );
+            PinStorage.addPin(pinEntry);
+        } else {
+            // 直接创建图钉，不显示备注框和标签框
+            PinEntry.createPin(project, file.getPath(), document, startOffset, endOffset, "", true);
+        }
     }
 }

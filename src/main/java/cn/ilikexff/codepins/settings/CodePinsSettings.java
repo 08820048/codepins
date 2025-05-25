@@ -20,6 +20,9 @@ public class CodePinsSettings implements PersistentStateComponent<CodePinsSettin
     // 常规设置
     public String previewHeight = "300";
     public boolean confirmDelete = true;
+    
+    // 图钉添加设置
+    public boolean showNoteDialogOnQuickAdd = false; // 默认不弹出备注框和标签框
 
     /**
      * 获取设置实例

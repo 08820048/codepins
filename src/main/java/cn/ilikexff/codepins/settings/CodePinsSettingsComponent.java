@@ -3,14 +3,12 @@ package cn.ilikexff.codepins.settings;
 
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
-import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.components.JBTextArea;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.UI;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -24,6 +22,7 @@ public class CodePinsSettingsComponent {
     private final JPanel mainPanel;
     private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox("删除图钉时确认");
     private final JBTextField previewHeightTextField = new JBTextField();
+    private final JBCheckBox showNoteDialogOnQuickAddCheckBox = new JBCheckBox("快捷添加图钉时显示备注和标签对话框");
 
     public CodePinsSettingsComponent() {
         // 创建常规设置面板
@@ -32,6 +31,13 @@ public class CodePinsSettingsComponent {
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
         generalPanel.setBorder(BorderFactory.createTitledBorder("常规设置"));
+        
+        // 创建图钉添加设置面板
+        JPanel pinAddPanel = FormBuilder.createFormBuilder()
+                .addComponent(showNoteDialogOnQuickAddCheckBox)
+                .addComponent(new JBLabel("<html><small>开启后，使用选择文本浮动按钮或注释标记添加图钉时，将显示备注和标签对话框</small></html>"))
+                .getPanel();
+        pinAddPanel.setBorder(BorderFactory.createTitledBorder("图钉添加设置"));
 
 
 
@@ -73,6 +79,7 @@ public class CodePinsSettingsComponent {
         mainPanel = FormBuilder.createFormBuilder()
                 .addComponent(donationPanel)
                 .addComponent(generalPanel)
+                .addComponent(pinAddPanel)
                 .addComponent(labeledShortcutsPanel)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
@@ -175,6 +182,14 @@ public class CodePinsSettingsComponent {
 
     public void setConfirmDelete(boolean newStatus) {
         confirmDeleteCheckBox.setSelected(newStatus);
+    }
+    
+    public boolean getShowNoteDialogOnQuickAdd() {
+        return showNoteDialogOnQuickAddCheckBox.isSelected();
+    }
+    
+    public void setShowNoteDialogOnQuickAdd(boolean newStatus) {
+        showNoteDialogOnQuickAddCheckBox.setSelected(newStatus);
     }
 
 
