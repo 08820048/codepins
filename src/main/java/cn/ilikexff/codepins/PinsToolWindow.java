@@ -848,42 +848,18 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     private JComponent createPinCountLabel() {
         // 获取图钉数量信息
-        Map<String, Integer> countInfo = PinStorage.getPinsCountInfo();
-        int currentCount = countInfo.get("current");
-        int maxCount = countInfo.get("max");
-
+        int currentCount = PinStorage.getPins().size();
+        
         // 创建标签
         JLabel countLabel = new JLabel();
-
+        
         // 获取当前UI主题颜色
-        Color textColor = UIUtil.getLabelForeground();
-        Color hoverColor = JBColor.namedColor("Link.activeForeground", new JBColor(new Color(0x4083C9), new Color(0x589DF6)));
-        Color warningColor = JBColor.namedColor("Component.warningForeground", new JBColor(new Color(0xA0522D), new Color(0xBC6D4C)));
-        Color errorColor = JBColor.namedColor("Component.errorForeground", new JBColor(new Color(0xC75450), new Color(0xFF5261)));
         Color successColor = JBColor.namedColor("Plugins.tagForeground", new JBColor(new Color(0x008000), new Color(0x369E6A)));
-
-        // 设置标签文本和样式
-        if (maxCount == -1) {
-            // 专业版用户，无限制
-            countLabel.setText("当前钉数:"+currentCount);
-            countLabel.setForeground(successColor);
-//            countLabel.setIcon(IconUtil.loadIcon("/icons/premium-small.svg", getClass()));
-        } else {
-            // 免费版用户，有限制
-            countLabel.setText(currentCount + "/" + maxCount);
-            countLabel.setIcon(IconUtil.loadIcon("/icons/pin-small.svg", getClass()));
-
-            // 根据使用比例设置颜色
-            float usageRatio = (float) currentCount / maxCount;
-            if (usageRatio >= 0.9) {
-                countLabel.setForeground(errorColor);
-            } else if (usageRatio >= 0.7) {
-                countLabel.setForeground(warningColor);
-            } else {
-                countLabel.setForeground(textColor);
-            }
-        }
-
+        
+        // 设置标签文本和样式 - 插件现在完全免费开源
+        countLabel.setText("当前钉数: " + currentCount);
+        countLabel.setForeground(successColor);
+        countLabel.setIcon(IconUtil.loadIcon("/icons/pin-small.svg", getClass()));
         // 设置字体和边距，使用更紧凑的边距
         countLabel.setFont(countLabel.getFont().deriveFont(Font.PLAIN, 12f));
         countLabel.setBorder(JBUI.Borders.empty(0, 4, 0, 2)); // 减少左右边距，使布局更紧凑
@@ -891,13 +867,8 @@ public class PinsToolWindow implements ToolWindowFactory {
         // 设置垂直对齐
         countLabel.setVerticalAlignment(SwingConstants.CENTER);
 
-        // 添加鼠标点击事件，点击时显示升级对话框
-        if (maxCount != -1) {
-            countLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-            countLabel.setToolTipText("免费版限制100个图钉，点击升级到专业版获取无限图钉");
-
-            // 插件现在完全免费，移除升级相关的鼠标事件
-        }
+        // 设置提示信息
+        countLabel.setToolTipText("图钉数量无限制，插件已完全免费开源");
 
         // 创建容器面板，使用半透明背景
         JPanel container = new JPanel(new BorderLayout());
@@ -1140,7 +1111,7 @@ public class PinsToolWindow implements ToolWindowFactory {
             } else {
                 Messages.showErrorDialog(
                         project,
-                        "图钉复制失败，可能已达到免费版图钉数量限制。",
+                        "图钉复制失败，请稍后重试。",
                         "复制失败"
                 );
             }
