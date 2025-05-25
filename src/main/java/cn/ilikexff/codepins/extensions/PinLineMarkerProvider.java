@@ -30,8 +30,10 @@ public class PinLineMarkerProvider implements LineMarkerProvider {
     @Nullable
     @Override
     public LineMarkerInfo<?> getLineMarkerInfo(@NotNull PsiElement element) {
-        // 获取第一个元素的行号
-        if (element.getFirstChild() != null) {
+        // 只处理叶子节点，以确保每行只有一个标记
+        if (element.getFirstChild() == null) {
+            // 继续处理
+        } else {
             return null;
         }
 

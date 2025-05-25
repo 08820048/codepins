@@ -3,7 +3,7 @@
     <id>cn.ilikexff.codepins</id>
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
-    <version>2.1.0</version>
+    <version>2.0.0</version>
 
     <!-- 插件现在完全免费开源，移除产品描述符 -->
 
@@ -72,11 +72,13 @@
     <change-notes><![CDATA[
 <h2>Version 2.1.0</h2>
 <ul>
-    <li><b>👆 选择文本浮动按钮：</b> 选中代码后自动显示添加图钉的浮动按钮</li>
-    <li><b>💬 注释标记自动识别：</b> 支持通过 @pin 或 @pin: 备注内容 格式的注释自动创建图钉</li>
-    <li><b>🔧 用户体验优化：</b> 提供更多直观、便捷的图钉添加方式</li>
-    <li><b>🤝 团队协作增强：</b> 通过注释标记功能增强团队协作体验</li>
-    <li><b>🎨 界面优化：</b> 新增浮动按钮，提升可见性</li>
+    <li><b>📝 Comment Markers:</b> Added support for creating pins from comment markers</li>
+    <li><b>✏️ Simplified Commands:</b> New shorter commands @cp and @cpb for creating pins</li>
+    <li><b>📊 Line Range:</b> Support for specifying line ranges with @cpb1-20 format</li>
+    <li><b>✨ Smart Triggers:</b> Pins can be created by typing a completion symbol or via menu</li>
+    <li><b>🛠️ Settings:</b> Added customization options for comment pin creation</li>
+    <li><b>🎨 UI Integration:</b> Added menu item in Tools menu for detecting comment markers</li>
+    <li><b>🔧 Bug Fixes:</b> Fixed issues with automatic pin creation and improved stability</li>
 </ul>
 
 <h2>Version 2.0.0</h2>
@@ -145,8 +147,14 @@
         <!-- 选择文本后的浮动操作按钮初始化器 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinSelectionPopupInitializer"/>
         
-        <!-- 注释标记检测器初始化器 -->
-        <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinCommentDetectorInitializer"/>
+        <!-- 注释：移除了注释标记检测器初始化器，避免 PSI 树变化时自动触发图钉添加 -->
+        
+        <!-- 注释：移除了文档监听器初始化器，避免文档变化时自动触发图钉添加 -->
+        
+        <!-- 注释：移除了文件保存时自动检测注释标记的功能，只保留手动触发和完成符号触发 -->
+        
+        <!-- 完成符号监听器初始化器，用于检测完成符号的输入 -->
+        <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinCompletionSymbolListenerInitializer"/>
 
 
         <!-- 注册设置页面 -->
@@ -205,12 +213,22 @@
             <add-to-group group-id="ToolWindowsGroup" anchor="last"/>
         </action>
 
+        <!-- 注释标记检测器 -->
+        <action id="CodePins.PinCommentAction"
+                class="cn.ilikexff.codepins.extensions.PinCommentAction"
+                text="Detect Comment Markers"
+                description="Detect @pin and @pin-block markers in comments"
+                icon="/icons/pin-comment.svg">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+        </action>
+        
         <!-- 创建 CodePins 操作组 -->
         <group id="CodePins.ActionGroup" text="CodePins" description="CodePins actions" popup="true">
             <reference ref="CodePins.AddPinAction"/>
             <reference ref="CodePins.NavigateNextPinAction"/>
             <reference ref="CodePins.NavigatePrevPinAction"/>
             <reference ref="CodePins.TogglePinsToolWindowAction"/>
+            <reference ref="CodePins.PinCommentAction"/>
             <add-to-group group-id="MainMenu" anchor="last"/>
         </group>
     </actions>

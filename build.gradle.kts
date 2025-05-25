@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cn.cn.codepins"
-version = "2.0.0" // 更新为2.0.0版本，标志着插件完全免费开源
+version = "2.1.0" // 更新为2.1.0版本，继续完善免费开源功能
 
 repositories {
     mavenCentral()

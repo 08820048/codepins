@@ -10,6 +10,9 @@ import com.intellij.openapi.fileEditor.FileDocumentManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.notification.Notification;
+import com.intellij.notification.NotificationType;
+import com.intellij.notification.Notifications;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +54,14 @@ public class PinCommentDetector implements PsiTreeChangeListener {
                 new PinCommentDetector(project),
                 project
         );
+        
+        // 显示通知，确认检测器已安装
+        Notifications.Bus.notify(new Notification(
+                "CodePins",
+                "CodePins 注释标记检测器",
+                "注释标记检测器已成功安装，现在可以使用 @pin 和 @pin-block 标记了",
+                NotificationType.INFORMATION
+        ));
     }
 
     @Override
@@ -103,9 +114,25 @@ public class PinCommentDetector implements PsiTreeChangeListener {
     private void checkComment(PsiComment comment) {
         String commentText = comment.getText();
         
+        // 显示通知，确认注释被检测到
+        Notifications.Bus.notify(new Notification(
+                "CodePins",
+                "CodePins 注释检测",
+                "检测到注释: " + commentText,
+                NotificationType.INFORMATION
+        ));
+        
         // 检查是否是代码块标记
         Matcher blockMatcher = PIN_BLOCK_PATTERN.matcher(commentText);
         if (blockMatcher.find()) {
+            // 显示通知，确认代码块标记被检测到
+            Notifications.Bus.notify(new Notification(
+                    "CodePins",
+                    "CodePins 代码块标记",
+                    "检测到代码块标记: " + blockMatcher.group(1).trim(),
+                    NotificationType.INFORMATION
+            ));
+            
             // 处理代码块标记
             processBlockPin(comment, blockMatcher.group(1).trim());
             return;
@@ -114,6 +141,13 @@ public class PinCommentDetector implements PsiTreeChangeListener {
         // 检查是否是普通图钉标记
         Matcher matcher = PIN_PATTERN.matcher(commentText);
         if (matcher.find()) {
+            // 显示通知，确认普通图钉标记被检测到
+            Notifications.Bus.notify(new Notification(
+                    "CodePins",
+                    "CodePins 普通图钉标记",
+                    "检测到普通图钉标记: " + matcher.group(1).trim(),
+                    NotificationType.INFORMATION
+            ));
             // 提取注释中的备注内容
             String note = matcher.group(1).trim();
             
