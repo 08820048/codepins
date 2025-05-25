@@ -1,4 +1,4 @@
-package ilikexff.codepins;
+package cn.codepins;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
