@@ -3,7 +3,6 @@ package cn.ilikexff.codepins;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.RangeMarker;
-import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
@@ -254,6 +253,36 @@ public class PinEntry {
      */
     public void navigateToSource(Project project) {
         navigate(project);
+    }
+    
+    /**
+     * 创建新的图钉并添加到存储中
+     * 
+     * @param project 项目
+     * @param filePath 文件路径
+     * @param document 文档
+     * @param startOffset 起始偏移量
+     * @param endOffset 结束偏移量
+     * @param note 备注
+     * @param isBlock 是否为代码块
+     * @return 创建的图钉对象
+     */
+    public static PinEntry createPin(Project project, String filePath, Document document, int startOffset, int endOffset, String note, boolean isBlock) {
+        RangeMarker marker = document.createRangeMarker(startOffset, endOffset);
+        marker.setGreedyToLeft(true);
+        marker.setGreedyToRight(true);
+        
+        PinEntry pin = new PinEntry(
+                filePath,
+                marker,
+                note,
+                System.currentTimeMillis(),
+                System.getProperty("user.name"),
+                isBlock
+        );
+        
+        PinStorage.addPin(pin);
+        return pin;
     }
 
     /**

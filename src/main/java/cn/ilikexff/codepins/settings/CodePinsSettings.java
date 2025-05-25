@@ -20,6 +20,15 @@ public class CodePinsSettings implements PersistentStateComponent<CodePinsSettin
     // 常规设置
     public String previewHeight = "300";
     public boolean confirmDelete = true;
+    
+    // 图钉添加设置
+    public boolean showNoteDialogOnQuickAdd = false; // 默认不弹出备注框和标签框
+    
+    // 注释指令添加图钉设置
+    public boolean showNoteDialogOnCommentPin = false; // 默认不弹出备注框和标签框
+    public boolean autoAddQuickTag = true; // 默认自动添加“快捷添加”标签
+    public boolean useCompletionSymbol = true; // 默认使用完成指令符号
+    public String completionSymbol = ";"; // 默认完成指令符号为分号
 
     /**
      * 获取设置实例
