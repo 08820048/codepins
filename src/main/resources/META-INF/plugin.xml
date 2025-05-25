@@ -138,6 +138,9 @@
         
         <!-- 选择文本后的浮动操作按钮初始化器 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinSelectionPopupInitializer"/>
+        
+        <!-- 注释标记检测器初始化器 -->
+        <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinCommentDetectorInitializer"/>
 
 
         <!-- 注册设置页面 -->
