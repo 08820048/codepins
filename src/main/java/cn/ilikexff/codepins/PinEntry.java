@@ -13,6 +13,7 @@ import com.intellij.openapi.util.TextRange;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -30,6 +31,19 @@ public class PinEntry {
     private final List<String> tags;    // 标签列表
     public String name;                 // 图钉名称
     private String originalCode;        // 原始代码内容，用于恢复验证
+
+    /**
+     * 无参构造函数，用于创建空的PinEntry对象
+     */
+    public PinEntry() {
+        this.filePath = "";
+        this.marker = null;
+        this.note = "";
+        this.timestamp = new Date().getTime();
+        this.author = System.getProperty("user.name");
+        this.isBlock = false;
+        this.tags = new ArrayList<>();
+    }
 
     public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author, boolean isBlock) {
         this.filePath = filePath;

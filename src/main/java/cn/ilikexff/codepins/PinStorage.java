@@ -114,7 +114,10 @@ public class PinStorage {
     public static void clearAll() {
         pins.clear();
         PinStateService.getInstance().clear();
-        allTags.clear();
+        
+        // 使用refreshAllTags方法来处理标签，确保自定义标签得到保留
+        refreshAllTags();
+        
         refreshModel();
     }
 
@@ -166,6 +169,7 @@ public class PinStorage {
     public static void initFromSaved() {
         List<PinState> saved = PinStateService.getInstance().getPins();
         pins.clear();
+        allTags.clear();  // 清空标签集合，准备重新加载
 
         for (PinState state : saved) {
             // 先通过路径获取 VirtualFile
@@ -217,10 +221,16 @@ public class PinStorage {
             );
             pins.add(entry);
 
-            // 更新标签集合
+            // 更新标签集合（从图钉收集标签）
             if (state.tags != null) {
                 allTags.addAll(state.tags);
             }
+        }
+
+        // 加载全局自定义标签
+        Set<String> savedGlobalTags = PinStateService.getInstance().getGlobalTags();
+        if (savedGlobalTags != null) {
+            allTags.addAll(savedGlobalTags);
         }
 
         refreshModel();
@@ -290,9 +300,33 @@ public class PinStorage {
      * 刷新所有标签集合
      */
     private static void refreshAllTags() {
+        // 先保存当前的全局自定义标签
+        Set<String> customTags = PinStateService.getInstance().getGlobalTags();
+        
+        // 清空标签集合
         allTags.clear();
+        
+        // 加载图钉中的标签
         for (PinEntry pin : pins) {
             allTags.addAll(pin.getTags());
+        }
+        
+        // 恢复全局自定义标签
+        if (customTags != null && !customTags.isEmpty()) {
+            allTags.addAll(customTags);
+        }
+    }
+
+    /**
+     * 添加全局标签
+     */
+    public static void addGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            String trimmedTag = tag.trim();
+            allTags.add(trimmedTag);
+            
+            // 保存到持久化存储
+            PinStateService.getInstance().addGlobalTag(trimmedTag);
         }
     }
 
