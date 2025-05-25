@@ -418,16 +418,25 @@ public class PinsToolWindow implements ToolWindowFactory {
         searchPanel.setOpaque(false);
         searchPanel.add(createSearchField(), BorderLayout.CENTER);
 
-        // 创建右侧面板，包含图钉计数和工具栏，使用极其紧凑的布局
-        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0)); // 移除水平和垂直间距
+        // 创建右侧面板，包含图钉计数和工具栏，使用垂直居中的布局
+        // 使用BoxLayout而不是FlowLayout，以便更好地控制垂直对齐
+        JPanel rightPanel = new JPanel();
+        rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.X_AXIS));
         rightPanel.setOpaque(false);
+        // 添加垂直对齐的设置
+        rightPanel.setAlignmentY(Component.CENTER_ALIGNMENT);
 
         // 添加图钉计数标签
         pinCountLabel = createPinCountLabel();
+        // 设置垂直对齐
+        pinCountLabel.setAlignmentY(Component.CENTER_ALIGNMENT);
         rightPanel.add(pinCountLabel);
-
+        
         // 添加工具栏
-        rightPanel.add(createToolbar().getComponent());
+        JComponent toolbarComponent = createToolbar().getComponent();
+        // 设置垂直对齐
+        toolbarComponent.setAlignmentY(Component.CENTER_ALIGNMENT);
+        rightPanel.add(toolbarComponent);
 
         // 添加到顶部面板
         topPanel.add(searchPanel, BorderLayout.CENTER);
@@ -450,11 +459,13 @@ public class PinsToolWindow implements ToolWindowFactory {
         // 创建现代化搜索框
         this.searchField = new SearchTextField("搜索图钉（支持备注与路径）");
 
-        // 创建容器面板，添加边距
+        // 创建容器面板，添加边距，减少上下边距以便更好地垂直居中
         JPanel container = new JPanel(new BorderLayout());
-        container.setBorder(JBUI.Borders.empty(5, 8, 5, 8)); // 增加边距，使搜索框与其他元素保持适当距离
+        container.setBorder(JBUI.Borders.empty(2, 8, 2, 8)); // 减少上下边距，保持左右边距
         container.setOpaque(false); // 透明背景，增加现代感
         container.add(searchField, BorderLayout.CENTER);
+        // 设置垂直对齐
+        container.setAlignmentY(Component.CENTER_ALIGNMENT);
 
         searchField.addDocumentListener(new DocumentListener() {
             void filter() {
@@ -877,6 +888,8 @@ public class PinsToolWindow implements ToolWindowFactory {
         countLabel.setFont(countLabel.getFont().deriveFont(Font.PLAIN, 12f));
         countLabel.setBorder(JBUI.Borders.empty(0, 4, 0, 2)); // 减少左右边距，使布局更紧凑
         countLabel.setIconTextGap(2); // 减少图标和文本间距
+        // 设置垂直对齐
+        countLabel.setVerticalAlignment(SwingConstants.CENTER);
 
         // 添加鼠标点击事件，点击时显示升级对话框
         if (maxCount != -1) {
