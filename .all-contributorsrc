@@ -1,0 +1,19 @@
+{
+  "projectName": "codepins",
+  "projectOwner": "08820048",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "08820048",
+      "name": "08820048",
+      "avatar_url": "https://avatars.githubusercontent.com/u/08820048",
+      "profile": "https://github.com/08820048",
+      "contributions": ["code", "doc", "maintenance"]
+    }
+  ],
+  "contributorsPerLine": 7
+}

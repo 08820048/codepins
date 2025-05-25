@@ -102,6 +102,32 @@
    - 使用导入导出功能在团队成员间共享图钉
    - 支持多种导出格式，满足不同需求
 
+## ✨ 贡献者
+
+<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+<!-- ALL-CONTRIBUTORS-BADGE:END -->
+
+感谢这些优秀的人 ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
+
+<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- prettier-ignore-start -->
+<!-- markdownlint-disable -->
+<table>
+  <tbody>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/08820048"><img src="https://avatars.githubusercontent.com/u/08820048" width="100px;" alt="08820048"/><br /><sub><b>08820048</b></sub></a><br /><a href="#code-08820048" title="Code">💻</a> <a href="#doc-08820048" title="Documentation">📖</a> <a href="#maintenance-08820048" title="Maintenance">🚧</a></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- markdownlint-restore -->
+<!-- prettier-ignore-end -->
+
+<!-- ALL-CONTRIBUTORS-LIST:END -->
+
+该项目遵循 [all-contributors](https://github.com/all-contributors/all-contributors) 规范。欢迎任何形式的贡献！
+
 ## 🤝 贡献指南
 
 我们欢迎各种形式的贡献！请查看 [贡献指南](CONTRIBUTING.md) 了解详细信息。
