@@ -67,8 +67,26 @@ public class TagFilterPanel extends JPanel {
             onTagSelectionChanged.accept(selectedTags);
         });
 
+        // 添加新建标签按钮
+        JButton addTagButton = new JButton("新建标签");
+        addTagButton.setFont(addTagButton.getFont().deriveFont(11f));
+        addTagButton.setBorder(JBUI.Borders.empty(2, 8));
+        addTagButton.setFocusPainted(false);
+        addTagButton.setIcon(IconUtil.loadIcon("/icons/plus.svg", getClass()));
+        addTagButton.addActionListener(e -> {
+            // 添加按钮动画效果
+            AnimationUtil.buttonClickEffect(addTagButton);
+            openAddTagDialog();
+        });
+
+        // 创建按钮面板来容纳清除和新建标签按钮
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(addTagButton);
+        buttonPanel.add(clearButton);
+
         headerPanel.add(titlePanel, BorderLayout.WEST);
-        headerPanel.add(clearButton, BorderLayout.EAST);
+        headerPanel.add(buttonPanel, BorderLayout.EAST);
 
         add(headerPanel, BorderLayout.NORTH);
 
@@ -304,5 +322,42 @@ public class TagFilterPanel extends JPanel {
      */
     public List<String> getSelectedTags() {
         return new ArrayList<>(selectedTags);
+    }
+
+    /**
+     * 打开添加标签对话框
+     */
+    private void openAddTagDialog() {
+        // 创建一个临时的空PinEntry对象，仅用于打开对话框
+        PinEntry dummyPin = new PinEntry();
+        
+        SimpleTagEditorDialog dialog = new SimpleTagEditorDialog(
+            SwingUtilities.getWindowAncestor(this) instanceof com.intellij.openapi.project.Project ? 
+            (com.intellij.openapi.project.Project) SwingUtilities.getWindowAncestor(this) : 
+            com.intellij.openapi.project.ProjectManager.getInstance().getOpenProjects()[0],
+            dummyPin
+        );
+        
+        dialog.setTitle("添加自定义标签");
+        
+        if (dialog.showAndGet()) {
+            List<String> newTags = dialog.getTags();
+            // 将新创建的标签添加到所有标签集合中
+            for (String tag : newTags) {
+                if (!PinStorage.getAllTags().contains(tag)) {
+                    // 添加到全局标签集合中
+                    PinStorage.addGlobalTag(tag);
+                }
+            }
+            
+            // 清空当前选中的标签，以便显示全部图钉
+            selectedTags.clear();
+            
+            // 刷新标签视图
+            refreshTagsView();
+            
+            // 通知监听器标签选择已更改（显示所有图钉）
+            onTagSelectionChanged.accept(selectedTags);
+        }
     }
 }
