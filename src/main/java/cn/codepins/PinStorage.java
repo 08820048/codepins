@@ -1,4 +1,4 @@
-package ilikexff.codepins;
+package cn.codepins;
 
 import java.util.ArrayList;
 import java.util.List;

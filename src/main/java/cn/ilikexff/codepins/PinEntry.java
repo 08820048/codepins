@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins;
 
 import com.intellij.openapi.editor.Document;
+import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.RangeMarker;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
@@ -248,11 +249,24 @@ public class PinEntry {
                         OpenFileDescriptor descriptor = new OpenFileDescriptor(
                                 project,
                                 file,
-                                startOffset,
-                                endOffset - startOffset
+                                startOffset
                         );
                         if (descriptor.canNavigate()) {
                             descriptor.navigate(true);
+                            
+                            // 如果需要选中代码块，可以在导航后获取编辑器并设置选择
+                            try {
+                                FileEditorManager manager = FileEditorManager.getInstance(project);
+                                Editor editor = manager.getSelectedTextEditor();
+                                if (editor != null && endOffset > startOffset) {
+                                    editor.getSelectionModel().setSelection(startOffset, endOffset);
+                                    System.out.println("[CodePins] 代码块选中成功");
+                                }
+                            } catch (Exception e) {
+                                System.out.println("[CodePins] 选中代码块失败: " + e.getMessage());
+                            }
+                            
+                            System.out.println("[CodePins] 导航成功");
                         } else {
                             showNavigationError(project, "无法跳转到图钉位置，请检查文件是否已被修改。");
                         }
@@ -265,15 +279,19 @@ public class PinEntry {
                         return;
                     }
 
-                    final int line = getCurrentLine(doc);
-                    if (line < 0 || line >= doc.getLineCount()) {
-                        showNavigationError(project, "无法跳转到图钉位置，行号超出范围。");
+                    // 使用标记的起始偏移量而不是行号
+                    final int startOffset = marker.getStartOffset();
+                    
+                    if (startOffset < 0 || startOffset >= doc.getTextLength()) {
+                        showNavigationError(project, "无法跳转到图钉位置，代码位置已被修改。");
                         return;
                     }
 
                     // 在 EDT 线程上执行导航操作
                     com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
-                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, line, 0);
+                        // 直接使用偏移量创建描述符，而不是行号和列
+                        OpenFileDescriptor descriptor = new OpenFileDescriptor(project, file, startOffset);
+                        
                         if (descriptor.canNavigate()) {
                             descriptor.navigate(true);
                         } else {
@@ -282,8 +300,6 @@ public class PinEntry {
                     });
                 }
             } catch (Exception e) {
-                // 如果发生异常，记录错误并显示错误消息
-                System.out.println("[CodePins] 导航失败: " + e.getMessage());
                 showNavigationError(project, "导航失败: " + e.getMessage());
             }
         });

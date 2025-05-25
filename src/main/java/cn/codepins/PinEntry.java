@@ -1,4 +1,4 @@
-package ilikexff.codepins;
+package cn.codepins;
 
 public class PinEntry {
     public final String filePath;
