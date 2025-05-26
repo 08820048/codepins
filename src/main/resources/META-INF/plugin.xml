@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin>
     <id>cn.ilikexff.codepins</id>
-    <name resource-bundle="messages" key="plugin.name">CodePins - Code Bookmarks</name>
+    <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
     <version>2.1.0</version>
 
