@@ -2,6 +2,7 @@ package cn.ilikexff.codepins.extensions;
 
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.settings.CodePinsSettings;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.notification.Notification;
@@ -112,8 +113,8 @@ public class PinCommentAction extends AnAction {
         // 显示通知，确认动作被触发
         Notifications.Bus.notify(new Notification(
                 "CodePins",
-                "CodePins 注释检测",
-                "正在检测文件中的注释标记...",
+                CodePinsBundle.message("comment.detection.title"),
+                CodePinsBundle.message("comment.detection.scanning"),
                 NotificationType.INFORMATION
         ));
 
@@ -123,8 +124,8 @@ public class PinCommentAction extends AnAction {
         // 显示通知，报告检测完成
         Notifications.Bus.notify(new Notification(
                 "CodePins",
-                "CodePins 注释检测",
-                "注释标记检测完成",
+                CodePinsBundle.message("comment.detection.title"),
+                CodePinsBundle.message("comment.detection.completed"),
                 NotificationType.INFORMATION
         ));
     }
@@ -395,11 +396,11 @@ public class PinCommentAction extends AnAction {
         if (SHOW_NOTIFICATIONS) {
             Notifications.Bus.notify(new Notification(
                     "CodePins",
-                    "CodePins 准备创建图钉",
-                    "文件: " + file.getPath() + "\n" +
-                    "偏移量: " + startOffset + "-" + endOffset + "\n" +
-                    "备注: " + note + "\n" +
-                    "是否代码块: " + isBlock,
+                    CodePinsBundle.message("pin.prepare.title"),
+                    CodePinsBundle.message("debug.file", file.getPath()) + "\n" +
+                    CodePinsBundle.message("debug.offset", startOffset, endOffset) + "\n" +
+                    CodePinsBundle.message("debug.note", note) + "\n" +
+                    CodePinsBundle.message("debug.is.block", isBlock),
                     NotificationType.INFORMATION
             ));
         }
@@ -420,8 +421,8 @@ public class PinCommentAction extends AnAction {
             if (SHOW_NOTIFICATIONS) {
                 Notifications.Bus.notify(new Notification(
                         "CodePins",
-                        "CodePins 图钉已存在",
-                        "该范围已有图钉，不重复添加",
+                        CodePinsBundle.message("pin.exists.title"),
+                        CodePinsBundle.message("pin.exists.range"),
                         NotificationType.WARNING
                 ));
             }
@@ -438,7 +439,7 @@ public class PinCommentAction extends AnAction {
         
         // 如果设置了自动添加"快捷添加"标签，则添加该标签
         if (autoAddQuickTag) {
-            initialTags.add("快捷添加");
+            initialTags.add(CodePinsBundle.message("tag.quick.add"));
         }
         
         // 在 UI 线程中创建图钉
@@ -449,8 +450,8 @@ public class PinCommentAction extends AnAction {
                 // 注释中已经有备注了，所以这里只请求用户确认或修改
                 String confirmedNote = Messages.showInputDialog(
                         project,
-                        "请确认或修改图钉备注：",
-                        "添加图钉",
+                        CodePinsBundle.message("pin.confirm.note"),
+                        CodePinsBundle.message("action.add.pin.title"),
                         null,
                         note,
                         null
@@ -493,8 +494,8 @@ public class PinCommentAction extends AnAction {
                     if (SHOW_NOTIFICATIONS) {
                         Notifications.Bus.notify(new Notification(
                                 "CodePins",
-                                "CodePins 图钉创建成功",
-                                "图钉已成功创建: " + confirmedNote,
+                                CodePinsBundle.message("pin.created.title"),
+                                CodePinsBundle.message("pin.created.success", confirmedNote),
                                 NotificationType.INFORMATION
                         ));
                     }
@@ -507,8 +508,8 @@ public class PinCommentAction extends AnAction {
                     // 始终显示这个通知，不受 SHOW_NOTIFICATIONS 控制
                     Notifications.Bus.notify(new Notification(
                             "CodePins",
-                            "CodePins 图钉已添加",
-                            "根据注释指令自动添加了图钉: " + note,
+                            CodePinsBundle.message("pin.added.title"),
+                            CodePinsBundle.message("pin.added.from.comment", note),
                             NotificationType.INFORMATION
                     ));
                     
@@ -516,8 +517,8 @@ public class PinCommentAction extends AnAction {
                     if (SHOW_NOTIFICATIONS) {
                         Notifications.Bus.notify(new Notification(
                                 "CodePins",
-                                "CodePins 正在创建图钉",
-                                "正在创建图钉...",
+                                CodePinsBundle.message("pin.creating.title"),
+                                CodePinsBundle.message("pin.creating.message"),
                                 NotificationType.INFORMATION
                         ));
                     }
@@ -540,8 +541,8 @@ public class PinCommentAction extends AnAction {
                         if (SHOW_NOTIFICATIONS) {
                             Notifications.Bus.notify(new Notification(
                                     "CodePins",
-                                    "CodePins 图钉创建成功",
-                                    "图钉已成功创建: " + pinEntry.note,
+                                    CodePinsBundle.message("pin.created.title"),
+                                    CodePinsBundle.message("pin.created.success", pinEntry.note),
                                     NotificationType.INFORMATION
                             ));
                         }
@@ -549,8 +550,8 @@ public class PinCommentAction extends AnAction {
                         // 显示通知，报告错误
                         Notifications.Bus.notify(new Notification(
                                 "CodePins",
-                                "CodePins 图钉创建失败",
-                                "创建图钉时发生错误: " + e.getMessage(),
+                                CodePinsBundle.message("pin.create.failed.title"),
+                                CodePinsBundle.message("pin.create.failed.message", e.getMessage()),
                                 NotificationType.ERROR
                         ));
                         e.printStackTrace();

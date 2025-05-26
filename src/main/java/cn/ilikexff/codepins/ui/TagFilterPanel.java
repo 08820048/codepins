@@ -2,12 +2,13 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.services.LicenseService;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ui.JBColor;
+import com.intellij.ui.components.JBLabel;
+import com.intellij.ui.components.JBPanel;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.UIUtil;
-import cn.ilikexff.codepins.ui.AnimationUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -48,14 +49,14 @@ public class TagFilterPanel extends JPanel {
         titlePanel.setOpaque(false);
 
         JLabel iconLabel = new JLabel(IconUtil.loadIcon("/icons/filter.svg", getClass()));
-        JLabel titleLabel = new JLabel("标签筛选");
+        JLabel titleLabel = new JLabel(CodePinsBundle.message("tag.filter.panel"));
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 13f));
 
         titlePanel.add(iconLabel);
         titlePanel.add(titleLabel);
 
         // 清除按钮
-        JButton clearButton = new JButton("清除筛选");
+        JButton clearButton = new JButton(CodePinsBundle.message("tag.clear.filter"));
         clearButton.setFont(clearButton.getFont().deriveFont(11f));
         clearButton.setBorder(JBUI.Borders.empty(2, 8));
         clearButton.setFocusPainted(false);
@@ -68,7 +69,7 @@ public class TagFilterPanel extends JPanel {
         });
 
         // 添加新建标签按钮
-        JButton addTagButton = new JButton("新建标签");
+        JButton addTagButton = new JButton(CodePinsBundle.message("tag.create"));
         addTagButton.setFont(addTagButton.getFont().deriveFont(11f));
         addTagButton.setBorder(JBUI.Borders.empty(2, 8));
         addTagButton.setFocusPainted(false);
@@ -148,7 +149,7 @@ public class TagFilterPanel extends JPanel {
 
         Set<String> allTags = PinStorage.getAllTags();
         if (allTags.isEmpty()) {
-            JLabel emptyLabel = new JLabel("暂无标签");
+            JLabel emptyLabel = new JLabel(CodePinsBundle.message("tag.empty"));
             emptyLabel.setForeground(JBColor.GRAY);
             tagsContainer.add(emptyLabel);
         } else {
@@ -481,7 +482,7 @@ public class TagFilterPanel extends JPanel {
             dummyPin
         );
         
-        dialog.setTitle("添加自定义标签");
+        dialog.setTitle(CodePinsBundle.message("tag.create.custom"));
         
         if (dialog.showAndGet()) {
             List<String> newTags = dialog.getTags();

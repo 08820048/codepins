@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins;
 
 import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.popup.JBPopup;
@@ -210,7 +211,7 @@ public class PinHoverPreview {
                     titlePanel.setBorder(JBUI.Borders.emptyBottom(10));
 
                     // 创建标题标签
-                    JLabel titleLabel = new JLabel(pin.isBlock ? "📌 代码块图钉" : "📌 单行图钉");
+                    JLabel titleLabel = new JLabel(pin.isBlock ? CodePinsBundle.message("tooltip.blockPin") : CodePinsBundle.message("tooltip.linePin"));
                     titleLabel.setForeground(new JBColor(new Color(255, 255, 255), new Color(255, 255, 255)));
                     titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 14.0f));
                     titlePanel.add(titleLabel);
@@ -225,19 +226,19 @@ public class PinHoverPreview {
                     panel.add(Box.createVerticalStrut(10)); // 分隔线后的空间
 
                     // 添加文件路径
-                    addInfoRow(panel, "路径", pin.filePath, new JBColor(new Color(255, 203, 107), new Color(255, 203, 107)));
+                    addInfoRow(panel, CodePinsBundle.message("tooltip.path"), pin.filePath, new JBColor(new Color(255, 203, 107), new Color(255, 203, 107)));
 
                     // 添加行号
-                    addInfoRow(panel, "行号", String.valueOf(line + 1), new JBColor(new Color(247, 140, 108), new Color(247, 140, 108)));
+                    addInfoRow(panel, CodePinsBundle.message("tooltip.line"), String.valueOf(line + 1), new JBColor(new Color(247, 140, 108), new Color(247, 140, 108)));
 
                     // 添加备注
-                    addInfoRow(panel, "备注", note, new JBColor(new Color(64, 191, 255), new Color(64, 191, 255)));
+                    addInfoRow(panel, CodePinsBundle.message("tooltip.note"), note, new JBColor(new Color(64, 191, 255), new Color(64, 191, 255)));
 
                     // 添加创建时间
-                    addInfoRow(panel, "创建于", time, new JBColor(new Color(130, 170, 255), new Color(130, 170, 255)));
+                    addInfoRow(panel, CodePinsBundle.message("tooltip.createdAt"), time, new JBColor(new Color(130, 170, 255), new Color(130, 170, 255)));
 
                     // 添加作者
-                    addInfoRow(panel, "作者", author, new JBColor(new Color(199, 146, 234), new Color(199, 146, 234)));
+                    addInfoRow(panel, CodePinsBundle.message("tooltip.author"), author, new JBColor(new Color(199, 146, 234), new Color(199, 146, 234)));
 
                     return panel;
                 } catch (Exception e) {

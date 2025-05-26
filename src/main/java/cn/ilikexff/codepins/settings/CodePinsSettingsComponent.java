@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins.settings;
 
 
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.components.JBCheckBox;
@@ -20,57 +21,51 @@ import java.awt.*;
  */
 public class CodePinsSettingsComponent {
     private final JPanel mainPanel;
-    private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox("删除图钉时确认");
+    private final JBCheckBox confirmDeleteCheckBox = new JBCheckBox(CodePinsBundle.message("settings.general.confirm.delete"));
     private final JBTextField previewHeightTextField = new JBTextField();
-    private final JBCheckBox showNoteDialogOnQuickAddCheckBox = new JBCheckBox("快捷添加图钉时显示备注和标签对话框");
+    private final JBCheckBox showNoteDialogOnQuickAddCheckBox = new JBCheckBox(CodePinsBundle.message("settings.pin.add.show.note.dialog"));
     
     // 注释指令添加图钉设置控件
-    private final JBCheckBox showNoteDialogOnCommentPinCheckBox = new JBCheckBox("注释指令添加图钉时显示备注和标签对话框");
-    private final JBCheckBox autoAddQuickTagCheckBox = new JBCheckBox("自动添加“快捷添加”标签");
-    private final JBCheckBox useCompletionSymbolCheckBox = new JBCheckBox("使用完成指令符号");
+    private final JBCheckBox showNoteDialogOnCommentPinCheckBox = new JBCheckBox(CodePinsBundle.message("settings.comment.show.note.dialog"));
+    private final JBCheckBox autoAddQuickTagCheckBox = new JBCheckBox(CodePinsBundle.message("settings.comment.auto.add.tag"));
+    private final JBCheckBox useCompletionSymbolCheckBox = new JBCheckBox(CodePinsBundle.message("settings.comment.use.completion.symbol"));
     private final JBTextField completionSymbolTextField = new JBTextField();
 
     public CodePinsSettingsComponent() {
         // 创建常规设置面板
         JPanel generalPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent(new JBLabel("预览窗口高度:"), previewHeightTextField, 1, false)
+                .addLabeledComponent(new JBLabel(CodePinsBundle.message("settings.general.preview.height")), previewHeightTextField, 1, false)
                 .addComponent(confirmDeleteCheckBox)
                 .getPanel();
-        generalPanel.setBorder(BorderFactory.createTitledBorder("常规设置"));
+        generalPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.general")));
         
         // 创建图钉添加设置面板
         JPanel pinAddPanel = FormBuilder.createFormBuilder()
                 .addComponent(showNoteDialogOnQuickAddCheckBox)
-                .addComponent(new JBLabel("<html><small>开启后，使用选择文本浮动按钮添加图钉时，将显示备注和标签对话框</small></html>"))
+                .addComponent(new JBLabel("<html><small>" + CodePinsBundle.message("settings.pin.add.show.note.dialog.desc") + "</small></html>"))
                 .getPanel();
-        pinAddPanel.setBorder(BorderFactory.createTitledBorder("图钉添加设置"));
+        pinAddPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.pin.add")));
         
         // 创建注释指令设置面板
         JPanel commentPinPanel = FormBuilder.createFormBuilder()
                 .addComponent(showNoteDialogOnCommentPinCheckBox)
-                .addComponent(new JBLabel("<html><small>开启后，使用注释指令添加图钉时，将显示备注和标签对话框</small></html>"))
+                .addComponent(new JBLabel("<html><small>" + CodePinsBundle.message("settings.comment.show.note.dialog.desc") + "</small></html>"))
                 .addComponent(autoAddQuickTagCheckBox)
-                .addComponent(new JBLabel("<html><small>开启后，使用注释指令添加图钉时，自动添加“快捷添加”标签</small></html>"))
+                .addComponent(new JBLabel("<html><small>" + CodePinsBundle.message("settings.comment.auto.add.tag.desc") + "</small></html>"))
                 .addComponent(useCompletionSymbolCheckBox)
-                .addLabeledComponent(new JBLabel("完成指令符号:"), completionSymbolTextField, 1, false)
-                .addComponent(new JBLabel("<html><small>开启后，只有在注释指令后输入完成符号时才会触发图钉添加，避免自动保存导致过早触发</small></html>"))
+                .addLabeledComponent(new JBLabel(CodePinsBundle.message("settings.comment.completion.symbol")), completionSymbolTextField, 1, false)
+                .addComponent(new JBLabel("<html><small>" + CodePinsBundle.message("settings.comment.completion.symbol.desc") + "</small></html>"))
                 .getPanel();
-        commentPinPanel.setBorder(BorderFactory.createTitledBorder("注释指令设置"));
+        commentPinPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.comment")));
 
 
 
         // 创建快捷键信息面板
         JPanel shortcutsInfoPanel = new JPanel(new BorderLayout());
-        shortcutsInfoPanel.setBorder(BorderFactory.createTitledBorder("快捷键设置"));
+        shortcutsInfoPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.shortcuts")));
 
         JBTextArea shortcutsInfoText = new JBTextArea(
-                "CodePins 提供以下默认快捷键：\n\n" +
-                "- 添加图钉: Alt+Shift+P\n" +
-                "- 导航到下一个图钉: Alt+Shift+Right\n" +
-                "- 导航到上一个图钉: Alt+Shift+Left\n" +
-                "- 切换图钉工具窗口: Alt+Shift+T\n\n" +
-                "您可以在 IDE 的'设置 > 键盘快捷键'中自定义这些快捷键。\n" +
-                "搜索 \"CodePins\" 以找到所有相关操作。"
+                CodePinsBundle.message("settings.shortcuts.info")
         );
         shortcutsInfoText.setEditable(false);
         shortcutsInfoText.setBackground(shortcutsInfoPanel.getBackground());
@@ -78,7 +73,7 @@ public class CodePinsSettingsComponent {
         shortcutsInfoText.setLineWrap(true);
         shortcutsInfoText.setWrapStyleWord(true);
 
-        JButton openKeyMapSettingsButton = new JButton("打开键盘快捷键设置");
+        JButton openKeyMapSettingsButton = new JButton(CodePinsBundle.message("settings.shortcuts.open"));
         openKeyMapSettingsButton.addActionListener(e -> openKeyMapSettings());
 
         shortcutsInfoPanel.add(shortcutsInfoText, BorderLayout.CENTER);
@@ -89,7 +84,7 @@ public class CodePinsSettingsComponent {
 
         // 创建快捷键信息面板的标签面板
         JPanel labeledShortcutsPanel = new JPanel(new BorderLayout());
-        JLabel shortcutsLabel = new JBLabel("快捷键信息:");
+        JLabel shortcutsLabel = new JBLabel(CodePinsBundle.message("settings.shortcuts") + ":");
         labeledShortcutsPanel.add(shortcutsLabel, BorderLayout.NORTH);
         labeledShortcutsPanel.add(shortcutsInfoPanel, BorderLayout.CENTER);
 
@@ -120,24 +115,18 @@ public class CodePinsSettingsComponent {
      */
     private JPanel createDonationPanel() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBorder(BorderFactory.createTitledBorder("支持开发"));
+        panel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.support")));
 
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setBorder(JBUI.Borders.empty(10));
 
         // 状态标签
         JLabel statusLabel = new JBLabel("<html>" +
-                "<div style='color: #4CAF50; font-weight: bold;'>✓ CodePins 现在完全免费开源！</div>" +
-                "<br/>感谢您使用 CodePins！如果这个插件对您有帮助，" +
-                "<br/>请考虑通过以下方式支持我们的开发：" +
+                "<div style='color: #4CAF50; font-weight: bold;'>" + CodePinsBundle.message("settings.support.free") + "</div>" +
+                "<br/>" + CodePinsBundle.message("settings.support.thanks") +
                 "<br/><br/>" +
-                "<div style='color: #2196F3; font-weight: bold;'>🤝 欢迎加入开源贡献！</div>" +
-                "<br/>我们诚挚邀请您一起维护这个开源项目：" +
-                "<br/>• 🐛 报告 Bug 和提出改进建议" +
-                "<br/>• 💡 贡献新功能和代码优化" +
-                "<br/>• 📖 完善文档和使用指南" +
-                "<br/>• 🌍 帮助翻译到更多语言" +
-                "<br/>• 📢 向其他开发者推荐 CodePins" +
+                "<div style='color: #2196F3; font-weight: bold;'>" + CodePinsBundle.message("settings.support.contribute") + "</div>" +
+                "<br/>" + CodePinsBundle.message("settings.support.contribute.desc").replace("\n", "<br/>") +
                 "</html>");
         contentPanel.add(statusLabel, BorderLayout.CENTER);
 
@@ -145,19 +134,25 @@ public class CodePinsSettingsComponent {
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 
         // GitHub 按钮
-        JButton githubButton = new JButton("⭐ GitHub");
+        JButton githubButton = new JButton(CodePinsBundle.message("settings.support.github"));
         githubButton.addActionListener(e -> {
             BrowserUtil.browse("https://github.com/08820048/codepins");
         });
 
         // 参与贡献按钮
-        JButton contributeButton = new JButton("🤝 参与贡献");
+        JButton contributeButton = new JButton(CodePinsBundle.message("settings.support.contribute.button"));
         contributeButton.addActionListener(e -> {
             BrowserUtil.browse("https://github.com/08820048/codepins/blob/main/CONTRIBUTING.md");
         });
 
+        // 问题报告按钮
+        JButton issueButton = new JButton(CodePinsBundle.message("settings.support.issue"));
+        issueButton.addActionListener(e -> {
+            BrowserUtil.browse("https://github.com/08820048/codepins/issues");
+        });
+        
         // 捐赠按钮
-        JButton donateButton = new JButton("☕ 请我喝咖啡");
+        JButton donateButton = new JButton(CodePinsBundle.message("settings.support.donate"));
         donateButton.addActionListener(e -> {
             BrowserUtil.browse("https://docs.codepins.cn/donate");
         });
@@ -170,6 +165,7 @@ public class CodePinsSettingsComponent {
 
         buttonPanel.add(githubButton);
         buttonPanel.add(contributeButton);
+        buttonPanel.add(issueButton);
         buttonPanel.add(donateButton);
 
         contentPanel.add(buttonPanel, BorderLayout.SOUTH);

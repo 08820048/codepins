@@ -1,38 +1,111 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
+import cn.ilikexff.codepins.settings.LanguageSettings;
+import com.intellij.openapi.application.ApplicationManager;
+
+import java.text.MessageFormat;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 /**
- * 国际化工具类：自动加载 messages/CodePinsBundle，根据系统 locale 显示。
- * 支持 fallback，当找不到 key 时返回默认英文值。
+ * Internationalization utility class: automatically loads messages/CodePinsBundle based on selected language.
+ * Supports fallback to default English values when a key is not found.
  */
 public class I18n {
     private static final String BUNDLE_NAME = "messages.CodePinsBundle";
-    private static final ResourceBundle BUNDLE;
+    private static ResourceBundle BUNDLE;
 
-    static {
-        ResourceBundle temp;
-        try {
-            temp = ResourceBundle.getBundle(BUNDLE_NAME, Locale.getDefault());
-        } catch (MissingResourceException e) {
-            temp = null;
+    /**
+     * Get the current resource bundle based on user's language settings
+     * @return The resource bundle for the current language
+     */
+    private static ResourceBundle getBundle() {
+        if (BUNDLE == null) {
+            try {
+                // Try to get language settings from application service
+                LanguageSettings settings = null;
+                try {
+                    if (ApplicationManager.getApplication() != null) {
+                        settings = LanguageSettings.getInstance();
+                    }
+                } catch (Exception e) {
+                    // Ignore, might be in unit tests or during startup
+                }
+                
+                // Get locale from settings or use system default
+                Locale locale = settings != null ? settings.getSelectedLocale() : Locale.getDefault();
+                BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, locale);
+            } catch (MissingResourceException e) {
+                // Fallback to default locale if bundle not found
+                try {
+                    BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME, Locale.ENGLISH);
+                } catch (MissingResourceException ex) {
+                    // If still not found, return null (will use default values)
+                    BUNDLE = null;
+                }
+            }
         }
-        BUNDLE = temp;
+        return BUNDLE;
+    }
+    
+    /**
+     * Reset the cached bundle to force reload on next access
+     * Call this when language settings change
+     */
+    public static void resetBundle() {
+        BUNDLE = null;
     }
 
     /**
-     * 获取国际化文本（带默认 fallback 英文）
+     * Get localized text with fallback to default English value
      *
-     * @param key          资源 key
-     * @param defaultValue 找不到时默认值
-     * @return 本地化字符串
+     * @param key          Resource key
+     * @param defaultValue Default value if key not found
+     * @return Localized string
      */
     public static String get(String key, String defaultValue) {
-        if (BUNDLE != null && BUNDLE.containsKey(key)) {
-            return BUNDLE.getString(key);
+        ResourceBundle bundle = getBundle();
+        if (bundle != null && bundle.containsKey(key)) {
+            try {
+                return bundle.getString(key);
+            } catch (MissingResourceException e) {
+                return defaultValue;
+            }
         }
         return defaultValue;
+    }
+    
+    /**
+     * Get localized text with parameters
+     *
+     * @param key          Resource key
+     * @param defaultValue Default value if key not found
+     * @param params       Parameters for message formatting
+     * @return Formatted localized string
+     */
+    public static String get(String key, String defaultValue, Object... params) {
+        String pattern = get(key, defaultValue);
+        if (params.length == 0) {
+            return pattern;
+        }
+        try {
+            return MessageFormat.format(pattern, params);
+        } catch (Exception e) {
+            return pattern;
+        }
+    }
+    
+    /**
+     * Get localized text using CodePinsBundle
+     * This is a convenience method that delegates to CodePinsBundle.message
+     *
+     * @param key    Resource key
+     * @param params Parameters for message formatting
+     * @return Localized string
+     */
+    public static String message(String key, Object... params) {
+        return CodePinsBundle.message(key, params);
     }
 }

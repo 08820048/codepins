@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.core.PinStorage;
 import cn.ilikexff.codepins.utils.ImportExportUtil;
 import com.intellij.openapi.fileChooser.FileChooserFactory;
@@ -57,7 +58,7 @@ public class ExportDialog extends DialogWrapper {
         pinsList.setCellRenderer(new PinListCellRenderer());
         pinsList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        setTitle("导出图钉");
+        setTitle(CodePinsBundle.message("export.dialog.title"));
         setSize(650, 600);
         init();
     }
@@ -76,12 +77,11 @@ public class ExportDialog extends DialogWrapper {
                 JBUI.Borders.empty(0, 0, 15, 0)
         ));
 
-        JLabel titleLabel = new JLabel("导出图钉数据");
+        JLabel titleLabel = new JLabel(CodePinsBundle.message("export.dialog.description"));
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16f));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel descLabel = new JLabel("<html>您可以选择导出全部图钉或仅导出选中的图钉。<br>" +
-                "如需选择特定图钉，请选择'仅导出选中的图钉'选项，然后在下方列表中选择要导出的图钉。</html>");
+        JLabel descLabel = new JLabel("<html>" + CodePinsBundle.message("export.description.html") + "</html>");
         descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         infoPanel.add(titleLabel);
@@ -98,15 +98,15 @@ public class ExportDialog extends DialogWrapper {
         optionsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // 导出选项
-        JLabel exportOptionsLabel = new JLabel("导出选项：");
+        JLabel exportOptionsLabel = new JLabel(CodePinsBundle.message("export.mode") + ":");
         exportOptionsLabel.setFont(exportOptionsLabel.getFont().deriveFont(Font.BOLD));
         exportOptionsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        exportAllRadio = new JRadioButton("导出所有图钉");
+        exportAllRadio = new JRadioButton(CodePinsBundle.message("export.mode.all"));
         exportAllRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
         exportAllRadio.setSelected(true);
 
-        exportSelectedRadio = new JRadioButton("仅导出选中的图钉");
+        exportSelectedRadio = new JRadioButton(CodePinsBundle.message("export.mode.selected"));
         exportSelectedRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         ButtonGroup exportGroup = new ButtonGroup();
@@ -124,7 +124,7 @@ public class ExportDialog extends DialogWrapper {
         JPanel listPanel = new JPanel(new BorderLayout());
         listPanel.setBorder(JBUI.Borders.empty(5, 0, 0, 0));
 
-        JLabel pinsLabel = new JLabel("可用图钉：");
+        JLabel pinsLabel = new JLabel(CodePinsBundle.message("export.pins.list") + ":");
         pinsLabel.setFont(pinsLabel.getFont().deriveFont(Font.BOLD));
 
         JBScrollPane scrollPane = new JBScrollPane(pinsList);
@@ -176,8 +176,8 @@ public class ExportDialog extends DialogWrapper {
         if (pinsToExport.isEmpty()) {
             Messages.showErrorDialog(
                     project,
-                    "没有图钉可导出。请选择至少一个图钉进行导出。",
-                    "导出错误"
+                    CodePinsBundle.message("export.no.pins"),
+                    CodePinsBundle.message("export.file.select")
             );
             return;
         }
@@ -195,8 +195,8 @@ public class ExportDialog extends DialogWrapper {
             if (success) {
                 Messages.showInfoMessage(
                         project,
-                        "成功导出 " + pinsToExport.size() + " 个图钉到文件：\n" + file.getAbsolutePath(),
-                        "导出成功"
+                        CodePinsBundle.message("export.success", pinsToExport.size(), file.getAbsolutePath()),
+                        CodePinsBundle.message("export.success.title")
                 );
                 super.doOKAction();
             }
