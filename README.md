@@ -1,12 +1,20 @@
-# 📌 CodePins – 智能代码书签插件
+![Header](./src/main/resources/META-INF/github-header-image.png)
 
 <div align="center">
 
-**现代化的代码书签解决方案，让您的开发工作流更高效**
+<p align="center">
+   <img src="https://readme-typing-svg.herokuapp.com?font=Fira+Code&weight=600&size=24&pause=1000&color=4A7FD1&center=true&vCenter=true&random=false&width=600&height=27&lines=Pin+your+code%2C+boost+your+flow;Bookmark+smarter%2C+code+faster;Never+lose+your+place+in+code;%E7%8E%B0%E4%BB%A3%E5%8C%96%E7%9A%84%E4%BB%A3%E7%A0%81%E4%B9%A6%E7%AD%BE%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88;%E8%AE%A9%E6%82%A8%E7%9A%84%E5%BC%80%E5%8F%91%E5%B7%A5%E4%BD%9C%E6%B5%81%E6%9B%B4%E9%AB%98%E6%95%88" alt="Typing SVG">
+</p>
+
+
 
 [![JetBrains Plugin](https://img.shields.io/jetbrains/plugin/v/27300-codepins--code-bookmarks.svg)](https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks)
 [![Downloads](https://img.shields.io/jetbrains/plugin/d/27300-codepins--code-bookmarks.svg)](https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+![Java](https://img.shields.io/badge/Java-17%2B-orange)
+![IntelliJ Platform](https://img.shields.io/badge/IntelliJ-Platform_SDK-blue)
+![Swing](https://img.shields.io/badge/UI-Swing-brightgreen)
+![PSI](https://img.shields.io/badge/Code_Analysis-PSI-purple)
 
 </div>
 
@@ -22,18 +30,23 @@
 
 ### 🔖 无限制的智能书签
 - **无限图钉数量**：想添加多少就添加多少
-- **无限标签系统**：使用标签组织和分类您的图钉
+- **高级标签系统**：使用标签组织和分类您的图钉
+  - **全局标签管理**：项目间保持标签一致性
+  - **预定义标签**：设置常用标签提高效率
+  - **标签删除功能**：直接删除不需要的标签
 - **智能备注**：为每个图钉添加详细说明
 
 ### 🎯 高效导航
 - **快捷键导航**：`Alt+Shift+Left/Right` 在图钉间快速跳转
 - **即时预览**：悬停查看代码片段，无需切换文件
 - **智能搜索**：按文件名、路径、注释或标签快速查找图钉
+- **图钉恢复机制**：代码撤销后图钉自动复原，无需手动重建
 
 ### 🎨 现代化界面
 - **美观设计**：支持亮色和暗色主题，界面简洁现代
 - **拖拽排序**：手动重新排列图钉顺序
 - **卡片式布局**：清晰展示代码信息和上下文
+- **浮动操作按钮**：选中代码时显示快捷添加图钉按钮
 
 ### 🔄 数据管理
 - **自动同步**：图钉位置随代码编辑自动更新
@@ -44,6 +57,13 @@
 - **多格式导出**：支持 Markdown、HTML、JSON 等格式
 - **社交分享**：一键分享到多个开发者平台
 - **代码卡片**：生成精美的代码分享图片
+
+### 🔍 注释命令系统
+- **注释自动识别**：通过特定格式注释自动创建图钉
+- **多种标记语法**：
+  - 单行标记：`@cp` 或 `@cp: 备注内容`（兼容 `@pin`）
+  - 代码块标记：`@cpb` 或 `@cpb: 备注内容`（兼容 `@pin-block`）
+  - 指定行号范围：`@cpb1-20: 备注内容`（创建从第1行到第20行的代码块图钉）
 
 ## 🚀 主要操作
 
@@ -156,19 +176,57 @@
 
 ## 📝 更新日志
 
-### [1.2.1] - 注释标记标签功能 (2025-05-26)
+### [2.1.1] - 文档与工作流改进 (2025-05-26)
 
-#### 🎉 新功能
+#### 📚 文档
+* **📄 Issue/PR模板**：添加标准化的Issue和PR模板，提升社区协作质量
+* **📏 行为准则**：添加社区行为准则，为贡献者提供明确指导
+
+#### 🔧 工具链改进
+* **⚙️ CI增强**：优化GitHub Actions工作流配置，提高自动化流程效率
+* **🧹 仓库清理**：更新.gitignore配置，优化代码仓库结构
+
+#### 🏷️ 注释标记标签功能
 * **🏷️ 注释标记标签支持**：现在可以通过注释指令直接添加标签
   * 单行图钉：`@cp 备注内容 #标签名`
   * 代码块图钉：`@cpb 备注内容 #标签名`
   * 带行号范围：`@cpb1-20 备注内容 #标签名`
 * **🇸🇳 中文标签支持**：现在支持使用中文标签，如 `#重要` `#待办`
-
-#### 🔧 改进
 * **开发效率**：通过注释标记直接添加标签，减少操作步骤
 * **用户体验**：简化图钉标签管理流程
 * **团队协作**：通过代码注释直接共享带标签的图钉
+
+### [2.1.0] - 标签管理增强与图钉恢复优化 (2025-05-26)
+
+#### 🏷️ 标签功能增强
+* **❌ 标签删除功能**：支持直接删除标签，优化标签管理体验
+* **🔄 全局标签管理**：添加全局标签支持，增强标签一致性
+* **⚡ 预定义标签**：支持设置常用预定义标签，提高工作效率
+* **🔍 标签筛选优化**：改进标签筛选界面，优化空结果显示
+
+#### 🛠️ 图钉恢复机制优化
+* **↩️ 代码撤销恢复**：实现撤销删除代码后图钉自动复原功能
+* **🔄 恢复逻辑改进**：优化图钉恢复逻辑，解决重复提示问题
+* **🔧 移除不可靠操作**：替换不稳定的反射操作，提升代码稳定性
+* **🧭 导航精确度**：修复图钉跳转位置不准确的问题
+
+#### 🚀 注释命令增强
+* **📝 注释指令语法**：增强注释标记指令，支持更简洁的语法
+* **🔢 行号范围支持**：允许在注释中指定具体的代码行号范围
+* **⚙️ 自定义设置**：增加快捷添加图钉的配置选项
+
+### [2.0.0] - 完全开源版本 (2025-05-25)
+
+#### 🎉 重大更新
+* **🆓 彻底免费开源**：移除所有收费相关代码和限制，所有功能均可免费使用
+* **🧩 开放源代码**：完整开源所有代码，欢迎社区贡献
+* **🔧 代码优化**：重构核心组件，提升插件性能和稳定性
+* **📚 更新文档**：全面更新README和文档，反映开源状态
+
+#### 🔧 技术改进
+* **🔄 API更新**：修复废弃API使用问题，确保与最新IDE版本兼容
+* **📁 优化项目结构**：将核心类移至core子包，提高代码组织性
+* **🛠️ 贡献者支持**：添加All Contributors配置，感谢社区贡献
 
 ### [1.2.0] - 便捷图钉功能增强 (2025-05-25)
 
