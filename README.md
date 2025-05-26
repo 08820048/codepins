@@ -138,6 +138,11 @@
 - 🐛 **问题反馈**：[GitHub Issues](https://github.com/08820048/codepins/issues)
 - 💬 **讨论交流**：[GitHub Discussions](https://github.com/08820048/codepins/discussions)
 - 🏪 **插件页面**：[JetBrains Marketplace](https://plugins.jetbrains.com/plugin/27300-codepins--code-bookmarks)
+- 👥 **QQ 交流群**：扫描下方二维码加入我们的 QQ 交流群
+
+<div align="center">
+<img src="./src/main/resources/icons/qq.jpg" width="200" alt="CodePins QQ 交流群">
+</div>
 
 ## 📝 更新日志
 
