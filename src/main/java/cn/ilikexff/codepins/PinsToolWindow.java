@@ -381,16 +381,19 @@ public class PinsToolWindow implements ToolWindowFactory {
         this.cardLayout = new CardLayout();
         this.contentPanel = new JPanel(cardLayout);
 
-        // 创建列表面板（包含标签筛选和列表）
+        // 创建列表面板（只包含列表）
         JPanel listPanel = new JPanel(new BorderLayout());
-        listPanel.add(tagFilterPanelRef[0], BorderLayout.NORTH);
-
         JBScrollPane scrollPane = new JBScrollPane(list);
         listPanel.add(scrollPane, BorderLayout.CENTER);
 
-        // 添加列表面板和空状态面板
+        // 添加列表面板和空状态面板到卡片布局
         contentPanel.add(listPanel, "LIST");
         contentPanel.add(emptyStatePanel, "EMPTY");
+
+        // 创建包含标签面板和内容面板的完整内容区域
+        JPanel fullContentPanel = new JPanel(new BorderLayout());
+        fullContentPanel.add(tagFilterPanelRef[0], BorderLayout.NORTH);
+        fullContentPanel.add(contentPanel, BorderLayout.CENTER);
 
         // 根据图钉数量显示适当的面板
         updateContentView(cardLayout, contentPanel);
@@ -449,7 +452,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         // 创建主面板
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.add(topPanel, BorderLayout.NORTH);
-        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(fullContentPanel, BorderLayout.CENTER);
 
         // 添加到工具窗口
         Content content = toolWindow.getContentManager().getFactory().createContent(mainPanel, "", false);

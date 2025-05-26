@@ -8,7 +8,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * 插件持久化服务类，实现 PersistentStateComponent 接口。
@@ -26,6 +28,7 @@ public class PinStateService implements PersistentStateComponent<PinStateService
      */
     public static class State {
         public List<PinState> pins = new ArrayList<>();
+        public Set<String> globalTags = new HashSet<>(); // 添加全局标签集合
     }
 
     // 当前插件的持久化状态
@@ -45,6 +48,7 @@ public class PinStateService implements PersistentStateComponent<PinStateService
     @Override
     public void loadState(@NotNull State loadedState) {
         state.pins = loadedState.pins;
+        state.globalTags = loadedState.globalTags;
     }
 
     /**
@@ -102,5 +106,33 @@ public class PinStateService implements PersistentStateComponent<PinStateService
      */
     public void clear() {
         state.pins.clear();
+    }
+
+    /**
+     * 添加全局标签
+     * @param tag 标签
+     */
+    public void addGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            state.globalTags.add(tag.trim());
+        }
+    }
+
+    /**
+     * 移除全局标签
+     * @param tag 标签
+     */
+    public void removeGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            state.globalTags.remove(tag.trim());
+        }
+    }
+
+    /**
+     * 获取全局标签
+     * @return 全局标签集合的副本
+     */
+    public Set<String> getGlobalTags() {
+        return new HashSet<>(state.globalTags);
     }
 }

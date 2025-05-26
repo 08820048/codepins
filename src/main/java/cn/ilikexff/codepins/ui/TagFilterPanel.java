@@ -67,8 +67,26 @@ public class TagFilterPanel extends JPanel {
             onTagSelectionChanged.accept(selectedTags);
         });
 
+        // 添加新建标签按钮
+        JButton addTagButton = new JButton("新建标签");
+        addTagButton.setFont(addTagButton.getFont().deriveFont(11f));
+        addTagButton.setBorder(JBUI.Borders.empty(2, 8));
+        addTagButton.setFocusPainted(false);
+        addTagButton.setIcon(IconUtil.loadIcon("/icons/plus.svg", getClass()));
+        addTagButton.addActionListener(e -> {
+            // 添加按钮动画效果
+            AnimationUtil.buttonClickEffect(addTagButton);
+            openAddTagDialog();
+        });
+
+        // 创建按钮面板来容纳清除和新建标签按钮
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 5, 0));
+        buttonPanel.setOpaque(false);
+        buttonPanel.add(addTagButton);
+        buttonPanel.add(clearButton);
+
         headerPanel.add(titlePanel, BorderLayout.WEST);
-        headerPanel.add(clearButton, BorderLayout.EAST);
+        headerPanel.add(buttonPanel, BorderLayout.EAST);
 
         add(headerPanel, BorderLayout.NORTH);
 
@@ -135,7 +153,7 @@ public class TagFilterPanel extends JPanel {
             tagsContainer.add(emptyLabel);
         } else {
             for (String tag : allTags) {
-                JLabel tagLabel = createTagLabel(tag, selectedTags.contains(tag));
+                JComponent tagLabel = createTagLabel(tag, selectedTags.contains(tag));
                 tagsContainer.add(tagLabel);
             }
         }
@@ -147,7 +165,11 @@ public class TagFilterPanel extends JPanel {
     /**
      * 创建标签标签
      */
-    private JLabel createTagLabel(String tag, boolean selected) {
+    private JComponent createTagLabel(String tag, boolean selected) {
+        // 使用JPanel包装标签和删除按钮
+        JPanel tagPanel = new JPanel(new BorderLayout(5, 0));
+        tagPanel.setOpaque(true);
+        
         JLabel tagLabel = new JLabel(tag);
         tagLabel.setFont(tagLabel.getFont().deriveFont(selected ? Font.BOLD : Font.PLAIN, 12f));
 
@@ -159,12 +181,65 @@ public class TagFilterPanel extends JPanel {
         Color textColor = isDark ? new JBColor(Color.WHITE, Color.WHITE) : new JBColor(new Color(50, 50, 50), new Color(50, 50, 50));
 
         tagLabel.setForeground(textColor);
-        tagLabel.setBackground(tagColor);
-        tagLabel.setOpaque(true);
+        tagPanel.setBackground(tagColor);
 
         // 添加标签图标
         tagLabel.setIcon(IconUtil.loadIcon("/icons/tag-small.svg", getClass()));
         tagLabel.setIconTextGap(6);
+        
+        // 创建删除按钮
+        JLabel deleteButton = new JLabel("×");
+        deleteButton.setForeground(textColor);
+        deleteButton.setToolTipText("删除标签");
+        deleteButton.setFont(deleteButton.getFont().deriveFont(Font.BOLD));
+        
+        // 添加删除按钮的鼠标事件
+        deleteButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                // 弹出确认对话框
+                int result = JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(TagFilterPanel.this),
+                    "确定要删除标签 \"" + tag + "\" 吗？", "删除标签", JOptionPane.YES_NO_OPTION);
+                
+                if (result == JOptionPane.YES_OPTION) {
+                    // 如果标签已被选中，先移除选中状态
+                    selectedTags.remove(tag);
+                    
+                    // 从所有标签集合中删除
+                    // 注意：需要修改PinStorage类添加删除全局标签的方法
+                    PinStorage.removeGlobalTag(tag);
+                    
+                    // 从所有图钉中移除该标签
+                    for (PinEntry pin : PinStorage.getPins()) {
+                        if (pin.hasTag(tag)) {
+                            List<String> tags = new ArrayList<>(pin.getTags());
+                            tags.remove(tag);
+                            PinStorage.updateTags(pin, tags);
+                        }
+                    }
+                    
+                    // 刷新标签视图
+                    refreshTagsView();
+                    onTagSelectionChanged.accept(selectedTags);
+                }
+            }
+            
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                deleteButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                deleteButton.setForeground(isDark ? new Color(255, 200, 200) : new Color(200, 0, 0));
+            }
+            
+            @Override
+            public void mouseExited(MouseEvent e) {
+                deleteButton.setCursor(Cursor.getDefaultCursor());
+                deleteButton.setForeground(textColor);
+            }
+        });
+        
+        // 组装标签面板
+        tagPanel.add(tagLabel, BorderLayout.CENTER);
+        tagPanel.add(deleteButton, BorderLayout.EAST);
 
         // 设置圆角边框
         Color borderColor = new JBColor(
@@ -172,49 +247,135 @@ public class TagFilterPanel extends JPanel {
                 new Color(tagColor.getRed(), tagColor.getGreen(), tagColor.getBlue(), selected ? 150 : 100)
         );
 
-        tagLabel.setBorder(BorderFactory.createCompoundBorder(
+        tagPanel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(borderColor, 1),
                 JBUI.Borders.empty(4, 8)
         ));
 
-        // 添加鼠标点击事件
-        tagLabel.addMouseListener(new MouseAdapter() {
+        // 为整个标签面板添加鼠标点击事件
+        tagPanel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                // 添加标签点击动画效果
-                AnimationUtil.scale(tagLabel, 1.0f, 0.95f, 50, () -> {
-                    AnimationUtil.scale(tagLabel, 0.95f, 1.0f, 100, () -> {
-                        if (selected) {
-                            selectedTags.remove(tag);
-                        } else {
-                            selectedTags.add(tag);
-                        }
-                        refreshTagsView();
-                        onTagSelectionChanged.accept(selectedTags);
+                if (e.getButton() == MouseEvent.BUTTON1) { // 左键点击
+                    // 添加标签点击动画效果
+                    AnimationUtil.scale(tagPanel, 1.0f, 0.95f, 50, () -> {
+                        AnimationUtil.scale(tagPanel, 0.95f, 1.0f, 100, () -> {
+                            if (selected) {
+                                selectedTags.remove(tag);
+                            } else {
+                                selectedTags.add(tag);
+                            }
+                            refreshTagsView();
+                            onTagSelectionChanged.accept(selectedTags);
+                        });
                     });
-                });
+                } else if (e.getButton() == MouseEvent.BUTTON3) { // 右键点击
+                    // 显示右键菜单
+                    JPopupMenu popupMenu = createTagContextMenu(tag);
+                    popupMenu.show(tagPanel, e.getX(), e.getY());
+                }
             }
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                tagLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+                tagPanel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
                 // 鼠标悬停效果
                 if (!selected) {
-                    tagLabel.setBackground(tagColor.brighter());
+                    tagPanel.setBackground(tagColor.brighter());
                 }
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                tagLabel.setCursor(Cursor.getDefaultCursor());
+                tagPanel.setCursor(Cursor.getDefaultCursor());
                 // 鼠标离开恢复原样式
                 if (!selected) {
-                    tagLabel.setBackground(tagColor);
+                    tagPanel.setBackground(tagColor);
                 }
             }
         });
 
-        return tagLabel;
+        return tagPanel;
+    }
+    
+    /**
+     * 创建标签右键菜单
+     */
+    private JPopupMenu createTagContextMenu(String tag) {
+        JPopupMenu menu = new JPopupMenu();
+        
+        // 编辑标签菜单项
+        JMenuItem editItem = new JMenuItem("编辑标签");
+        editItem.setIcon(IconUtil.loadIcon("/icons/edit.svg", getClass()));
+        editItem.addActionListener(e -> {
+            // 创建一个对话框让用户输入新的标签名称
+            String newTag = JOptionPane.showInputDialog(
+                SwingUtilities.getWindowAncestor(TagFilterPanel.this),
+                "编辑标签名称:", 
+                tag);
+            
+            if (newTag != null && !newTag.trim().isEmpty() && !newTag.equals(tag)) {
+                // 清除旧标签
+                selectedTags.remove(tag);
+                
+                // 更新所有包含此标签的图钉
+                for (PinEntry pin : PinStorage.getPins()) {
+                    if (pin.hasTag(tag)) {
+                        List<String> tags = new ArrayList<>(pin.getTags());
+                        tags.remove(tag);
+                        tags.add(newTag.trim());
+                        PinStorage.updateTags(pin, tags);
+                    }
+                }
+                
+                // 从全局标签中移除旧标签并添加新标签
+                PinStorage.removeGlobalTag(tag);
+                PinStorage.addGlobalTag(newTag.trim());
+                
+                // 如果编辑的是已选中的标签，更新选中状态
+                if (selectedTags.contains(tag)) {
+                    selectedTags.remove(tag);
+                    selectedTags.add(newTag.trim());
+                }
+                
+                // 刷新标签视图
+                refreshTagsView();
+                onTagSelectionChanged.accept(selectedTags);
+            }
+        });
+        menu.add(editItem);
+        
+        // 删除标签菜单项
+        JMenuItem deleteItem = new JMenuItem("删除标签");
+        deleteItem.setIcon(IconUtil.loadIcon("/icons/trash.svg", getClass()));
+        deleteItem.addActionListener(e -> {
+            int result = JOptionPane.showConfirmDialog(SwingUtilities.getWindowAncestor(TagFilterPanel.this),
+                "确定要删除标签 \"" + tag + "\" 吗？", "删除标签", JOptionPane.YES_NO_OPTION);
+            
+            if (result == JOptionPane.YES_OPTION) {
+                // 如果标签已被选中，先移除选中状态
+                selectedTags.remove(tag);
+                
+                // 从所有图钉中移除该标签
+                for (PinEntry pin : PinStorage.getPins()) {
+                    if (pin.hasTag(tag)) {
+                        List<String> tags = new ArrayList<>(pin.getTags());
+                        tags.remove(tag);
+                        PinStorage.updateTags(pin, tags);
+                    }
+                }
+                
+                // 从全局标签集合中删除
+                PinStorage.removeGlobalTag(tag);
+                
+                // 刷新标签视图
+                refreshTagsView();
+                onTagSelectionChanged.accept(selectedTags);
+            }
+        });
+        menu.add(deleteItem);
+        
+        return menu;
     }
 
     /**
@@ -304,5 +465,42 @@ public class TagFilterPanel extends JPanel {
      */
     public List<String> getSelectedTags() {
         return new ArrayList<>(selectedTags);
+    }
+
+    /**
+     * 打开添加标签对话框
+     */
+    private void openAddTagDialog() {
+        // 创建一个临时的空PinEntry对象，仅用于打开对话框
+        PinEntry dummyPin = new PinEntry();
+        
+        SimpleTagEditorDialog dialog = new SimpleTagEditorDialog(
+            SwingUtilities.getWindowAncestor(this) instanceof com.intellij.openapi.project.Project ? 
+            (com.intellij.openapi.project.Project) SwingUtilities.getWindowAncestor(this) : 
+            com.intellij.openapi.project.ProjectManager.getInstance().getOpenProjects()[0],
+            dummyPin
+        );
+        
+        dialog.setTitle("添加自定义标签");
+        
+        if (dialog.showAndGet()) {
+            List<String> newTags = dialog.getTags();
+            // 将新创建的标签添加到所有标签集合中
+            for (String tag : newTags) {
+                if (!PinStorage.getAllTags().contains(tag)) {
+                    // 添加到全局标签集合中
+                    PinStorage.addGlobalTag(tag);
+                }
+            }
+            
+            // 清空当前选中的标签，以便显示全部图钉
+            selectedTags.clear();
+            
+            // 刷新标签视图
+            refreshTagsView();
+            
+            // 通知监听器标签选择已更改（显示所有图钉）
+            onTagSelectionChanged.accept(selectedTags);
+        }
     }
 }

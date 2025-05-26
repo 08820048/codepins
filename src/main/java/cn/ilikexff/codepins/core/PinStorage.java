@@ -116,7 +116,10 @@ public class PinStorage {
     public static void clearAll() {
         pins.clear();
         PinStateService.getInstance().clear();
-        allTags.clear();
+        
+        // 使用refreshAllTags方法来处理标签，确保自定义标签得到保留
+        refreshAllTags();
+        
         refreshModel();
     }
 
@@ -168,6 +171,7 @@ public class PinStorage {
     public static void initFromSaved() {
         List<PinState> saved = PinStateService.getInstance().getPins();
         pins.clear();
+        allTags.clear();  // 清空标签集合，准备重新加载
 
         for (PinState state : saved) {
             // 先通过路径获取 VirtualFile
@@ -219,10 +223,16 @@ public class PinStorage {
             );
             pins.add(entry);
 
-            // 更新标签集合
+            // 更新标签集合（从图钉收集标签）
             if (state.tags != null) {
                 allTags.addAll(state.tags);
             }
+        }
+
+        // 加载全局自定义标签
+        Set<String> savedGlobalTags = PinStateService.getInstance().getGlobalTags();
+        if (savedGlobalTags != null) {
+            allTags.addAll(savedGlobalTags);
         }
 
         refreshModel();
@@ -292,9 +302,46 @@ public class PinStorage {
      * 刷新所有标签集合
      */
     private static void refreshAllTags() {
+        // 先保存当前的全局自定义标签
+        Set<String> customTags = PinStateService.getInstance().getGlobalTags();
+        
+        // 清空标签集合
         allTags.clear();
+        
+        // 加载图钉中的标签
         for (PinEntry pin : pins) {
             allTags.addAll(pin.getTags());
+        }
+        
+        // 恢复全局自定义标签
+        if (customTags != null && !customTags.isEmpty()) {
+            allTags.addAll(customTags);
+        }
+    }
+
+    /**
+     * 添加全局标签
+     */
+    public static void addGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            String trimmedTag = tag.trim();
+            allTags.add(trimmedTag);
+            
+            // 保存到持久化存储
+            PinStateService.getInstance().addGlobalTag(trimmedTag);
+        }
+    }
+
+    /**
+     * 从全局标签集合中删除标签
+     */
+    public static void removeGlobalTag(String tag) {
+        if (tag != null && !tag.trim().isEmpty()) {
+            String trimmedTag = tag.trim();
+            allTags.remove(trimmedTag);
+            
+            // 从持久化存储中删除
+            PinStateService.getInstance().removeGlobalTag(trimmedTag);
         }
     }
 
@@ -430,6 +477,51 @@ public class PinStorage {
     }
 
     /**
+     * 替换指定图钉
+     * 用于图钉恢复功能，在RangeMarker无效时替换为新的图钉
+     *
+     * @param oldPin 要替换的图钉
+     * @param newPin 新图钉
+     * @return 是否替换成功
+     */
+    public static boolean replacePin(PinEntry oldPin, PinEntry newPin) {
+        int index = pins.indexOf(oldPin);
+        if (index < 0) {
+            System.out.println("[CodePins] 替换图钉失败: 找不到原始图钉");
+            return false;
+        }
+        
+        // 替换内存中的图钉
+        pins.set(index, newPin);
+        
+        // 更新持久化存储中的数据
+        Document doc = newPin.marker.getDocument();
+        int oldLine = oldPin.getCurrentLine(doc);
+        int newLine = newPin.getCurrentLine(doc);
+        
+        for (PinState p : PinStateService.getInstance().getPins()) {
+            if (p.filePath.equals(oldPin.filePath) && p.line == oldLine) {
+                // 更新行号
+                p.line = newLine;
+                
+                // 如果是代码块图钉，更新偏移量
+                if (newPin.isBlock) {
+                    p.startOffset = newPin.marker.getStartOffset();
+                    p.endOffset = newPin.marker.getEndOffset();
+                }
+                
+                System.out.println("[CodePins] 图钉持久化数据已更新，行号: " + oldLine + " -> " + newLine);
+                break;
+            }
+        }
+        
+        // 刷新模型
+        refreshModel();
+        
+        return true;
+    }
+
+    /**
      * 保存自定义排序
      */
     private static void saveCustomOrder() {
@@ -486,6 +578,14 @@ public class PinStorage {
 
         // 刷新所有标签筛选面板
         refreshTagFilterPanels();
+    }
+
+    /**
+     * 刷新UI显示
+     * 供外部类调用，以刷新图钉列表显示
+     */
+    public static void refreshUI() {
+        refreshModel();
     }
 
     /**
