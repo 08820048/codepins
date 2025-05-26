@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.core.PinEntry;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.utils.AnimationUtil;
 import cn.ilikexff.codepins.utils.ImageGenerator;
 import cn.ilikexff.codepins.utils.SensitiveInfoDetector;
@@ -18,8 +19,6 @@ import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBRadioButton;
 import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
 
 import javax.swing.*;
 import java.awt.*;
@@ -66,7 +65,7 @@ public class ShareDialog extends DialogWrapper {
         this.project = project;
         this.pins = new ArrayList<>(pins);
 
-        setTitle("分享图钉");
+        setTitle(CodePinsBundle.message("share.dialog.title"));
         setSize(500, 400); // 设置对话框尺寸
         init();
     }
@@ -78,14 +77,14 @@ public class ShareDialog extends DialogWrapper {
 
         // 创建格式选择面板
         JPanel formatPanel = new JPanel(new GridLayout(7, 1));
-        formatPanel.setBorder(BorderFactory.createTitledBorder("分享格式"));
+        formatPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("share.format")));
 
         markdownRadio = new JBRadioButton("Markdown");
         markdownRadio.setSelected(true);
         htmlRadio = new JBRadioButton("HTML");
         jsonRadio = new JBRadioButton("JSON");
-        codeOnlyRadio = new JBRadioButton("仅代码");
-        imageRadio = new JBRadioButton("图片");
+        codeOnlyRadio = new JBRadioButton(CodePinsBundle.message("share.format.code.only"));
+        imageRadio = new JBRadioButton(CodePinsBundle.message("share.format.image"));
         svgRadio = new JBRadioButton("SVG");
 
         ButtonGroup formatGroup = new ButtonGroup();
@@ -96,7 +95,7 @@ public class ShareDialog extends DialogWrapper {
         formatGroup.add(imageRadio);
         formatGroup.add(svgRadio);
 
-        formatPanel.add(new JBLabel("选择分享格式:"));
+        formatPanel.add(new JBLabel(CodePinsBundle.message("share.format") + ":"));
         formatPanel.add(markdownRadio);
         formatPanel.add(htmlRadio);
         formatPanel.add(jsonRadio);
@@ -106,11 +105,11 @@ public class ShareDialog extends DialogWrapper {
 
         // 添加图片主题选择面板
         themePanel = new JPanel(new BorderLayout());
-        themePanel.setBorder(BorderFactory.createTitledBorder("图片主题"));
+        themePanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("share.watermark")));
 
         themeComboBox = new JComboBox<>(ImageGenerator.Theme.values());
         themeComboBox.setSelectedItem(ImageGenerator.Theme.DARK); // 默认选择暗色主题
-        themePanel.add(new JBLabel("选择主题:"), BorderLayout.WEST);
+        themePanel.add(new JBLabel(CodePinsBundle.message("share.watermark") + ":"), BorderLayout.WEST);
         themePanel.add(themeComboBox, BorderLayout.CENTER);
         themePanel.setVisible(false); // 初始不可见
 
@@ -148,17 +147,17 @@ public class ShareDialog extends DialogWrapper {
 
         // 创建分享方式面板
         JPanel methodPanel = new JPanel(new GridLayout(4, 1));
-        methodPanel.setBorder(BorderFactory.createTitledBorder("分享方式"));
+        methodPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("share.method")));
 
-        clipboardRadio = new JBRadioButton("复制到剪贴板");
+        clipboardRadio = new JBRadioButton(CodePinsBundle.message("share.method.clipboard"));
         clipboardRadio.setSelected(true);
-        fileRadio = new JBRadioButton("导出到文件");
+        fileRadio = new JBRadioButton(CodePinsBundle.message("share.method.file"));
 
         ButtonGroup methodGroup = new ButtonGroup();
         methodGroup.add(clipboardRadio);
         methodGroup.add(fileRadio);
 
-        methodPanel.add(new JBLabel("选择分享方式:"));
+        methodPanel.add(new JBLabel(CodePinsBundle.message("share.method") + ":"));
         methodPanel.add(clipboardRadio);
         methodPanel.add(fileRadio);
 
@@ -166,7 +165,7 @@ public class ShareDialog extends DialogWrapper {
         optionsPanel = new JPanel(new GridLayout(2, 1, 0, 5));
 
         // 添加"只分享代码"选项
-        codeOnlyCheckBox = new JCheckBox("只分享代码内容（不包含元数据）");
+        codeOnlyCheckBox = new JCheckBox(CodePinsBundle.message("share.exclude.metadata"));
         // 检查是否有代码块图钉
         boolean hasCodeBlock = false;
         for (PinEntry pin : pins) {
@@ -177,11 +176,11 @@ public class ShareDialog extends DialogWrapper {
         }
         codeOnlyCheckBox.setEnabled(hasCodeBlock);
         if (!hasCodeBlock) {
-            codeOnlyCheckBox.setToolTipText("没有代码块图钉可供分享");
+            codeOnlyCheckBox.setToolTipText(CodePinsBundle.message("pin.type.block"));
         }
 
         // 添加行号显示选项
-        showLineNumbersCheckBox = new JCheckBox("显示行号");
+        showLineNumbersCheckBox = new JCheckBox(CodePinsBundle.message("share.show.line.numbers"));
         showLineNumbersCheckBox.setSelected(true); // 默认选中
 
         // 添加到选项面板
@@ -193,9 +192,9 @@ public class ShareDialog extends DialogWrapper {
 
         // 创建信息面板
         JPanel infoPanel = new JPanel(new BorderLayout());
-        infoPanel.setBorder(BorderFactory.createTitledBorder("分享信息"));
+        infoPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("share.info", pins.size())));
 
-        JLabel infoLabel = new JBLabel("将分享 " + pins.size() + " 个图钉");
+        JLabel infoLabel = new JBLabel(CodePinsBundle.message("share.info", pins.size()));
         infoPanel.add(infoLabel, BorderLayout.CENTER);
 
         // 添加高级功能按钮
@@ -203,7 +202,7 @@ public class ShareDialog extends DialogWrapper {
 
         // 添加社交分享按钮
         Icon webIcon = IconLoader.getIcon("/icons/web.svg", getClass());
-        JButton socialShareButton = new JButton("社交分享", webIcon);
+        JButton socialShareButton = new JButton(CodePinsBundle.message("share.social"), webIcon);
         socialShareButton.addActionListener(e -> {
             // 添加按钮动画效果
             AnimationUtil.buttonClickEffect(socialShareButton);
@@ -221,7 +220,7 @@ public class ShareDialog extends DialogWrapper {
 
         // 添加水印设置按钮
         Icon settingsIcon = IconLoader.getIcon("/icons/settings.svg", getClass());
-        JButton watermarkButton = new JButton("水印设置", settingsIcon);
+        JButton watermarkButton = new JButton(CodePinsBundle.message("share.watermark"), settingsIcon);
         watermarkButton.addActionListener(e -> {
             // 添加按钮动画效果
             AnimationUtil.buttonClickEffect(watermarkButton);

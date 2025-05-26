@@ -1,9 +1,8 @@
 package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.core.PinEntry;
-import cn.ilikexff.codepins.services.LicenseService;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.utils.*;
-import com.intellij.openapi.util.IconLoader;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
@@ -26,7 +25,6 @@ public class SocialShareDialog extends DialogWrapper {
 
     private final Project project;
     private final List<PinEntry> pins;
-    private final String shareContent;
     private final SharingUtil.SharingFormat format;
 
     private JRadioButton[] platformRadios;
@@ -50,10 +48,10 @@ public class SocialShareDialog extends DialogWrapper {
         this.pins = new ArrayList<>(pins);
         this.format = format;
 
-        // 生成分享内容
-        this.shareContent = SharingUtil.formatPins(project, pins, format, codeOnly, showLineNumbers);
+        // 注意：分享内容将在需要时生成，不再存储为字段
+        // SharingUtil.formatPins(project, pins, format, codeOnly, showLineNumbers);
 
-        setTitle("分享到社交媒体");
+        setTitle(CodePinsBundle.message("social.share.dialog.title"));
         setSize(600, 600); // 增加对话框尺寸，确保有足够的空间
         setResizable(true); // 允许用户调整大小
         init();
@@ -66,7 +64,7 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 创建平台选择面板
         JPanel platformPanel = new JPanel(new BorderLayout());
-        platformPanel.setBorder(BorderFactory.createTitledBorder("选择平台"));
+        platformPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("social.share.platform")));
         platformPanel.setBorder(BorderFactory.createCompoundBorder(
                 platformPanel.getBorder(),
                 JBUI.Borders.empty(5, 5, 5, 5))); // 添加内边距
@@ -79,7 +77,7 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 创建平台面板
         JPanel platformsPanel = new JPanel(new GridLayout(0, 3, 10, 5)); // 3列网格
-        platformsPanel.setBorder(BorderFactory.createTitledBorder("分享平台"));
+        platformsPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("social.share.platform.list")));
 
         // 添加平台选项
         int firstPlatformIndex = -1;
@@ -115,14 +113,14 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 创建链接选项面板
         JPanel linkPanel = new JPanel(new BorderLayout(0, 5)); // 减小垂直间距
-        linkPanel.setBorder(BorderFactory.createTitledBorder("链接选项"));
+        linkPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("social.share.link.options")));
         linkPanel.setBorder(BorderFactory.createCompoundBorder(
                 linkPanel.getBorder(),
                 JBUI.Borders.empty(5, 5, 5, 5))); // 添加内边距
 
         // 过期时间选择
         JPanel expirationPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        expirationPanel.add(new JBLabel("链接有效期:"));
+        expirationPanel.add(new JBLabel(CodePinsBundle.message("social.share.link.expiration") + ":"));
 
         expirationComboBox = new JComboBox<>(ShareLinkGenerator.ExpirationTime.values());
         expirationComboBox.setSelectedItem(ShareLinkGenerator.ExpirationTime.ONE_DAY);
@@ -130,7 +128,7 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 禁用过期时间选择，标记为未来开发功能
         expirationComboBox.setEnabled(false);
-        expirationPanel.add(new JBLabel(" (长期有效，限制功能将在未来版本中提供)"));
+        expirationPanel.add(new JBLabel(" " + CodePinsBundle.message("social.share.link.expiration.future")));
 
         // 插件现在完全免费，移除升级对话框点击事件
 
@@ -138,7 +136,7 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 密码保护选项
         passwordPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        passwordCheckBox = new JCheckBox("密码保护:");
+        passwordCheckBox = new JCheckBox(CodePinsBundle.message("social.share.password.protection") + ":");
         passwordField = new JPasswordField(15);
         passwordField.setEnabled(false);
 
@@ -150,7 +148,7 @@ public class SocialShareDialog extends DialogWrapper {
         // 禁用密码保护选项，标记为未来开发功能
         passwordCheckBox.setEnabled(false);
         passwordField.setEnabled(false);
-        passwordPanel.add(new JBLabel(" (未来功能)"));
+        passwordPanel.add(new JBLabel(" " + CodePinsBundle.message("social.share.password.future")));
 
         // 插件现在完全免费，移除升级对话框点击事件
 
@@ -158,7 +156,7 @@ public class SocialShareDialog extends DialogWrapper {
 
         // 创建信息面板
         JPanel infoPanel = new JPanel(new BorderLayout());
-        infoPanel.setBorder(BorderFactory.createTitledBorder("分享信息"));
+        infoPanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("social.share.info")));
         infoPanel.setBorder(BorderFactory.createCompoundBorder(
                 infoPanel.getBorder(),
                 JBUI.Borders.empty(5, 5, 5, 5))); // 添加内边距
@@ -169,9 +167,8 @@ public class SocialShareDialog extends DialogWrapper {
         infoArea.setLineWrap(true);
         infoArea.setWrapStyleWord(true);
         infoArea.setBackground(JBColor.background());
-        infoArea.setText("将分享 " + pins.size() + " 个图钉到社交媒体。\n\n" +
-                "注意：分享链接使用GitHub Gist服务存储，链接长期有效。\n" +
-                "自定义过期时间和密码保护功能将在未来版本中提供。");
+        // 确保正确传递参数以显示图钉数量
+        infoArea.setText(CodePinsBundle.message("social.share.info.text", pins.size()));
 
         // 设置固定高度，避免文本区域过大
         JScrollPane infoScrollPane = new JScrollPane(infoArea);
@@ -224,8 +221,8 @@ public class SocialShareDialog extends DialogWrapper {
             if (selectedPlatform == null) {
                 Messages.showErrorDialog(
                         project,
-                        "请选择一个社交媒体平台",
-                        "分享错误"
+                        CodePinsBundle.message("social.share.error.select.platform"),
+                        CodePinsBundle.message("social.share.error.title")
                 );
                 return;
             }
@@ -242,11 +239,11 @@ public class SocialShareDialog extends DialogWrapper {
                     project, pins, format, false, true, expiration, requiresPassword, password);
 
             // 分享到社交媒体
-            String title = "CodePins分享";
+            String title;
             if (pins.size() == 1 && pins.get(0).name != null && !pins.get(0).name.trim().isEmpty()) {
-                title += ": " + pins.get(0).name;
+                title = CodePinsBundle.message("social.share.title.single", pins.get(0).name);
             } else {
-                title += ": " + pins.size() + "个图钉";
+                title = CodePinsBundle.message("social.share.title.multiple", pins.size());
             }
 
             // 确保链接URL不为空

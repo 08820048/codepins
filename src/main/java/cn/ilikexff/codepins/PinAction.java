@@ -2,6 +2,7 @@ package cn.ilikexff.codepins;
 
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -21,21 +22,20 @@ import com.intellij.openapi.wm.WindowManager;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
-import org.jetbrains.annotations.NotNull;
+// Removed unused import: org.jetbrains.annotations.NotNull
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * 动作：在当前行或选区添加一个图钉，并可附加备注。
+ * Action: Add a pin to the current line or selection with optional note.
  */
 public class PinAction extends AnAction {
 
     public PinAction() {
-        // 注意：图标在plugin.xml中设置，这里不需要设置
-        // 使用空构造函数，避免覆盖plugin.xml中的设置
-        System.out.println("[CodePins] PinAction registered"); // 插件加载时输出
+        // Note: Icon is set in plugin.xml, no need to set it here
+        // Use empty constructor to avoid overriding plugin.xml settings
+        System.out.println("[CodePins] PinAction registered"); // Output when plugin loads
     }
 
     @Override
@@ -52,8 +52,8 @@ public class PinAction extends AnAction {
 
         String note = Messages.showInputDialog(
                 project,
-                "请输入图钉备注（可选）：",
-                "添加图钉",
+                CodePinsBundle.message("note.placeholder"),
+                CodePinsBundle.message("pin.add"),
                 Messages.getQuestionIcon()
         );
 
@@ -86,13 +86,13 @@ public class PinAction extends AnAction {
 
         boolean isBlock = caret.hasSelection();
 
-        // 记录调试信息
+        // Log debug information
         if (isBlock) {
             int startLine = document.getLineNumber(caret.getSelectionStart()) + 1;
             int endLine = document.getLineNumber(caret.getSelectionEnd()) + 1;
-            System.out.println("[CodePins] 创建代码块图钉，行范围: " + startLine + "-" + endLine);
+            System.out.println("[CodePins] Creating block pin, line range: " + startLine + "-" + endLine);
         } else {
-            System.out.println("[CodePins] 创建单行图钉，行号: " + (document.getLineNumber(caret.getOffset()) + 1));
+            System.out.println("[CodePins] Creating single line pin, line: " + (document.getLineNumber(caret.getOffset()) + 1));
         }
 
         TextRange range = isBlock
@@ -115,52 +115,36 @@ public class PinAction extends AnAction {
 
         boolean success = PinStorage.addPin(pin);
 
-        // 状态栏和通知提示
+        // Status bar and notification tips
         StatusBar statusBar = WindowManager.getInstance().getStatusBar(project);
         if (success) {
-            // 添加成功
+            // Add success
             if (statusBar != null) {
-                StatusBar.Info.set("✅ 图钉已添加", project);
+                StatusBar.Info.set("✅ " + CodePinsBundle.message("pin.added", document.getLineNumber(caret.getOffset()) + 1), project);
             }
             Notifications.Bus.notify(new Notification(
                     "CodePins",
-                    "图钉添加成功",
-                    isBlock ? "已添加一段代码块图钉" : "已添加单行图钉",
+                    CodePinsBundle.message("notification.success"),
+                    isBlock ? CodePinsBundle.message("pin.type.block") + " " + CodePinsBundle.message("pin.added", document.getLineNumber(caret.getOffset()) + 1) : 
+                             CodePinsBundle.message("pin.type.single") + " " + CodePinsBundle.message("pin.added", document.getLineNumber(caret.getOffset()) + 1),
                     NotificationType.INFORMATION
             ), project);
         } else {
-            // 添加失败
+            // Add failure
             if (statusBar != null) {
-                StatusBar.Info.set("❌ 图钉添加失败", project);
+                StatusBar.Info.set("❌ " + CodePinsBundle.message("pin.invalid"), project);
             }
 
-            // 获取图钉数量信息
-            Map<String, Integer> pinsInfo = PinStorage.getPinsCountInfo();
-            int currentPins = pinsInfo.get("current");
-            int maxPins = pinsInfo.get("max");
+            // Plugin is now completely free, this should not show any limitation errors
+            String failureReason = CodePinsBundle.message("notification.error");
 
-            // 获取标签数量信息
-            Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
-            int currentTagTypes = tagsInfo.get("current");
-            int maxTagTypes = tagsInfo.get("max");
-            int maxTagsPerPin = tagsInfo.get("perPin");
-
-            // 确定失败原因
-            String failureReason;
-            String featureName;
-
-            // 插件现在完全免费，这里不应该出现限制错误
-            failureReason = "添加图钉失败，请稍后重试";
-
-            // 创建通知
+            // Create notification
             Notification notification = new Notification(
                     "CodePins",
-                    "图钉添加失败",
+                    CodePinsBundle.message("notification.error"),
                     failureReason,
                     NotificationType.WARNING
             );
-
-            // 插件现在完全免费，移除升级按钮
 
             Notifications.Bus.notify(notification, project);
         }

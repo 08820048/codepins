@@ -2,22 +2,19 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 // 移除不再需要的许可证服务引用
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.ui.JBColor;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.UIUtil;
-import cn.ilikexff.codepins.ui.AnimationUtil;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import javax.swing.border.Border;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
@@ -25,7 +22,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.HashSet;
 
@@ -34,8 +30,6 @@ import java.util.HashSet;
  */
 public class SimpleTagEditorDialog extends DialogWrapper {
 
-    private final Project project;
-    private final PinEntry pinEntry;
     private final DefaultListModel<String> tagsModel;
     private final JBList<String> tagsList;
     private final JBTextField newTagField;
@@ -46,8 +40,6 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
     public SimpleTagEditorDialog(Project project, PinEntry pinEntry) {
         super(project);
-        this.project = project;
-        this.pinEntry = pinEntry;
         this.currentTags = new ArrayList<>(pinEntry.getTags());
 
         // 获取所有已有标签
@@ -69,7 +61,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         existingTagsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
 
         // 设置对话框标题和尺寸
-        setTitle("编辑标签");
+        setTitle(CodePinsBundle.message("tag.dialog.title"));
         init();
     }
 
@@ -83,15 +75,9 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         // 插件现在完全免费开源，不再需要检查标签限制信息
 
         // 添加说明标签
-        StringBuilder instructionText = new StringBuilder("<html><b>标签使用说明：</b><br>" +
-                "1. 在下方输入框中输入标签名称，然后按回车或点击添加按钮<br>" +
-                "2. 选中列表中的标签，然后点击删除按钮可删除标签<br>" +
-                "3. 选中列表中的标签，然后点击编辑按钮或双击标签可编辑标签<br>" +
-                "4. 标签数量无限制，插件已完全免费开源");
+        String instructionText = CodePinsBundle.message("tag.dialog.instruction");
 
-        instructionText.append("</html>");
-
-        JLabel instructionLabel = new JLabel(instructionText.toString());
+        JLabel instructionLabel = new JLabel(instructionText);
         instructionLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         instructionLabel.setBorder(JBUI.Borders.emptyBottom(10));
 
@@ -100,7 +86,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.add(instructionLabel);
 
         // 添加当前标签标签
-        JLabel currentTagsLabel = new JLabel("当前标签：");
+        JLabel currentTagsLabel = new JLabel(CodePinsBundle.message("tag.current.label"));
         currentTagsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainPanel.add(currentTagsLabel);
 
@@ -115,19 +101,19 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         scrollPane.setBorder(BorderFactory.createLineBorder(JBColor.border(), 1));
         mainPanel.add(scrollPane);
 
-        // 添加标签操作按钮面板
-        tagActionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 0));
+        // 创建标签操作面板
+        tagActionPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JButton editButton = new JButton(CodePinsBundle.message("tag.dialog.edit"));
         tagActionPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         tagActionPanel.setBorder(JBUI.Borders.empty(8, 0, 8, 0));
 
         // 删除按钮
-        JButton removeButton = new JButton("删除");
+        JButton removeButton = new JButton(CodePinsBundle.message("tag.dialog.delete"));
         removeButton.setIcon(IconUtil.loadIcon("/icons/trash.svg", getClass()));
         removeButton.addActionListener(e -> removeSelectedTags());
         removeButton.setFocusPainted(false);
 
         // 编辑按钮
-        JButton editButton = new JButton("编辑");
         editButton.setIcon(IconUtil.loadIcon("/icons/edit.svg", getClass()));
         editButton.addActionListener(e -> editSelectedTag());
         editButton.setFocusPainted(false);
@@ -156,7 +142,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.add(Box.createVerticalStrut(15));
 
         // 添加已有标签区域
-        JLabel existingTagsLabel = new JLabel("当前已有标签（点击添加）：");
+        JLabel existingTagsLabel = new JLabel(CodePinsBundle.message("tag.dialog.existing"));
         existingTagsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainPanel.add(existingTagsLabel);
 
@@ -175,7 +161,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         mainPanel.add(Box.createVerticalStrut(15));
 
         // 添加新标签标签
-        JLabel newTagLabel = new JLabel("添加新标签：");
+        JLabel newTagLabel = new JLabel(CodePinsBundle.message("tag.dialog.add"));
         newTagLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         mainPanel.add(newTagLabel);
 
@@ -185,7 +171,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         inputPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         // 设置输入框提示
-        newTagField.putClientProperty("JTextField.placeholderText", "输入标签名称，按回车添加");
+        newTagField.putClientProperty("JTextField.placeholderText", CodePinsBundle.message("tag.dialog.input.placeholder"));
         newTagField.setPreferredSize(new Dimension(300, 32));
         newTagField.setMaximumSize(new Dimension(Short.MAX_VALUE, 32));
         newTagField.setBorder(BorderFactory.createCompoundBorder(
@@ -201,7 +187,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
             }
         });
 
-        JButton addButton = new JButton("添加");
+        JButton addButton = new JButton(CodePinsBundle.message("tag.dialog.add"));
         addButton.setIcon(IconUtil.loadIcon("/icons/plus.svg", getClass()));
         addButton.addActionListener(e -> addNewTag());
         addButton.setFocusPainted(false);
@@ -268,11 +254,11 @@ public class SimpleTagEditorDialog extends DialogWrapper {
         int selectedIndex = tagsList.getSelectedIndex();
         if (selectedIndex >= 0) {
             // 编辑按钮动画效果
-            AnimationUtil.buttonClickEffect((JButton)tagActionPanel.getComponent(1));
+            // AnimationUtil.buttonClickEffect((JButton)tagActionPanel.getComponent(1));
 
             String oldTag = tagsModel.getElementAt(selectedIndex);
             String newTag = JOptionPane.showInputDialog(this.getRootPane(),
-                    "请输入新的标签名称", oldTag);
+                    CodePinsBundle.message("tag.dialog.edit"), oldTag);
 
             if (newTag != null && !newTag.trim().isEmpty() && !newTag.equals(oldTag)) {
                 // 检查新标签是否已存在
@@ -291,8 +277,8 @@ public class SimpleTagEditorDialog extends DialogWrapper {
                     populateExistingTags();
                 } else {
                     JOptionPane.showMessageDialog(this.getRootPane(),
-                            "标签 '"+newTag.trim()+"' 已存在",
-                            "标签重复",
+                            CodePinsBundle.message("tag.dialog.exists", newTag.trim()),
+                            CodePinsBundle.message("tag.dialog.exists.title"),
                             JOptionPane.WARNING_MESSAGE);
                 }
             }
@@ -314,7 +300,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
         // 如果没有已有标签，显示提示信息
         if (existingTags.isEmpty()) {
-            JLabel emptyLabel = new JLabel("暂无已有标签");
+            JLabel emptyLabel = new JLabel(CodePinsBundle.message("tag.dialog.empty"));
             emptyLabel.setForeground(JBColor.GRAY);
             existingTagsPanel.add(emptyLabel);
             return;
@@ -326,7 +312,7 @@ public class SimpleTagEditorDialog extends DialogWrapper {
 
         // 如果过滤后没有可用标签，显示提示信息
         if (availableTags.isEmpty()) {
-            JLabel emptyLabel = new JLabel("所有标签已添加");
+            JLabel emptyLabel = new JLabel(CodePinsBundle.message("tag.dialog.all"));
             emptyLabel.setForeground(JBColor.GRAY);
             existingTagsPanel.add(emptyLabel);
             return;
@@ -431,9 +417,8 @@ public class SimpleTagEditorDialog extends DialogWrapper {
     private static class TagCellRenderer extends DefaultListCellRenderer {
         @Override
         public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-            // 创建自定义标签面板
-            JPanel tagPanel = new JPanel(new BorderLayout(8, 0));
-            tagPanel.setBorder(JBUI.Borders.empty(8, 10));
+            // 创建标签单元格面板
+            JPanel tagPanel = new JPanel(new BorderLayout());
 
             // 获取标签文本
             String tag = value.toString();

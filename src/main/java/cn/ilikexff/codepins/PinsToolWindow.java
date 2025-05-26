@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins;
 
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
 import cn.ilikexff.codepins.core.PinState;
@@ -48,7 +49,6 @@ import java.awt.event.MouseMotionAdapter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class PinsToolWindow implements ToolWindowFactory {
@@ -159,7 +159,6 @@ public class PinsToolWindow implements ToolWindowFactory {
                                     renderer.setHoverIndex(index);
 
                                     // 获取单元格组件
-                                    @SuppressWarnings("unchecked") // 添加注解来抑制警告
                                     Component cellComponent = list.getCellRenderer().getListCellRendererComponent(
                                             list, entry, index, false, false); // 这里的调用是安全的
 
@@ -227,7 +226,6 @@ public class PinsToolWindow implements ToolWindowFactory {
                     Icon codeIcon = IconUtil.loadIcon("/icons/view.svg", getClass());
                     Icon editIcon = IconUtil.loadIcon("/icons/edit.svg", getClass());
                     Icon tagIcon = IconUtil.loadIcon("/icons/tag.svg", getClass());
-                    Icon shareIcon = IconUtil.loadIcon("/icons/share.svg", getClass());
                     Icon shareIconMini = IconUtil.loadIcon("/icons/share-mini.svg", getClass());
                     Icon deleteIcon = IconUtil.loadIcon("/icons/trash.svg", getClass());
                     Icon refreshIcon = IconUtil.loadIcon("/icons/refresh.svg", getClass());
@@ -235,7 +233,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 根据图钉类型添加不同的菜单项
                     if (selected.isBlock) {
                         // 如果是代码块图钉，添加代码预览项
-                        JMenuItem codeItem = new JMenuItem("查看代码块", codeIcon);
+                        JMenuItem codeItem = new JMenuItem(CodePinsBundle.message("context.view.code"), codeIcon);
                         // 应用自定义UI
                         cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(codeItem);
                         codeItem.addActionListener(event -> {
@@ -247,13 +245,13 @@ public class PinsToolWindow implements ToolWindowFactory {
                     }
 
                     // 添加编辑备注项
-                    JMenuItem editItem = new JMenuItem("修改备注", editIcon);
+                    JMenuItem editItem = new JMenuItem(CodePinsBundle.message("context.edit.note"), editIcon);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(editItem);
                     editItem.addActionListener(event -> {
                         // 添加按钮动画效果
                         AnimationUtil.buttonClickEffect(editItem);
-                        String newNote = JOptionPane.showInputDialog(null, "请输入新的备注：", selected.note);
+                        String newNote = JOptionPane.showInputDialog(null, CodePinsBundle.message("note.placeholder"), selected.note);
                         if (newNote != null) {
                             PinStorage.updateNote(selected, newNote.trim());
                         }
@@ -261,7 +259,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     menu.add(editItem);
 
                     // 添加编辑标签项
-                    JMenuItem tagItem = new JMenuItem("编辑标签", tagIcon);
+                    JMenuItem tagItem = new JMenuItem(CodePinsBundle.message("context.edit.tags"), tagIcon);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(tagItem);
                     tagItem.addActionListener(event -> {
@@ -277,7 +275,7 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                     // 添加复制图钉项
                     Icon copyIcon = IconUtil.loadIcon("/icons/copy.svg", getClass());
-                    JMenuItem copyItem = new JMenuItem("复制图钉", copyIcon);
+                    JMenuItem copyItem = new JMenuItem(CodePinsBundle.message("context.copy.pin"), copyIcon);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(copyItem);
                     copyItem.addActionListener(event -> {
@@ -290,7 +288,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     menu.add(copyItem);
 
                     // 添加分享项
-                    JMenuItem shareItem = new JMenuItem("分享图钉", shareIconMini);
+                    JMenuItem shareItem = new JMenuItem(CodePinsBundle.message("context.share.pin"), shareIconMini);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(shareItem);
                     shareItem.addActionListener(event -> {
@@ -306,7 +304,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     menu.add(shareItem);
 
                     // 添加删除项
-                    JMenuItem deleteItem = new JMenuItem("删除本钉", deleteIcon);
+                    JMenuItem deleteItem = new JMenuItem(CodePinsBundle.message("context.delete.pin"), deleteIcon);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(deleteItem);
                     deleteItem.addActionListener(event -> {
@@ -337,7 +335,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     menu.add(deleteItem);
 
                     // 添加刷新项
-                    JMenuItem refreshItem = new JMenuItem("刷新", refreshIcon);
+                    JMenuItem refreshItem = new JMenuItem(CodePinsBundle.message("tag.refresh"), refreshIcon);
                     // 应用自定义UI
                     cn.ilikexff.codepins.ui.CustomMenuItemUI.apply(refreshItem);
                     refreshItem.addActionListener(event -> {
@@ -464,7 +462,7 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     private JComponent createSearchField() {
         // 创建现代化搜索框
-        this.searchField = new SearchTextField("搜索图钉（支持备注与路径）");
+        this.searchField = new SearchTextField(CodePinsBundle.message("tooltip.searchPlaceholder"));
 
         // 创建容器面板，添加边距，减少上下边距以便更好地垂直居中
         JPanel container = new JPanel(new BorderLayout());
@@ -516,11 +514,6 @@ public class PinsToolWindow implements ToolWindowFactory {
      */
     private void updatePinCountLabel() {
         if (pinCountLabel != null) {
-            // 获取最新的图钉数量信息
-            Map<String, Integer> countInfo = PinStorage.getPinsCountInfo();
-            int currentCount = countInfo.get("current");
-            int maxCount = countInfo.get("max");
-
             // 创建新的图钉计数标签
             JComponent newCountLabel = createPinCountLabel();
 
@@ -583,9 +576,9 @@ public class PinsToolWindow implements ToolWindowFactory {
             private int dragIndex = -1;
 
             @Override
-            @SuppressWarnings("unchecked") // 添加注解来抑制警告
             protected Transferable createTransferable(JComponent c) {
-                JList<PinEntry> list = (JList<PinEntry>) c; // 这里的转换是安全的，因为我们知道c是一个 JList<PinEntry>
+                @SuppressWarnings("unchecked") // 这里的注解是必要的，因为我们知道c是一个 JList<PinEntry>
+                JList<PinEntry> list = (JList<PinEntry>) c;
                 dragIndex = list.getSelectedIndex();
 
                 // 创建一个简单的 Transferable 对象，包含拖动的索引
@@ -642,8 +635,7 @@ public class PinsToolWindow implements ToolWindowFactory {
                     int fromIndex = Integer.parseInt(dragIndexStr);
 
                     // 获取放置的位置
-                    @SuppressWarnings("unchecked") // 添加注解来抑制警告
-                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation(); // 这里的转换是安全的
+                    JList.DropLocation dl = (JList.DropLocation) support.getDropLocation();
                     int toIndex = dl.getIndex();
 
                     // 如果放置位置在拖动索引之后，需要调整
@@ -729,7 +721,7 @@ public class PinsToolWindow implements ToolWindowFactory {
 
         // 分享按钮
         Icon shareIcon = IconUtil.loadIcon("/icons/share.svg", getClass());
-        group.add(new AnAction("分享图钉", "分享选中的图钉", shareIcon) {
+        group.add(new AnAction(CodePinsBundle.message("toolbar.share"), CodePinsBundle.message("toolbar.share.desc"), shareIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 List<PinEntry> selectedPins = list.getSelectedValuesList();
@@ -737,8 +729,8 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 如果没有选中的图钉，提示用户
                     Messages.showInfoMessage(
                             project,
-                            "请先选择要分享的图钉",
-                            "分享图钉"
+                            CodePinsBundle.message("toolbar.select.prompt"),
+                            CodePinsBundle.message("toolbar.share")
                     );
                     return;
                 }
@@ -757,22 +749,22 @@ public class PinsToolWindow implements ToolWindowFactory {
 
         // 批量删除按钮
         Icon deleteMultipleIcon = IconUtil.loadIcon("/icons/delete-multiple.svg", getClass());
-        group.add(new AnAction("批量删除", "删除选中的图钉", deleteMultipleIcon) {
+        group.add(new AnAction(CodePinsBundle.message("toolbar.delete.multiple"), CodePinsBundle.message("toolbar.delete.multiple.desc"), deleteMultipleIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 List<PinEntry> selectedPins = list.getSelectedValuesList();
                 if (selectedPins.isEmpty()) {
                     Messages.showInfoMessage(
                             project,
-                            "请先选择要删除的图钉",
-                            "批量删除"
+                            CodePinsBundle.message("toolbar.select.prompt"),
+                            CodePinsBundle.message("toolbar.delete.multiple")
                     );
                     return;
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(null,
-                        "确定要删除选中的 " + selectedPins.size() + " 个图钉吗？",
-                        "确认删除", JOptionPane.YES_NO_OPTION);
+                        CodePinsBundle.message("toolbar.confirm.delete", selectedPins.size()),
+                        CodePinsBundle.message("toolbar.confirm.delete.title"), JOptionPane.YES_NO_OPTION);
 
                 if (confirm == JOptionPane.YES_OPTION) {
                     deleteSelectedPins(selectedPins);
@@ -788,34 +780,34 @@ public class PinsToolWindow implements ToolWindowFactory {
 
         // 排序按钮
         Icon sortIcon = IconUtil.loadIcon("/icons/sort.svg", getClass());
-        DefaultActionGroup sortGroup = new DefaultActionGroup("排序", true);
+        DefaultActionGroup sortGroup = new DefaultActionGroup(CodePinsBundle.message("toolbar.sort"), true);
         sortGroup.getTemplatePresentation().setIcon(sortIcon);
-        sortGroup.getTemplatePresentation().setText("排序图钉");
-        sortGroup.getTemplatePresentation().setDescription("按不同条件排序图钉");
+        sortGroup.getTemplatePresentation().setText(CodePinsBundle.message("toolbar.sort"));
+        sortGroup.getTemplatePresentation().setDescription(CodePinsBundle.message("toolbar.sort"));
 
         // 添加排序选项
-        sortGroup.add(new AnAction("按创建时间（新→旧）") {
+        sortGroup.add(new AnAction(CodePinsBundle.message("toolbar.sort.time.desc")) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.TIME_DESC);
             }
         });
 
-        sortGroup.add(new AnAction("按创建时间（旧→新）") {
+        sortGroup.add(new AnAction(CodePinsBundle.message("toolbar.sort.time.asc")) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.TIME_ASC);
             }
         });
 
-        sortGroup.add(new AnAction("按文件名") {
+        sortGroup.add(new AnAction(CodePinsBundle.message("toolbar.sort.name.asc")) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.FILENAME);
             }
         });
 
-        sortGroup.add(new AnAction("按备注") {
+        sortGroup.add(new AnAction(CodePinsBundle.message("toolbar.sort.path.asc")) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.NOTE);
@@ -826,11 +818,11 @@ public class PinsToolWindow implements ToolWindowFactory {
 
         // 清空按钮
         Icon clearIcon = IconUtil.loadIcon("/icons/x-octagon.svg", getClass());
-        group.add(new AnAction("清空图钉", "清除所有图钉记录", clearIcon) {
+        group.add(new AnAction(CodePinsBundle.message("button.clear"), CodePinsBundle.message("button.clear"), clearIcon) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 int confirm = JOptionPane.showConfirmDialog(null,
-                        "确定要清空所有图钉吗？", "确认清空", JOptionPane.YES_NO_OPTION);
+                        CodePinsBundle.message("dialog.confirm.clear"), CodePinsBundle.message("dialog.confirm.title"), JOptionPane.YES_NO_OPTION);
                 if (confirm == JOptionPane.YES_OPTION) {
                     PinStorage.clearAll();
                     allPins = PinStorage.getPins();
@@ -864,7 +856,7 @@ public class PinsToolWindow implements ToolWindowFactory {
         Color successColor = JBColor.namedColor("Plugins.tagForeground", new JBColor(new Color(0x008000), new Color(0x369E6A)));
         
         // 设置标签文本和样式 - 插件现在完全免费开源
-        countLabel.setText("当前钉数: " + currentCount);
+        countLabel.setText(CodePinsBundle.message("toolbar.pin.count", currentCount));
         countLabel.setForeground(successColor);
         countLabel.setIcon(IconUtil.loadIcon("/icons/pin-small.svg", getClass()));
         // 设置字体和边距，使用更紧凑的边距
@@ -1112,8 +1104,8 @@ public class PinsToolWindow implements ToolWindowFactory {
 
                 Messages.showInfoMessage(
                         project,
-                        "图钉复制成功！",
-                        "复制成功"
+                        CodePinsBundle.message("notification.copy.success"),
+                        CodePinsBundle.message("notification.copy.success.title")
                 );
             } else {
                 Messages.showErrorDialog(

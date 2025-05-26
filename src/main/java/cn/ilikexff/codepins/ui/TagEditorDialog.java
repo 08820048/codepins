@@ -2,6 +2,7 @@ package cn.ilikexff.codepins.ui;
 
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.IconLoader;
@@ -62,7 +63,7 @@ public class TagEditorDialog extends DialogWrapper {
         suggestionsList.setCellRenderer(new TagCellRenderer());
 
         // 设置对话框标题和尺寸
-        setTitle("编辑标签");
+        setTitle(CodePinsBundle.message("tag.editor.title"));
         setSize(500, 500); // 增大对话框尺寸
         init();
     }
@@ -81,14 +82,14 @@ public class TagEditorDialog extends DialogWrapper {
                 JBUI.Borders.empty(5, 5, 10, 5)
         ));
 
-        JLabel instructionTitle = new JLabel("标签使用说明");
+        JLabel instructionTitle = new JLabel(CodePinsBundle.message("tag.editor.instruction.title"));
         instructionTitle.setFont(instructionTitle.getFont().deriveFont(Font.BOLD));
         instructionTitle.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel instructionText = new JLabel("• 在下方输入框中输入标签名称，然后点击“添加”按钮");
+        JLabel instructionText = new JLabel(CodePinsBundle.message("tag.editor.instruction.1"));
         instructionText.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        JLabel instructionText2 = new JLabel("• 双击标签列表中的标签可删除该标签");
+        JLabel instructionText2 = new JLabel(CodePinsBundle.message("tag.editor.instruction.2"));
         instructionText2.setAlignmentX(Component.LEFT_ALIGNMENT);
 
         instructionPanel.add(instructionTitle);
@@ -101,7 +102,7 @@ public class TagEditorDialog extends DialogWrapper {
         JPanel currentTagsPanel = new JPanel(new BorderLayout());
         currentTagsPanel.setBorder(JBUI.Borders.empty(10, 5, 5, 5));
 
-        JLabel currentTagsLabel = new JLabel("当前标签:");
+        JLabel currentTagsLabel = new JLabel(CodePinsBundle.message("tag.editor.current"));
         currentTagsLabel.setFont(currentTagsLabel.getFont().deriveFont(Font.BOLD));
         currentTagsPanel.add(currentTagsLabel, BorderLayout.NORTH);
 
@@ -111,7 +112,7 @@ public class TagEditorDialog extends DialogWrapper {
 
         // 添加删除按钮
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        JButton removeButton = new JButton("删除选中标签");
+        JButton removeButton = new JButton(CodePinsBundle.message("tag.editor.delete"));
         removeButton.setIcon(IconLoader.getIcon("/icons/trash.svg", getClass()));
         removeButton.addActionListener(e -> removeSelectedTags());
         buttonPanel.add(removeButton);
@@ -124,7 +125,7 @@ public class TagEditorDialog extends DialogWrapper {
                 JBUI.Borders.empty(10, 5, 5, 5)
         ));
 
-        JLabel newTagLabel = new JLabel("添加新标签:");
+        JLabel newTagLabel = new JLabel(CodePinsBundle.message("tag.editor.add.new"));
         newTagLabel.setFont(newTagLabel.getFont().deriveFont(Font.BOLD));
         newTagPanel.add(newTagLabel, BorderLayout.NORTH);
 
@@ -133,10 +134,10 @@ public class TagEditorDialog extends DialogWrapper {
         inputPanel.setBorder(JBUI.Borders.empty(5, 0, 5, 0));
 
         // 设置输入框的提示文本
-        newTagField.putClientProperty("JTextField.placeholderText", "输入标签名称，回车或点击添加按钮");
+        newTagField.putClientProperty("JTextField.placeholderText", CodePinsBundle.message("tag.editor.add.placeholder"));
         inputPanel.add(newTagField, BorderLayout.CENTER);
 
-        JButton addButton = new JButton("添加");
+        JButton addButton = new JButton(CodePinsBundle.message("tag.editor.add.button"));
         addButton.setIcon(IconLoader.getIcon("/icons/plus.svg", getClass()));
         addButton.addActionListener(e -> addNewTag());
         inputPanel.add(addButton, BorderLayout.EAST);
@@ -145,7 +146,7 @@ public class TagEditorDialog extends DialogWrapper {
 
         // 建议面板
         suggestionsPanel.setBorder(JBUI.Borders.empty(5));
-        suggestionsPanel.add(new JLabel("建议标签:"), BorderLayout.NORTH);
+        suggestionsPanel.add(new JLabel(CodePinsBundle.message("tag.editor.suggestions")), BorderLayout.NORTH);
 
         JBScrollPane suggestionsScrollPane = new JBScrollPane(suggestionsList);
         suggestionsScrollPane.setPreferredSize(new Dimension(380, 100));

@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins.ui;
 
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.JBColor;
@@ -30,7 +31,7 @@ public class EmptyStatePanel extends JPanel {
         iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         // 添加标题
-        JLabel titleLabel = new JLabel("还没有添加任何图钉");
+        JLabel titleLabel = new JLabel(CodePinsBundle.message("empty.title"));
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16f));
         titleLabel.setForeground(new JBColor(new Color(220, 220, 220), new Color(220, 220, 220)));
         titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -38,10 +39,12 @@ public class EmptyStatePanel extends JPanel {
         // 添加说明文字
         JTextPane descriptionPane = new JTextPane();
         descriptionPane.setContentType("text/html");
+        String description = CodePinsBundle.message("empty.description");
+        // 将\n替换为<br/>
+        description = description.replace("\n", "<br/>");
         descriptionPane.setText(
                 "<html><div style='text-align:center; font-size:12px; color:#BBBBBB;'>" +
-                "图钉可以帮助您标记重要的代码位置，<br/>并随时快速返回查看。<br/><br/>" +
-                "在编辑器中右键点击代码行，<br/>选择\"Add CodePin Here\"添加图钉。" +
+                description +
                 "</div></html>"
         );
         descriptionPane.setEditable(false);
@@ -54,7 +57,7 @@ public class EmptyStatePanel extends JPanel {
         buttonPanel.setOpaque(false);
         buttonPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        JButton helpButton = new JButton("查看帮助");
+        JButton helpButton = new JButton(CodePinsBundle.message("empty.help.button"));
         helpButton.setFocusPainted(false);
 
         // 添加点击事件，打开文档地址

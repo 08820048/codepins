@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin>
     <id>cn.ilikexff.codepins</id>
-    <name>CodePins - Code Bookmarks</name>
+    <name resource-bundle="messages" key="plugin.name" />
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
     <version>2.0.0</version>
 
@@ -137,34 +137,44 @@
         <!-- 注册服务类 -->
         <applicationService serviceImplementation="cn.ilikexff.codepins.core.PinStateService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.settings.CodePinsSettings"/>
+        <applicationService serviceImplementation="cn.ilikexff.codepins.settings.LanguageSettings"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.GistService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.LicenseService"/>
         <applicationService serviceImplementation="cn.ilikexff.codepins.services.IconPreloader"/>
 
         <!-- 图标预加载器 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.services.IconPreloader"/>
-        
+
         <!-- 选择文本后的浮动操作按钮初始化器 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinSelectionPopupInitializer"/>
-        
+
         <!-- 注释：移除了注释标记检测器初始化器，避免 PSI 树变化时自动触发图钉添加 -->
-        
+
         <!-- 注释：移除了文档监听器初始化器，避免文档变化时自动触发图钉添加 -->
-        
+
         <!-- 注释：移除了文件保存时自动检测注释标记的功能，只保留手动触发和完成符号触发 -->
-        
+
         <!-- 完成符号监听器初始化器，用于检测完成符号的输入 -->
         <postStartupActivity implementation="cn.ilikexff.codepins.extensions.PinCompletionSymbolListenerInitializer"/>
+
+        <!-- 语言设置初始化器，用于在插件启动时设置正确的语言 -->
+        <postStartupActivity implementation="cn.ilikexff.codepins.startup.CodePinsStartupActivity"/>
 
 
         <!-- 注册设置页面 -->
         <applicationConfigurable parentId="tools" instance="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
                              id="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
                              displayName="CodePins Settings"/>
+
+        <!-- 注册语言设置页面 -->
+        <applicationConfigurable parentId="cn.ilikexff.codepins.settings.CodePinsSettingsConfigurable"
+                             instance="cn.ilikexff.codepins.settings.LanguageSettingsConfigurable"
+                             id="cn.ilikexff.codepins.settings.LanguageSettingsConfigurable"
+                             displayName="Language"/>
     </extensions>
 
     <actions>
-        <!-- 右键菜单添加图钉 -->
+        <!-- Right-click menu add pin -->
         <action id="CodePins.PinAction"
                 class="cn.ilikexff.codepins.PinAction"
                 text="Add CodePin Here"
@@ -173,7 +183,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </action>
 
-        <!-- 快捷键添加图钉 -->
+        <!-- Shortcut key add pin -->
         <action id="CodePins.AddPinAction"
                 class="cn.ilikexff.codepins.actions.AddPinAction"
                 text="Add Pin at Cursor"
@@ -183,7 +193,7 @@
             <add-to-group group-id="EditorActions" anchor="last"/>
         </action>
 
-        <!-- 导航到下一个图钉 -->
+        <!-- Navigate to next pin -->
         <action id="CodePins.NavigateNextPinAction"
                 class="cn.ilikexff.codepins.actions.NavigateNextPinAction"
                 text="Navigate to Next Pin"
@@ -193,7 +203,7 @@
             <add-to-group group-id="EditorActions" anchor="last"/>
         </action>
 
-        <!-- 导航到上一个图钉 -->
+        <!-- Navigate to previous pin -->
         <action id="CodePins.NavigatePrevPinAction"
                 class="cn.ilikexff.codepins.actions.NavigatePrevPinAction"
                 text="Navigate to Previous Pin"
@@ -203,7 +213,7 @@
             <add-to-group group-id="EditorActions" anchor="last"/>
         </action>
 
-        <!-- 切换图钉工具窗口 -->
+        <!-- Toggle CodePins tool window -->
         <action id="CodePins.TogglePinsToolWindowAction"
                 class="cn.ilikexff.codepins.actions.TogglePinsToolWindowAction"
                 text="Toggle CodePins Tool Window"
@@ -213,7 +223,7 @@
             <add-to-group group-id="ToolWindowsGroup" anchor="last"/>
         </action>
 
-        <!-- 注释标记检测器 -->
+        <!-- Comment marker detector -->
         <action id="CodePins.PinCommentAction"
                 class="cn.ilikexff.codepins.extensions.PinCommentAction"
                 text="Detect Comment Markers"
@@ -221,8 +231,8 @@
                 icon="/icons/pin-comment.svg">
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
-        
-        <!-- 创建 CodePins 操作组 -->
+
+        <!-- Create CodePins action group -->
         <group id="CodePins.ActionGroup" text="CodePins" description="CodePins actions" popup="true">
             <reference ref="CodePins.AddPinAction"/>
             <reference ref="CodePins.NavigateNextPinAction"/>
