@@ -213,7 +213,7 @@ public class PinEntry {
                     if (!tags.isEmpty()) {
                         tagsStr = " [" + String.join(", ", tags) + "]";
                     }
-                    return typeLabel + " " + filePath + " @ Line ? (无效标记)" 
+                    return typeLabel + " " + filePath.replace("\\", "/") + " @ Line ? (无效标记)" 
                            + (note != null && !note.isEmpty() ? " - " + note : "")
                            + tagsStr;
                 }
@@ -221,31 +221,37 @@ public class PinEntry {
                 Document doc = marker.getDocument();
                 String lineInfo;
 
-                if (isBlock) {
-                    // 获取代码块的起始和结束偏移量
-                    int startOffset = marker.getStartOffset();
-                    int endOffset = marker.getEndOffset();
-                    
-                    // 检查代码块是否完全被删除
-                    if (startOffset == endOffset) {
-                        // 代码块图钉的代码已被完全删除，显示为无效状态
-                        lineInfo = "Line ?";
-                    } else {
-                        // 如果是代码块，显示起始行号到结束行号
-                        int startLine = doc.getLineNumber(startOffset) + 1; // 转为从1开始的行号
-                        int endLine = doc.getLineNumber(endOffset) + 1;     // 转为从1开始的行号
-
-                        // 如果起始行和结束行相同，则只显示一个行号
-                        if (startLine == endLine) {
-                            lineInfo = "Line " + startLine;
+                try {
+                    if (isBlock) {
+                        // 获取代码块的起始和结束偏移量
+                        int startOffset = marker.getStartOffset();
+                        int endOffset = marker.getEndOffset();
+                        
+                        // 检查代码块是否完全被删除
+                        if (startOffset == endOffset) {
+                            // 代码块图钉的代码已被完全删除，显示为无效状态
+                            lineInfo = "Line ?";
                         } else {
-                            lineInfo = "Line " + startLine + "-" + endLine;
+                            // 如果是代码块，显示起始行号到结束行号
+                            int startLine = doc.getLineNumber(startOffset) + 1; // 转为从1开始的行号
+                            int endLine = doc.getLineNumber(endOffset) + 1;     // 转为从1开始的行号
+
+                            // 如果起始行和结束行相同，则只显示一个行号
+                            if (startLine == endLine) {
+                                lineInfo = "Line " + startLine;
+                            } else {
+                                lineInfo = "Line " + startLine + "-" + endLine;
+                            }
                         }
+                    } else {
+                        // 如果是单行图钉，只显示当前行号
+                        int line = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
+                        lineInfo = "Line " + line;
                     }
-                } else {
-                    // 如果是单行图钉，只显示当前行号
-                    int line = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
-                    lineInfo = "Line " + line;
+                } catch (IndexOutOfBoundsException e) {
+                    // 如果行号计算出现越界异常，显示为无效状态
+                    lineInfo = "Line ?";
+                    System.out.println("[CodePins] 行号计算异常: " + e.getMessage());
                 }
 
                 String typeLabel = isBlock ? "[代码块]" : "[单行]";
@@ -253,7 +259,7 @@ public class PinEntry {
                 if (!tags.isEmpty()) {
                     tagsStr = " [" + String.join(", ", tags) + "]";
                 }
-                return typeLabel + " " + filePath + " @ " + lineInfo
+                return typeLabel + " " + filePath.replace("\\", "/") + " @ " + lineInfo
                         + (note != null && !note.isEmpty() ? " - " + note : "")
                         + tagsStr;
             } catch (Exception e) {
@@ -263,7 +269,7 @@ public class PinEntry {
                 if (!tags.isEmpty()) {
                     tagsStr = " [" + String.join(", ", tags) + "]";
                 }
-                return typeLabel + " " + filePath + " @ Line ? (异常: " + e.getMessage() + ")" +
+                return typeLabel + " " + filePath.replace("\\", "/") + " @ Line ? (异常: " + e.getMessage() + ")" +
                        (note != null && !note.isEmpty() ? " - " + note : "") +
                        tagsStr;
             }
