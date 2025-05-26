@@ -31,13 +31,16 @@ import java.util.regex.Pattern;
  */
 public class PinCommentAction extends AnAction {
     // 注释标记正则表达式，匹配 @cp: 或 @cp 后面的内容（也兼容原来的 @pin 指令）
-    private static final Pattern PIN_PATTERN = Pattern.compile("@(cp|pin):?\\s*(.*)");
+    // 同时支持标签语法：@cp 备注内容 #标签名
+    private static final Pattern PIN_PATTERN = Pattern.compile("@(cp|pin):?\\s+([^#]*)(?:\\s+#[\\w\\u4e00-\\u9fa5]+)*");
     
     // 代码块注释标记正则表达式，匹配 @cpb: 或 @cpb 后面的内容（也兼容原来的 @pin-block 指令）
-    private static final Pattern PIN_BLOCK_PATTERN = Pattern.compile("@(cpb|pin[:-]block):?\\s*(.*)");
+    // 同时支持标签语法：@cpb 备注内容 #标签名
+    private static final Pattern PIN_BLOCK_PATTERN = Pattern.compile("@(cpb|pin[:-]block):?\\s+([^#]*)(?:\\s+#[\\w\\u4e00-\\u9fa5]+)*");
     
     // 带行号范围的代码块标记正则表达式，匹配 @cpb1-20 这样的格式
-    private static final Pattern PIN_BLOCK_RANGE_PATTERN = Pattern.compile("@cpb(\\d+)-(\\d+)\\s*(.*)");
+    // 同时支持标签语法：@cpb1-20 备注内容 #标签名
+    private static final Pattern PIN_BLOCK_RANGE_PATTERN = Pattern.compile("@cpb(\\d+)-(\\d+)\\s+([^#]*)(?:\\s+#[\\w\\u4e00-\\u9fa5]+)*");
     
     // 是否显示调试通知
     private static final boolean SHOW_NOTIFICATIONS = false;
@@ -127,6 +130,24 @@ public class PinCommentAction extends AnAction {
     }
 
     /**
+     * 从注释文本中提取标签
+     * 
+     * @param commentText 注释文本
+     * @return 提取的标签列表
+     */
+    private List<String> extractTags(String commentText) {
+        List<String> tags = new ArrayList<>();
+        Pattern tagPattern = Pattern.compile("#([\\w\\u4e00-\\u9fa5]+)");
+        Matcher tagMatcher = tagPattern.matcher(commentText);
+        
+        while (tagMatcher.find()) {
+            tags.add(tagMatcher.group(1));
+        }
+        
+        return tags;
+    }
+    
+    /**
      * 检查注释是否包含图钉标记
      *
      * @param comment  注释元素
@@ -158,6 +179,9 @@ public class PinCommentAction extends AnAction {
             return;
         }
         
+        // 提取标签
+        List<String> tags = extractTags(commentText);
+        
         // 检查是否是带行号范围的代码块标记
         Matcher blockRangeMatcher = PIN_BLOCK_RANGE_PATTERN.matcher(commentText);
         if (blockRangeMatcher.find()) {
@@ -182,7 +206,7 @@ public class PinCommentAction extends AnAction {
             }
             
             // 处理带行号范围的代码块标记
-            processBlockPinWithRange(comment, note, document, project, startLine, endLine);
+            processBlockPinWithRange(comment, note, document, project, startLine, endLine, tags);
             return;
         }
         
@@ -206,7 +230,7 @@ public class PinCommentAction extends AnAction {
             }
             
             // 处理代码块标记
-            processBlockPin(comment, note, document, project);
+            processBlockPin(comment, note, document, project, tags);
             return;
         }
         
@@ -230,7 +254,7 @@ public class PinCommentAction extends AnAction {
             }
             
             // 处理普通图钉标记
-            processSingleLinePin(comment, note, document, project);
+            processSingleLinePin(comment, note, document, project, tags);
         }
     }
 
@@ -241,8 +265,9 @@ public class PinCommentAction extends AnAction {
      * @param note     备注内容
      * @param document 文档
      * @param project  项目
+     * @param tags     标签列表
      */
-    private void processSingleLinePin(PsiComment comment, String note, Document document, Project project) {
+    private void processSingleLinePin(PsiComment comment, String note, Document document, Project project, List<String> tags) {
         // 获取注释所在行
         int lineNumber = document.getLineNumber(comment.getTextOffset());
         int lineStartOffset = document.getLineStartOffset(lineNumber);
@@ -255,7 +280,7 @@ public class PinCommentAction extends AnAction {
         }
         
         // 创建图钉
-        createPinWithCheck(file, document, lineStartOffset, lineEndOffset, note, false, project);
+        createPinWithCheck(file, document, lineStartOffset, lineEndOffset, note, false, project, tags);
     }
 
     /**
@@ -265,8 +290,9 @@ public class PinCommentAction extends AnAction {
      * @param note     备注内容
      * @param document 文档
      * @param project  项目
+     * @param tags     标签列表
      */
-    private void processBlockPin(PsiComment comment, String note, Document document, Project project) {
+    private void processBlockPin(PsiComment comment, String note, Document document, Project project, List<String> tags) {
         // 获取注释所在行
         int lineNumber = document.getLineNumber(comment.getTextOffset());
         
@@ -286,7 +312,7 @@ public class PinCommentAction extends AnAction {
             // 如果没有下一个元素，则只标记当前行
             int lineStartOffset = document.getLineStartOffset(lineNumber);
             int lineEndOffset = document.getLineEndOffset(lineNumber);
-            createPinWithCheck(file, document, lineStartOffset, lineEndOffset, note, false, project);
+            createPinWithCheck(file, document, lineStartOffset, lineEndOffset, note, false, project, tags);
             return;
         }
         
@@ -305,7 +331,7 @@ public class PinCommentAction extends AnAction {
         }
         
         // 创建图钉
-        createPinWithCheck(file, document, blockStartOffset, blockEndOffset, note, true, project);
+        createPinWithCheck(file, document, blockStartOffset, blockEndOffset, note, true, project, tags);
     }
     
     /**
@@ -317,8 +343,9 @@ public class PinCommentAction extends AnAction {
      * @param project   项目
      * @param startLine 起始行号
      * @param endLine   结束行号
+     * @param tags      标签列表
      */
-    private void processBlockPinWithRange(PsiComment comment, String note, Document document, Project project, int startLine, int endLine) {
+    private void processBlockPinWithRange(PsiComment comment, String note, Document document, Project project, int startLine, int endLine, List<String> tags) {
         // 获取文件
         VirtualFile file = comment.getContainingFile().getVirtualFile();
         if (file == null) {
@@ -341,7 +368,7 @@ public class PinCommentAction extends AnAction {
         int endOffset = document.getLineEndOffset(endLine);
         
         // 创建图钉
-        createPinWithCheck(file, document, startOffset, endOffset, note, true, project);
+        createPinWithCheck(file, document, startOffset, endOffset, note, true, project, tags);
     }
 
     /**
@@ -354,12 +381,15 @@ public class PinCommentAction extends AnAction {
      * @param note         备注内容
      * @param isBlock      是否是代码块
      * @param project      项目
+     * @param tags         标签列表
      */
-    private void createPinWithCheck(VirtualFile file, Document document, int startOffset, int endOffset, String note, boolean isBlock, Project project) {
+    private void createPinWithCheck(VirtualFile file, Document document, int startOffset, int endOffset, String note, boolean isBlock, Project project, List<String> tags) {
         // 获取设置
         CodePinsSettings settings = CodePinsSettings.getInstance();
+        // 使用注释指令添加图钉时显示备注框和标签对话框的设置
         boolean showNoteDialog = settings.showNoteDialogOnCommentPin;
         boolean autoAddQuickTag = settings.autoAddQuickTag;
+        
         // 准备创建图钉
         // 不显示调试通知，避免干扰用户体验
         if (SHOW_NOTIFICATIONS) {
@@ -398,8 +428,18 @@ public class PinCommentAction extends AnAction {
             return;
         }
         
-        // 检查用户设置，决定是否显示备注框和标签框
-        // 默认不显示备注框和标签框，只有用户在设置中明确开启才会显示
+        // 准备标签列表
+        final List<String> initialTags = new ArrayList<>();
+        
+        // 如果有指令中的标签，先添加这些标签
+        if (tags != null && !tags.isEmpty()) {
+            initialTags.addAll(tags);
+        }
+        
+        // 如果设置了自动添加"快捷添加"标签，则添加该标签
+        if (autoAddQuickTag) {
+            initialTags.add("快捷添加");
+        }
         
         // 在 UI 线程中创建图钉
         ApplicationManager.getApplication().invokeLater(() -> {
@@ -422,12 +462,6 @@ public class PinCommentAction extends AnAction {
                 }
 
                 // 创建标签对话框，请求用户输入标签
-                final List<String> initialTags = new ArrayList<>();
-                
-                // 如果设置了自动添加“快捷添加”标签，则添加该标签
-                if (autoAddQuickTag) {
-                    initialTags.add("快捷添加");
-                }
                 SimpleTagEditorDialog tagDialog = new SimpleTagEditorDialog(project, new PinEntry(
                         file.getPath(),
                         document.createRangeMarker(0, 0), // 临时标记，仅用于对话框
@@ -469,12 +503,27 @@ public class PinCommentAction extends AnAction {
                 // 直接创建图钉，不显示备注框和标签框
                 // 在写入操作中创建图钉，确保线程安全
                 ApplicationManager.getApplication().runWriteAction(() -> {
-                    // 如果设置了自动添加“快捷添加”标签，则创建带标签的图钉
-                    if (autoAddQuickTag) {
-                        List<String> quickTags = new ArrayList<>();
-                        quickTags.add("快捷添加");
-                        
-                        // 创建图钉
+                    // 显示通知，确认正在创建图钉
+                    // 始终显示这个通知，不受 SHOW_NOTIFICATIONS 控制
+                    Notifications.Bus.notify(new Notification(
+                            "CodePins",
+                            "CodePins 图钉已添加",
+                            "根据注释指令自动添加了图钉: " + note,
+                            NotificationType.INFORMATION
+                    ));
+                    
+                    // 调试通知，只在开启调试模式时显示
+                    if (SHOW_NOTIFICATIONS) {
+                        Notifications.Bus.notify(new Notification(
+                                "CodePins",
+                                "CodePins 正在创建图钉",
+                                "正在创建图钉...",
+                                NotificationType.INFORMATION
+                        ));
+                    }
+                    
+                    try {
+                        // 创建图钉，使用从注释指令中提取的标签
                         PinEntry pinEntry = new PinEntry(
                                 file.getPath(),
                                 document.createRangeMarker(startOffset, endOffset),
@@ -482,12 +531,13 @@ public class PinCommentAction extends AnAction {
                                 System.currentTimeMillis(),
                                 System.getProperty("user.name"),
                                 isBlock,
-                                quickTags
+                                initialTags  // 使用初始标签列表，包含从注释中提取的标签和可能的快捷添加标签
                         );
                         PinStorage.addPin(pinEntry);
                         
+                        // 不再显示成功创建的通知，因为我们已经在开始时显示了通知
+                        // 调试通知，只在开启调试模式时显示
                         if (SHOW_NOTIFICATIONS) {
-                            // 显示通知，确认图钉创建成功
                             Notifications.Bus.notify(new Notification(
                                     "CodePins",
                                     "CodePins 图钉创建成功",
@@ -495,40 +545,15 @@ public class PinCommentAction extends AnAction {
                                     NotificationType.INFORMATION
                             ));
                         }
-                    } else {
-                        // 显示通知，确认正在创建图钉
-                        if (SHOW_NOTIFICATIONS) {
-                            Notifications.Bus.notify(new Notification(
-                                    "CodePins",
-                                    "CodePins 正在创建图钉",
-                                    "正在创建图钉...",
-                                    NotificationType.INFORMATION
-                            ));
-                        }
-                        
-                        try {
-                            // 创建图钉
-                            PinEntry pin = PinEntry.createPin(project, file.getPath(), document, startOffset, endOffset, note, isBlock);
-                            
-                            // 显示通知，确认图钉创建成功
-                            if (SHOW_NOTIFICATIONS) {
-                                Notifications.Bus.notify(new Notification(
-                                        "CodePins",
-                                        "CodePins 图钉创建成功",
-                                        "图钉已成功创建: " + pin.note,
-                                        NotificationType.INFORMATION
-                                ));
-                            }
-                        } catch (Exception e) {
-                            // 显示通知，报告错误
-                            Notifications.Bus.notify(new Notification(
-                                    "CodePins",
-                                    "CodePins 图钉创建失败",
-                                    "创建图钉时发生错误: " + e.getMessage(),
-                                    NotificationType.ERROR
-                            ));
-                            e.printStackTrace();
-                        }
+                    } catch (Exception e) {
+                        // 显示通知，报告错误
+                        Notifications.Bus.notify(new Notification(
+                                "CodePins",
+                                "CodePins 图钉创建失败",
+                                "创建图钉时发生错误: " + e.getMessage(),
+                                NotificationType.ERROR
+                        ));
+                        e.printStackTrace();
                     }
                 });
             }
