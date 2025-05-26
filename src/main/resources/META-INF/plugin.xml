@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <idea-plugin>
     <id>cn.ilikexff.codepins</id>
-    <name resource-bundle="messages" key="plugin.name" />
+    <name resource-bundle="messages" key="plugin.name">CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
-    <version>2.0.0</version>
+    <version>2.1.0</version>
 
     <!-- 插件现在完全免费开源，移除产品描述符 -->
 
