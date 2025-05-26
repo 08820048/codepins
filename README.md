@@ -118,7 +118,7 @@
   <tbody>
     <tr>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/08820048"><img src="https://avatars.githubusercontent.com/u/08820048" width="100px;" alt="08820048"/><br /><sub><b>08820048</b></sub></a><br /><a href="#code-08820048" title="Code">💻</a> <a href="#doc-08820048" title="Documentation">📖</a> <a href="#maintenance-08820048" title="Maintenance">🚧</a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Auroral0810"><img src="https://avatars.githubusercontent.com/u/Auroral0810" width="100px;" alt="Auroral0810"/><br /><sub><b>Auroral0810</b></sub></a><br /><a href="#code-Auroral0810" title="Code">💻</a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Auroral0810"><img src="https://avatars.githubusercontent.com/u/140379943?s=400&u=ea4e758ddc17a3df7a6b29bc4dc435ba1a35e999&v=4" width="100px;" alt="Auroral0810"/><br /><sub><b>Auroral0810</b></sub></a><br /><a href="#code-Auroral0810" title="Code">💻</a></td>
     </tr>
   </tbody>
 </table>
