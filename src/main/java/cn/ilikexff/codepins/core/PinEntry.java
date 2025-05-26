@@ -222,15 +222,25 @@ public class PinEntry {
                 String lineInfo;
 
                 if (isBlock) {
-                    // 如果是代码块，显示起始行号到结束行号
-                    int startLine = doc.getLineNumber(marker.getStartOffset()) + 1; // 转为从1开始的行号
-                    int endLine = doc.getLineNumber(marker.getEndOffset()) + 1;     // 转为从1开始的行号
-
-                    // 如果起始行和结束行相同，则只显示一个行号
-                    if (startLine == endLine) {
-                        lineInfo = "Line " + startLine;
+                    // 获取代码块的起始和结束偏移量
+                    int startOffset = marker.getStartOffset();
+                    int endOffset = marker.getEndOffset();
+                    
+                    // 检查代码块是否完全被删除
+                    if (startOffset == endOffset) {
+                        // 代码块图钉的代码已被完全删除，显示为无效状态
+                        lineInfo = "Line ?";
                     } else {
-                        lineInfo = "Line " + startLine + "-" + endLine;
+                        // 如果是代码块，显示起始行号到结束行号
+                        int startLine = doc.getLineNumber(startOffset) + 1; // 转为从1开始的行号
+                        int endLine = doc.getLineNumber(endOffset) + 1;     // 转为从1开始的行号
+
+                        // 如果起始行和结束行相同，则只显示一个行号
+                        if (startLine == endLine) {
+                            lineInfo = "Line " + startLine;
+                        } else {
+                            lineInfo = "Line " + startLine + "-" + endLine;
+                        }
                     }
                 } else {
                     // 如果是单行图钉，只显示当前行号
