@@ -1,5 +1,7 @@
 package cn.ilikexff.codepins.extensions;
 
+import cn.ilikexff.codepins.actions.AddPinAction;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
 import cn.ilikexff.codepins.settings.CodePinsSettings;
@@ -200,8 +202,8 @@ public class PinSelectionPopup implements SelectionListener {
             // 请求用户输入备注
             String note = Messages.showInputDialog(
                     project,
-                    "请输入图钉备注（可选）：",
-                    "添加图钉",
+                    CodePinsBundle.message("note.add.dialog.message"),
+                    CodePinsBundle.message("note.add.dialog.title"),
                     null
             );
 

@@ -1,9 +1,8 @@
 package cn.ilikexff.codepins.actions;
 
-import cn.ilikexff.codepins.PinAction;
 import cn.ilikexff.codepins.core.PinEntry;
 import cn.ilikexff.codepins.core.PinStorage;
-import cn.ilikexff.codepins.services.LicenseService;
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 添加图钉的快捷键 Action
@@ -59,8 +57,8 @@ public class AddPinAction extends AnAction {
         // 请求用户输入备注
         String note = Messages.showInputDialog(
                 project,
-                "请输入图钉备注（可选）：",
-                "添加图钉",
+                CodePinsBundle.message("action.add.pin.note.prompt"),
+                CodePinsBundle.message("action.add.pin.title"),
                 null
         );
 
@@ -103,50 +101,38 @@ public class AddPinAction extends AnAction {
         if (success) {
             // 添加成功
             if (statusBar != null) {
-                StatusBar.Info.set("✅ 图钉已添加", project);
+                StatusBar.Info.set(CodePinsBundle.message("status.pin.added"), project);
             }
 
             // 显示成功消息
             Messages.showInfoMessage(
                     project,
-                    "已成功添加图钉到第 " + lineNumber + " 行",
-                    "添加图钉"
+                    CodePinsBundle.message("pin.added", lineNumber),
+                    CodePinsBundle.message("action.add.pin.title")
             );
         } else {
             // 添加失败
             if (statusBar != null) {
-                StatusBar.Info.set("❌ 图钉添加失败", project);
+                StatusBar.Info.set(CodePinsBundle.message("status.pin.add.failed"), project);
             }
-
-            // 获取图钉数量信息
-            Map<String, Integer> pinsInfo = PinStorage.getPinsCountInfo();
-            int currentPins = pinsInfo.get("current");
-            int maxPins = pinsInfo.get("max");
-
-            // 获取标签数量信息
-            Map<String, Integer> tagsInfo = PinStorage.getTagsCountInfo();
-            int currentTagTypes = tagsInfo.get("current");
-            int maxTagTypes = tagsInfo.get("max");
-            int maxTagsPerPin = tagsInfo.get("perPin");
 
             // 确定失败原因
             String failureReason;
-            String featureName;
 
             // 插件现在完全免费，这里不应该出现限制错误
-            failureReason = "添加图钉失败，请稍后重试";
+            failureReason = CodePinsBundle.message("pin.add.failed.retry");
 
             // 显示错误消息
             Messages.showWarningDialog(
                     project,
                     failureReason,
-                    "添加图钉失败"
+                    CodePinsBundle.message("action.add.pin.failed.title")
             );
 
             // 创建通知
             Notification notification = new Notification(
                     "CodePins",
-                    "图钉添加失败",
+                    CodePinsBundle.message("action.add.pin.failed.title"),
                     failureReason,
                     NotificationType.WARNING
             );

@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins.ui;
 
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.utils.ImportExportUtil;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
@@ -36,7 +37,7 @@ public class ImportDialog extends DialogWrapper {
         super(project);
         this.project = project;
         
-        setTitle("导入图钉");
+        setTitle(CodePinsBundle.message("import.dialog.title"));
         setSize(500, 300);
         init();
     }
@@ -55,11 +56,11 @@ public class ImportDialog extends DialogWrapper {
                 JBUI.Borders.empty(0, 0, 10, 0)
         ));
         
-        JLabel titleLabel = new JLabel("导入图钉数据");
+        JLabel titleLabel = new JLabel(CodePinsBundle.message("import.dialog.header"));
         titleLabel.setFont(titleLabel.getFont().deriveFont(Font.BOLD, 16f));
         titleLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        JLabel descLabel = new JLabel("选择要导入的文件，并设置导入选项。");
+        JLabel descLabel = new JLabel(CodePinsBundle.message("import.dialog.instruction"));
         descLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         infoPanel.add(titleLabel);
@@ -71,16 +72,16 @@ public class ImportDialog extends DialogWrapper {
         filePanel.setBorder(JBUI.Borders.empty(10, 0));
         filePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        JLabel fileLabel = new JLabel("导入文件：");
+        JLabel fileLabel = new JLabel(CodePinsBundle.message("import.file.label") + ":");
         fileLabel.setFont(fileLabel.getFont().deriveFont(Font.BOLD));
         
-        filePathLabel = new JLabel("未选择文件");
+        filePathLabel = new JLabel(CodePinsBundle.message("import.file.none"));
         filePathLabel.setBorder(BorderFactory.createCompoundBorder(
                 BorderFactory.createLineBorder(JBColor.border()),
                 JBUI.Borders.empty(5)
         ));
         
-        JButton browseButton = new JButton("浏览...");
+        JButton browseButton = new JButton(CodePinsBundle.message("import.file.select"));
         browseButton.addActionListener(e -> selectImportFile());
         
         filePanel.add(fileLabel, BorderLayout.NORTH);
@@ -94,15 +95,15 @@ public class ImportDialog extends DialogWrapper {
         optionsPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         // 导入选项
-        JLabel importOptionsLabel = new JLabel("导入选项：");
+        JLabel importOptionsLabel = new JLabel(CodePinsBundle.message("import.options.label"));
         importOptionsLabel.setFont(importOptionsLabel.getFont().deriveFont(Font.BOLD));
         importOptionsLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
         
-        mergeRadio = new JRadioButton("合并模式：保留现有图钉，添加导入的图钉");
+        mergeRadio = new JRadioButton(CodePinsBundle.message("import.mode.merge"));
         mergeRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
         mergeRadio.setSelected(true);
         
-        replaceRadio = new JRadioButton("替换模式：清空现有图钉，只保留导入的图钉");
+        replaceRadio = new JRadioButton(CodePinsBundle.message("import.mode.replace"));
         replaceRadio.setAlignmentX(Component.LEFT_ALIGNMENT);
         
         ButtonGroup importGroup = new ButtonGroup();
@@ -121,7 +122,8 @@ public class ImportDialog extends DialogWrapper {
                 JBUI.Borders.empty(10, 0, 0, 0)
         ));
         
-        JLabel warningLabel = new JLabel("<html><b>注意：</b>导入操作可能会覆盖现有图钉。请确保您已备份重要数据。</html>");
+        JLabel warningLabel = new JLabel("<html><b>" + CodePinsBundle.message("import.warning") + "</b> " + CodePinsBundle.message("import.warning.desc") + "</html>");
+        // 确保警告文本使用当前语言设置
         warningLabel.setForeground(JBColor.RED);
         warningPanel.add(warningLabel, BorderLayout.CENTER);
         
@@ -139,14 +141,14 @@ public class ImportDialog extends DialogWrapper {
      */
     private void selectImportFile() {
         FileChooserDescriptor descriptor = new FileChooserDescriptor(true, false, false, false, false, false)
-                .withTitle("选择导入文件")
-                .withDescription("选择要导入的 JSON 文件")
+                .withTitle(CodePinsBundle.message("import.file.chooser.title"))
+                .withDescription(CodePinsBundle.message("import.file.chooser.desc"))
                 .withFileFilter(file -> file.getExtension() != null && file.getExtension().equalsIgnoreCase("json"));
         
         VirtualFile[] files = FileChooser.chooseFiles(descriptor, project, null);
         if (files.length > 0) {
             selectedFile = new File(files[0].getPath());
-            filePathLabel.setText(selectedFile.getAbsolutePath());
+            filePathLabel.setText(CodePinsBundle.message("import.file.selected", selectedFile.getAbsolutePath()));
         }
     }
     
@@ -169,8 +171,8 @@ public class ImportDialog extends DialogWrapper {
         if (importCount >= 0) {
             Messages.showInfoMessage(
                     project,
-                    "成功导入 " + importCount + " 个图钉。",
-                    "导入成功"
+                    CodePinsBundle.message("import.success", importCount),
+                    CodePinsBundle.message("import.success.title")
             );
             super.doOKAction();
         }

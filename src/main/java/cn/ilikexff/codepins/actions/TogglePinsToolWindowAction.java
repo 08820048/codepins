@@ -1,5 +1,6 @@
 package cn.ilikexff.codepins.actions;
 
+import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -20,7 +21,7 @@ public class TogglePinsToolWindowAction extends AnAction {
         }
 
         ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
-        ToolWindow toolWindow = toolWindowManager.getToolWindow("CodePins");
+        ToolWindow toolWindow = toolWindowManager.getToolWindow(CodePinsBundle.message("ui.app.name"));
         
         if (toolWindow != null) {
             if (toolWindow.isVisible()) {
