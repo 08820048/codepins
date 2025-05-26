@@ -20,13 +20,23 @@
 
 ## 📑 文档导航
 
+<div align="center">
+
+[![在线文档](https://img.shields.io/badge/官方文档-docs.codepins.cn-blue?style=for-the-badge)](https://docs.codepins.cn/)
+
+</div>
+
+访问我们的[官方文档网站](https://docs.codepins.cn/)获取完整的使用指南、教程和参考文档。
+
+快速链接：
+
 - [安装指南](#安装)
 - [快速开始](#快速开始)
 - [核心功能](#核心功能)
-- [详细文档](DOCUMENTATION.md)
+- [离线文档](DOCUMENTATION.md)
 - [更新日志](CHANGELOG.md)
 - [贡献指南](CONTRIBUTING.md)
-- [常见问题](DOCUMENTATION.md#常见问题)
+- [问题反馈](https://docs.codepins.cn/bug-report)
 
 ## 🎉 完全免费开源！
 
