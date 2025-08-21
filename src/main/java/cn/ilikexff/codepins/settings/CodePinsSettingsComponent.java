@@ -2,6 +2,7 @@ package cn.ilikexff.codepins.settings;
 
 
 import cn.ilikexff.codepins.i18n.CodePinsBundle;
+import cn.ilikexff.codepins.template.ui.TemplateManagementPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.components.JBCheckBox;
@@ -88,6 +89,10 @@ public class CodePinsSettingsComponent {
         labeledShortcutsPanel.add(shortcutsLabel, BorderLayout.NORTH);
         labeledShortcutsPanel.add(shortcutsInfoPanel, BorderLayout.CENTER);
 
+        // 创建模板管理面板
+        TemplateManagementPanel templatePanel = new TemplateManagementPanel();
+        templatePanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.templates")));
+
         // 创建主面板
         mainPanel = FormBuilder.createFormBuilder()
                 .addComponent(donationPanel)
@@ -95,6 +100,7 @@ public class CodePinsSettingsComponent {
                 .addComponent(pinAddPanel)
                 .addComponent(commentPinPanel)
                 .addComponent(labeledShortcutsPanel)
+                .addComponent(templatePanel)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
     }

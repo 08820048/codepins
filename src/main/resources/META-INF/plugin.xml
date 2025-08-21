@@ -232,14 +232,51 @@
             <add-to-group group-id="ToolsMenu" anchor="last"/>
         </action>
 
+        <!-- Template actions -->
+        <action id="CodePins.ApplyTemplateAction"
+                class="cn.ilikexff.codepins.template.actions.ApplyTemplateAction"
+                text="Apply Template"
+                description="Select and apply a pin template"
+                icon="/icons/template.svg">
+            <keyboard-shortcut keymap="$default" first-keystroke="alt shift M"/>
+        </action>
+
+        <!-- Quick template actions -->
+        <action id="CodePins.QuickTodoAction"
+                class="cn.ilikexff.codepins.template.actions.QuickTodoAction"
+                text="Quick TODO"
+                description="Quickly apply TODO template">
+        </action>
+
+        <action id="CodePins.QuickFixmeAction"
+                class="cn.ilikexff.codepins.template.actions.QuickFixmeAction"
+                text="Quick FIXME"
+                description="Quickly apply FIXME template">
+        </action>
+
+        <action id="CodePins.QuickNoteAction"
+                class="cn.ilikexff.codepins.template.actions.QuickNoteAction"
+                text="Quick NOTE"
+                description="Quickly apply NOTE template">
+        </action>
+
         <!-- Create CodePins action group -->
         <group id="CodePins.ActionGroup" text="CodePins" description="CodePins actions" popup="true">
             <reference ref="CodePins.AddPinAction"/>
+            <separator/>
+            <reference ref="CodePins.ApplyTemplateAction"/>
+            <group id="CodePins.QuickTemplates" text="Quick Templates" description="Quick template actions" popup="true">
+                <reference ref="CodePins.QuickTodoAction"/>
+                <reference ref="CodePins.QuickFixmeAction"/>
+                <reference ref="CodePins.QuickNoteAction"/>
+            </group>
+            <separator/>
             <reference ref="CodePins.NavigateNextPinAction"/>
             <reference ref="CodePins.NavigatePrevPinAction"/>
             <reference ref="CodePins.TogglePinsToolWindowAction"/>
             <reference ref="CodePins.PinCommentAction"/>
             <add-to-group group-id="MainMenu" anchor="last"/>
+            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
         </group>
     </actions>
 </idea-plugin>
