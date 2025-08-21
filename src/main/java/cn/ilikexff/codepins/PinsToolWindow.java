@@ -14,6 +14,7 @@ import cn.ilikexff.codepins.ui.PinListCellRenderer;
 import cn.ilikexff.codepins.ui.SearchTextField;
 import cn.ilikexff.codepins.ui.ShareDialog;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
+import cn.ilikexff.codepins.ui.StatisticsPanel;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.actionSystem.*;
@@ -452,8 +453,25 @@ public class PinsToolWindow implements ToolWindowFactory {
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(fullContentPanel, BorderLayout.CENTER);
 
+        // 创建选项卡面板
+        JTabbedPane tabbedPane = new JTabbedPane();
+
+        // 添加图钉列表选项卡
+        tabbedPane.addTab(CodePinsBundle.message("ui.pins.list"), IconUtil.loadIcon("/icons/pin.svg", getClass()), mainPanel);
+
+        // 创建统计面板
+        StatisticsPanel statisticsPanel = new StatisticsPanel();
+        tabbedPane.addTab(CodePinsBundle.message("statistics.tab.title"), IconUtil.loadIcon("/icons/chart.svg", getClass()), statisticsPanel);
+
+        // 监听选项卡切换，刷新统计数据
+        tabbedPane.addChangeListener(e -> {
+            if (tabbedPane.getSelectedIndex() == 1) { // 统计面板
+                statisticsPanel.refreshStatistics();
+            }
+        });
+
         // 添加到工具窗口
-        Content content = toolWindow.getContentManager().getFactory().createContent(mainPanel, "", false);
+        Content content = toolWindow.getContentManager().getFactory().createContent(tabbedPane, "", false);
         toolWindow.getContentManager().addContent(content);
     }
 
@@ -692,6 +710,11 @@ public class PinsToolWindow implements ToolWindowFactory {
                     tagFilterPanelRef[0].refreshTagsView();
                 }
             }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
+            }
         });
 
         // 导入按钮
@@ -716,6 +739,11 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 更新图钉数量标签
                     updatePinCountLabel();
                 }
+            }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
             }
         });
 
@@ -744,6 +772,11 @@ public class PinsToolWindow implements ToolWindowFactory {
             public void update(@NotNull AnActionEvent e) {
                 // 只有在有图钉时才启用此操作
                 e.getPresentation().setEnabled(!model.isEmpty());
+            }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
             }
         });
 
@@ -776,6 +809,11 @@ public class PinsToolWindow implements ToolWindowFactory {
                 // 只有在有图钉时才启用此操作
                 e.getPresentation().setEnabled(!model.isEmpty());
             }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
+            }
         });
 
         // 排序按钮
@@ -791,12 +829,22 @@ public class PinsToolWindow implements ToolWindowFactory {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.TIME_DESC);
             }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
+            }
         });
 
         sortGroup.add(new AnAction(CodePinsBundle.message("toolbar.sort.time.asc")) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.TIME_ASC);
+            }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
             }
         });
 
@@ -805,12 +853,22 @@ public class PinsToolWindow implements ToolWindowFactory {
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.FILENAME);
             }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
+            }
         });
 
         sortGroup.add(new AnAction(CodePinsBundle.message("toolbar.sort.path.asc")) {
             @Override
             public void actionPerformed(@NotNull AnActionEvent e) {
                 sortPins(SortType.NOTE);
+            }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
             }
         });
 
@@ -836,6 +894,11 @@ public class PinsToolWindow implements ToolWindowFactory {
                     // 更新图钉数量标签
                     updatePinCountLabel();
                 }
+            }
+
+            @Override
+            public @NotNull ActionUpdateThread getActionUpdateThread() {
+                return ActionUpdateThread.EDT;
             }
         });
 

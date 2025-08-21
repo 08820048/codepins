@@ -7,6 +7,7 @@ import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import com.intellij.notification.Notification;
 import com.intellij.notification.NotificationType;
 import com.intellij.notification.Notifications;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.CommonDataKeys;
@@ -149,5 +150,10 @@ public class AddPinAction extends AnAction {
         Project project = e.getProject();
         Editor editor = e.getData(CommonDataKeys.EDITOR);
         e.getPresentation().setEnabled(project != null && editor != null);
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT;
     }
 }

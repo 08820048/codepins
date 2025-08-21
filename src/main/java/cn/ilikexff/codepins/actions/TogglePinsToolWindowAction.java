@@ -1,6 +1,7 @@
 package cn.ilikexff.codepins.actions;
 
 import cn.ilikexff.codepins.i18n.CodePinsBundle;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
@@ -37,5 +38,10 @@ public class TogglePinsToolWindowAction extends AnAction {
         // 只有在有项目打开时才启用此操作
         Project project = e.getProject();
         e.getPresentation().setEnabled(project != null);
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.EDT;
     }
 }
