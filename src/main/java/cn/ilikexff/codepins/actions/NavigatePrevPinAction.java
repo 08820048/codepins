@@ -47,11 +47,19 @@ public class NavigatePrevPinAction extends AnAction {
         int currentOffset = editor.getCaretModel().getOffset();
         String currentFilePath = currentFile.getPath();
 
-        // 查找上一个图钉
-        PinEntry prevPin = findPrevPin(pins, currentFilePath, currentOffset);
-        if (prevPin != null) {
-            navigateToPin(project, prevPin);
-        }
+        // 使用ReadAction包装查找操作
+        com.intellij.openapi.application.ReadAction.run(() -> {
+            try {
+                // 查找上一个图钉
+                PinEntry prevPin = findPrevPin(pins, currentFilePath, currentOffset);
+                if (prevPin != null) {
+                    navigateToPin(project, prevPin);
+                }
+            } catch (Exception ex) {
+                System.err.println("[CodePins] 查找上一个图钉异常: " + ex.getMessage());
+                ex.printStackTrace();
+            }
+        });
     }
 
     /**
@@ -94,19 +102,30 @@ public class NavigatePrevPinAction extends AnAction {
     
     /**
      * 导航到指定图钉
-     * 
+     *
      * @param project 项目
      * @param pin 图钉
      */
     private void navigateToPin(Project project, PinEntry pin) {
         VirtualFile file = LocalFileSystem.getInstance().findFileByPath(pin.filePath);
         if (file != null && file.exists()) {
-            OpenFileDescriptor descriptor = new OpenFileDescriptor(
-                    project,
-                    file,
-                    pin.marker.getStartOffset()
-            );
-            FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+            // 使用ReadAction包装marker访问操作
+            com.intellij.openapi.application.ReadAction.run(() -> {
+                try {
+                    int startOffset = pin.marker.getStartOffset();
+                    com.intellij.openapi.application.ApplicationManager.getApplication().invokeLater(() -> {
+                        OpenFileDescriptor descriptor = new OpenFileDescriptor(
+                                project,
+                                file,
+                                startOffset
+                        );
+                        FileEditorManager.getInstance(project).openTextEditor(descriptor, true);
+                    });
+                } catch (Exception ex) {
+                    System.err.println("[CodePins] 导航到图钉异常: " + ex.getMessage());
+                    ex.printStackTrace();
+                }
+            });
         }
     }
 

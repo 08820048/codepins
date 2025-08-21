@@ -57,14 +57,22 @@ public class PinCommentAction extends AnAction {
         if (psiFile == null || document == null || project == null) {
             return;
         }
-        
-        // 查找文件中的所有注释
-        PsiComment[] comments = PsiTreeUtil.findChildrenOfType(psiFile, PsiComment.class).toArray(new PsiComment[0]);
-        
-        // 检查每个注释
-        for (PsiComment comment : comments) {
-            checkComment(comment, document, project);
-        }
+
+        // 使用ReadAction包装PSI访问操作
+        com.intellij.openapi.application.ReadAction.run(() -> {
+            try {
+                // 查找文件中的所有注释
+                PsiComment[] comments = PsiTreeUtil.findChildrenOfType(psiFile, PsiComment.class).toArray(new PsiComment[0]);
+
+                // 检查每个注释
+                for (PsiComment comment : comments) {
+                    checkComment(comment, document, project);
+                }
+            } catch (Exception e) {
+                System.err.println("[CodePins] 扫描文件异常: " + e.getMessage());
+                e.printStackTrace();
+            }
+        });
     }
     
     /**
@@ -76,24 +84,35 @@ public class PinCommentAction extends AnAction {
      * @param lineNumber 行号
      */
     public void scanLine(PsiFile psiFile, Document document, Project project, int lineNumber) {
-        if (psiFile == null || document == null || project == null || lineNumber < 0 || lineNumber >= document.getLineCount()) {
+        if (psiFile == null || document == null || project == null) {
             return;
         }
-        
-        // 获取指定行的起始和结束偏移量
-        int startOffset = document.getLineStartOffset(lineNumber);
-        int endOffset = document.getLineEndOffset(lineNumber);
-        
-        // 查找该行中的注释元素
-        
-        // 使用替代方法找到该行的注释元素
-        PsiElement currentElement = psiFile.findElementAt(startOffset);
-        while (currentElement != null && currentElement.getTextOffset() <= endOffset) {
-            if (currentElement instanceof PsiComment) {
-                checkComment((PsiComment) currentElement, document, project);
+
+        // 使用ReadAction包装PSI和文档访问操作
+        com.intellij.openapi.application.ReadAction.run(() -> {
+            try {
+                if (lineNumber < 0 || lineNumber >= document.getLineCount()) {
+                    return;
+                }
+
+                // 获取指定行的起始和结束偏移量
+                int startOffset = document.getLineStartOffset(lineNumber);
+                int endOffset = document.getLineEndOffset(lineNumber);
+
+                // 查找该行中的注释元素
+                // 使用替代方法找到该行的注释元素
+                PsiElement currentElement = psiFile.findElementAt(startOffset);
+                while (currentElement != null && currentElement.getTextOffset() <= endOffset) {
+                    if (currentElement instanceof PsiComment) {
+                        checkComment((PsiComment) currentElement, document, project);
+                    }
+                    currentElement = PsiTreeUtil.nextLeaf(currentElement);
+                }
+            } catch (Exception e) {
+                System.err.println("[CodePins] 扫描行异常: " + e.getMessage());
+                e.printStackTrace();
             }
-            currentElement = PsiTreeUtil.nextLeaf(currentElement);
-        }
+        });
     }
     
     @Override
