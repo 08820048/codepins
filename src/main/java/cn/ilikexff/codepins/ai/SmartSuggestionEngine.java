@@ -74,20 +74,8 @@ public class SmartSuggestionEngine {
         //     suggestions.addAll(analyzePsiStructure(psiFile));
         // }
 
-        // 如果没有找到建议，添加一个测试建议
-        if (suggestions.isEmpty()) {
-            SmartSuggestion testSuggestion = new SmartSuggestion(
-                SmartSuggestion.SuggestionType.DOCUMENTATION,
-                SmartSuggestion.Priority.LOW,
-                "测试建议",
-                "这是一个测试建议，用于验证系统正常工作",
-                filePath, 0, 0
-            );
-            testSuggestion.setConfidence(0.8);
-            testSuggestion.setReason("系统测试");
-            suggestions.add(testSuggestion);
-            System.out.println("[SmartSuggestionEngine] 添加了测试建议");
-        }
+        // 移除测试建议，让系统更加真实
+        // 如果没有找到建议，说明代码质量良好，不需要强制添加建议
 
         // 按优先级和置信度排序
         suggestions.sort((s1, s2) -> Integer.compare(s2.getSeverityScore(), s1.getSeverityScore()));

@@ -25,7 +25,7 @@ public class CodeQualityAnalyzer {
             0.6
         ),
         
-        // 魔法数字
+        // 魔法数字 - 使用更智能的检测逻辑
         new QualityRule(
             "MAGIC_NUMBER",
             "魔法数字",
@@ -34,7 +34,13 @@ public class CodeQualityAnalyzer {
             SmartSuggestion.Priority.MEDIUM,
             "避免使用魔法数字，建议定义为常量",
             0.7
-        ),
+        ) {
+            @Override
+            public boolean matches(String line) {
+                // 使用智能上下文检测
+                return isActualMagicNumber(line, pattern);
+            }
+        },
         
         // 重复字符串
         new QualityRule(
@@ -177,8 +183,8 @@ public class CodeQualityAnalyzer {
         }
 
         for (QualityRule rule : QUALITY_RULES) {
-            Matcher matcher = rule.pattern.matcher(line);
-            if (matcher.find()) {
+            if (rule.matches(line)) {
+                Matcher matcher = rule.pattern.matcher(line);
                 SmartSuggestion suggestion = new SmartSuggestion(
                     rule.type,
                     rule.priority,
@@ -220,6 +226,92 @@ public class CodeQualityAnalyzer {
         }
 
         return false;
+    }
+
+    /**
+     * 智能检测是否为真正的魔法数字
+     */
+    private static boolean isActualMagicNumber(String line, Pattern pattern) {
+        Matcher matcher = pattern.matcher(line);
+        if (!matcher.find()) {
+            return false;
+        }
+
+        String trimmed = line.trim();
+
+        // 排除注解参数
+        if (trimmed.contains("@") && (trimmed.contains("(") || trimmed.contains("="))) {
+            return false;
+        }
+
+        // 排除配置常量定义
+        if (trimmed.contains("final") || trimmed.contains("static") || trimmed.contains("const")) {
+            return false;
+        }
+
+        // 排除枚举值
+        if (trimmed.matches(".*[A-Z_]+\\s*\\(.*\\d+.*\\).*")) {
+            return false;
+        }
+
+        // 排除数组索引和长度
+        if (trimmed.contains("[") && trimmed.contains("]")) {
+            return false;
+        }
+
+        // 排除时间相关的常见数字
+        String number = matcher.group();
+        if (isTimeRelatedNumber(number)) {
+            return false;
+        }
+
+        // 排除HTTP状态码
+        if (isHttpStatusCode(number)) {
+            return false;
+        }
+
+        // 排除端口号
+        if (isPortNumber(number)) {
+            return false;
+        }
+
+        // 排除版本号
+        if (trimmed.matches(".*version.*\\d+.*") || trimmed.matches(".*v\\d+.*")) {
+            return false;
+        }
+
+        // 排除测试数据
+        if (trimmed.toLowerCase().contains("test") || trimmed.toLowerCase().contains("mock")) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * 检查是否为时间相关数字
+     */
+    private static boolean isTimeRelatedNumber(String number) {
+        int num = Integer.parseInt(number);
+        // 常见时间数字：60(秒/分), 24(小时), 7(天), 30(天), 365(天), 1000(毫秒), 3600(秒)
+        return num == 60 || num == 24 || num == 7 || num == 30 || num == 365 ||
+               num == 1000 || num == 3600 || num == 86400;
+    }
+
+    /**
+     * 检查是否为HTTP状态码
+     */
+    private static boolean isHttpStatusCode(String number) {
+        int num = Integer.parseInt(number);
+        return (num >= 100 && num < 600);
+    }
+
+    /**
+     * 检查是否为端口号
+     */
+    private static boolean isPortNumber(String number) {
+        int num = Integer.parseInt(number);
+        return (num >= 1024 && num <= 65535);
     }
 
     /**
@@ -399,7 +491,7 @@ public class CodeQualityAnalyzer {
         final SmartSuggestion.Priority priority;
         final String description;
         final double confidence;
-        
+
         QualityRule(String id, String name, Pattern pattern, SmartSuggestion.SuggestionType type,
                    SmartSuggestion.Priority priority, String description, double confidence) {
             this.id = id;
@@ -409,6 +501,13 @@ public class CodeQualityAnalyzer {
             this.priority = priority;
             this.description = description;
             this.confidence = confidence;
+        }
+
+        /**
+         * 检查是否匹配，子类可以重写此方法实现自定义逻辑
+         */
+        public boolean matches(String line) {
+            return pattern.matcher(line).find();
         }
     }
     
