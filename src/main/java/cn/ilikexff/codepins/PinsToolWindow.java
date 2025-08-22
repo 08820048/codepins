@@ -17,6 +17,7 @@ import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import cn.ilikexff.codepins.ui.StatisticsPanel;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
 import cn.ilikexff.codepins.ai.ui.SmartSuggestionPanel;
+import cn.ilikexff.codepins.git.ui.GitIntegrationPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ActionPlaces;
@@ -468,6 +469,10 @@ public class PinsToolWindow implements ToolWindowFactory {
         SmartSuggestionPanel suggestionPanel = new SmartSuggestionPanel(project);
         tabbedPane.addTab("智能建议", IconUtil.loadIcon("/icons/ai-suggestion.svg", getClass()), suggestionPanel);
 
+        // 创建Git集成面板
+        GitIntegrationPanel gitPanel = new GitIntegrationPanel(project);
+        tabbedPane.addTab("Git集成", IconUtil.loadIcon("/icons/git-integration.svg", getClass()), gitPanel);
+
         // 监听选项卡切换，刷新统计数据
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 1) { // 统计面板
@@ -475,6 +480,9 @@ public class PinsToolWindow implements ToolWindowFactory {
             } else if (tabbedPane.getSelectedIndex() == 2) { // 智能建议面板
                 // 当切换到智能建议面板时，激活面板并分析当前文件
                 suggestionPanel.onPanelActivated();
+            } else if (tabbedPane.getSelectedIndex() == 3) { // Git集成面板
+                // 当切换到Git集成面板时，初始化Git功能
+                gitPanel.onPanelActivated();
             }
         });
 

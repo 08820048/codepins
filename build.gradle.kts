@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cn.cn.codepins"
-version = "2.1.0" // 更新为2.1.0版本，继续完善免费开源功能
+version = "2.2.0" // 新增Git集成功能和智能建议优化
 
 repositories {
     mavenCentral()

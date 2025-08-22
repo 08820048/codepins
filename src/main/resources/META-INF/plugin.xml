@@ -3,7 +3,7 @@
     <id>cn.ilikexff.codepins</id>
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
-    <version>2.1.0</version>
+    <version>2.2.0</version>
 
     <!-- 插件现在完全免费开源，移除产品描述符 -->
 
@@ -34,6 +34,9 @@
             <li><strong>Keyboard Navigation:</strong> Navigate between pins using intuitive keyboard shortcuts</li>
             <li><strong>Customizable Organization:</strong> Drag and drop pins to reorder them according to your workflow</li>
             <li><strong>Powerful Search:</strong> Quickly find pins by filename, path, note content, or tags</li>
+            <li><strong>Template System:</strong> Use predefined templates (TODO, FIXME, NOTE) for quick pin creation</li>
+            <li><strong>AI-Powered Suggestions:</strong> Get intelligent code improvement suggestions with context awareness</li>
+            <li><strong>Git Integration:</strong> Track pin changes across Git commits and analyze code changes</li>
             <li><strong>Adaptive UI:</strong> Beautiful interface that adapts to both light and dark themes</li>
             <li><strong>Auto-Update:</strong> Pin positions automatically update as you edit code</li>
             <li><strong>Import/Export:</strong> Share pins between projects or team members</li>
@@ -70,6 +73,19 @@
 
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
+<h2>Version 2.2.0</h2>
+<ul>
+    <li><b>🤖 AI-Powered Smart Suggestions:</b> Intelligent code analysis with context-aware suggestions</li>
+    <li><b>🔧 Enhanced Magic Number Detection:</b> Smart filtering for annotations, constants, and common patterns</li>
+    <li><b>🎯 CodePins Comment Filtering:</b> AI suggestions now ignore CodePins special comments</li>
+    <li><b>🔄 Git Integration Framework:</b> Complete Git integration with version tracking and change analysis</li>
+    <li><b>📊 Pin Version History:</b> Track pin changes across Git commits with snapshot management</li>
+    <li><b>🔍 Diff-Based Suggestions:</b> Analyze code changes and suggest relevant pins automatically</li>
+    <li><b>🎨 Modern UI Icons:</b> Beautiful colorized icons for all tabs with improved visual hierarchy</li>
+    <li><b>⚡ Performance Optimizations:</b> Improved rendering and analysis performance</li>
+    <li><b>🛠️ Code Quality:</b> Enhanced code structure and maintainability</li>
+</ul>
+
 <h2>Version 2.1.0</h2>
 <ul>
     <li><b>📝 Comment Markers:</b> Added support for creating pins from comment markers</li>
