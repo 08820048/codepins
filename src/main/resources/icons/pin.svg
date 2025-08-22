@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <!-- 图钉头部 - 使用纯色 -->
+  <!-- 图钉头部 -->
   <circle cx="8" cy="4.5" r="3" fill="#2196F3" stroke="#1976D2" stroke-width="0.5"/>
-
+  
   <!-- 图钉针 -->
   <path d="M8 7.5V14.5" stroke="#1976D2" stroke-width="2" stroke-linecap="round"/>
-
+  
   <!-- 高光效果 -->
   <ellipse cx="7" cy="3.5" rx="1" ry="0.8" fill="#E3F2FD" opacity="0.8"/>
-
+  
   <!-- 装饰点 -->
   <circle cx="8" cy="4.5" r="1" fill="#FFFFFF"/>
-
+  
   <!-- 小装饰 -->
   <circle cx="8" cy="4.5" r="0.3" fill="#1976D2"/>
 </svg>

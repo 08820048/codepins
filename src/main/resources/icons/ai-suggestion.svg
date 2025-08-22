@@ -1,0 +1,21 @@
+<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- AI大脑图标 -->
+  <path d="M8 2C5.79 2 4 3.79 4 6c0 1.5 0.8 2.8 2 3.5v2c0 0.55 0.45 1 1 1h2c0.55 0 1-0.45 1-1v-2c1.2-0.7 2-2 2-3.5 0-2.21-1.79-4-4-4z" fill="#9C27B0" stroke="#7B1FA2" stroke-width="0.5"/>
+
+  <!-- 神经网络连接线 -->
+  <circle cx="6" cy="5" r="0.5" fill="#E1BEE7"/>
+  <circle cx="10" cy="5" r="0.5" fill="#E1BEE7"/>
+  <circle cx="8" cy="7" r="0.5" fill="#E1BEE7"/>
+  <line x1="6" y1="5" x2="8" y2="7" stroke="#E1BEE7" stroke-width="0.8"/>
+  <line x1="10" y1="5" x2="8" y2="7" stroke="#E1BEE7" stroke-width="0.8"/>
+
+  <!-- 高光效果 -->
+  <ellipse cx="6.5" cy="4" rx="1.5" ry="1" fill="#F3E5F5" opacity="0.6"/>
+
+  <!-- 智能标识 -->
+  <circle cx="12" cy="4" r="2" fill="#FF9800" stroke="#F57C00" stroke-width="0.5"/>
+  <text x="12" y="5.2" text-anchor="middle" font-family="Arial, sans-serif" font-size="2.2" font-weight="bold" fill="white">AI</text>
+
+  <!-- 建议箭头 -->
+  <path d="M2 12 L4 10 L3.2 10 L3.2 8.5 L4.8 8.5 L4.8 10 L4 10 L6 12 Z" fill="#4CAF50" stroke="#388E3C" stroke-width="0.3"/>
+</svg>

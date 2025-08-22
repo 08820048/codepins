@@ -22,6 +22,7 @@ import java.util.Objects;
  */
 public class PinEntry {
 
+    private final String id;            // 图钉唯一标识
     public final String filePath;       // 文件路径（绝对路径）
     public final RangeMarker marker;    // 可变行位置追踪
     public String note;                 // 用户备注
@@ -36,6 +37,7 @@ public class PinEntry {
      * 无参构造函数，用于创建空的PinEntry对象
      */
     public PinEntry() {
+        this.id = generateId();
         this.filePath = "";
         this.marker = null;
         this.note = "";
@@ -46,6 +48,7 @@ public class PinEntry {
     }
 
     public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author, boolean isBlock) {
+        this.id = generateId();
         this.filePath = filePath;
         this.marker = marker;
         this.note = note;
@@ -53,7 +56,7 @@ public class PinEntry {
         this.author = author;
         this.isBlock = isBlock;
         this.tags = new ArrayList<>();
-        
+
         // 保存原始代码内容
         saveOriginalCode();
     }
@@ -62,6 +65,7 @@ public class PinEntry {
      * 带标签的构造函数
      */
     public PinEntry(String filePath, RangeMarker marker, String note, long timestamp, String author, boolean isBlock, List<String> tags) {
+        this.id = generateId();
         this.filePath = filePath;
         this.marker = marker;
         this.note = note;
@@ -69,7 +73,7 @@ public class PinEntry {
         this.author = author;
         this.isBlock = isBlock;
         this.tags = tags != null ? new ArrayList<>(tags) : new ArrayList<>();
-        
+
         // 保存原始代码内容
         saveOriginalCode();
     }
@@ -751,5 +755,19 @@ public class PinEntry {
             e.printStackTrace();
             return false;
         }
+    }
+
+    /**
+     * 获取图钉ID
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * 生成唯一ID
+     */
+    private static String generateId() {
+        return "pin-" + System.currentTimeMillis() + "-" + Math.random();
     }
 }

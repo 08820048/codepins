@@ -3,6 +3,7 @@ package cn.ilikexff.codepins.settings;
 
 import cn.ilikexff.codepins.i18n.CodePinsBundle;
 import cn.ilikexff.codepins.template.ui.TemplateManagementPanel;
+import cn.ilikexff.codepins.ai.ui.SuggestionConfigPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.ide.BrowserUtil;
 import com.intellij.ui.components.JBCheckBox;
@@ -93,6 +94,10 @@ public class CodePinsSettingsComponent {
         TemplateManagementPanel templatePanel = new TemplateManagementPanel();
         templatePanel.setBorder(BorderFactory.createTitledBorder(CodePinsBundle.message("settings.templates")));
 
+        // 创建智能建议配置面板
+        SuggestionConfigPanel suggestionConfigPanel = new SuggestionConfigPanel();
+        suggestionConfigPanel.setBorder(BorderFactory.createTitledBorder("智能建议配置"));
+
         // 创建主面板
         mainPanel = FormBuilder.createFormBuilder()
                 .addComponent(donationPanel)
@@ -101,6 +106,7 @@ public class CodePinsSettingsComponent {
                 .addComponent(commentPinPanel)
                 .addComponent(labeledShortcutsPanel)
                 .addComponent(templatePanel)
+                .addComponent(suggestionConfigPanel)
                 .addComponentFillVertically(new JPanel(), 0)
                 .getPanel();
     }

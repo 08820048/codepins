@@ -16,6 +16,7 @@ import cn.ilikexff.codepins.ui.ShareDialog;
 import cn.ilikexff.codepins.ui.SimpleTagEditorDialog;
 import cn.ilikexff.codepins.ui.StatisticsPanel;
 import cn.ilikexff.codepins.ui.TagFilterPanel;
+import cn.ilikexff.codepins.ai.ui.SmartSuggestionPanel;
 import cn.ilikexff.codepins.utils.IconUtil;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.actionSystem.ActionPlaces;
@@ -463,10 +464,17 @@ public class PinsToolWindow implements ToolWindowFactory {
         StatisticsPanel statisticsPanel = new StatisticsPanel();
         tabbedPane.addTab(CodePinsBundle.message("statistics.tab.title"), IconUtil.loadIcon("/icons/chart.svg", getClass()), statisticsPanel);
 
+        // 创建智能建议面板
+        SmartSuggestionPanel suggestionPanel = new SmartSuggestionPanel(project);
+        tabbedPane.addTab("智能建议", IconUtil.loadIcon("/icons/ai-suggestion.svg", getClass()), suggestionPanel);
+
         // 监听选项卡切换，刷新统计数据
         tabbedPane.addChangeListener(e -> {
             if (tabbedPane.getSelectedIndex() == 1) { // 统计面板
                 statisticsPanel.refreshStatistics();
+            } else if (tabbedPane.getSelectedIndex() == 2) { // 智能建议面板
+                // 当切换到智能建议面板时，激活面板并分析当前文件
+                suggestionPanel.onPanelActivated();
             }
         });
 
