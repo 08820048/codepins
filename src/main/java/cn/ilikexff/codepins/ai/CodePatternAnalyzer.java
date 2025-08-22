@@ -77,6 +77,11 @@ public class CodePatternAnalyzer {
         for (int i = 0; i < lines.length; i++) {
             String line = lines[i];
 
+            // 跳过CodePins特殊注释指令
+            if (isCodePinsComment(line)) {
+                continue;
+            }
+
             // 检查长行
             if (line.length() > 120) {
                 SmartSuggestion suggestion = new SmartSuggestion(
@@ -93,7 +98,31 @@ public class CodePatternAnalyzer {
 
         return suggestions;
     }
-    
+
+    /**
+     * 检查是否为CodePins特殊注释指令
+     */
+    private boolean isCodePinsComment(String line) {
+        String trimmed = line.trim();
+
+        // 检查CodePins的特殊注释格式
+        // 格式: //@cp... 或 //@cpb... 或 //@cpr...
+        if (trimmed.matches("^//\\s*@cp[br]?\\d+.*")) {
+            return true;
+        }
+
+        // 检查包含CodePins标签的注释
+        if (trimmed.startsWith("//") && (
+            trimmed.contains("#") ||  // 包含标签
+            trimmed.contains("@cp") || // CodePins指令
+            trimmed.matches(".*\\d+-\\d+.*") // 包含范围格式
+        )) {
+            return true;
+        }
+
+        return false;
+    }
+
     // PSI相关的分析方法暂时移除，避免编译问题
     // 后续可以在解决依赖问题后重新添加
     

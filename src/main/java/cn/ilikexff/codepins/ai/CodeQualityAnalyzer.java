@@ -170,7 +170,12 @@ public class CodeQualityAnalyzer {
      */
     private List<SmartSuggestion> analyzeLineQuality(String filePath, String line, int lineNumber) {
         List<SmartSuggestion> suggestions = new ArrayList<>();
-        
+
+        // 跳过CodePins特殊注释指令
+        if (isCodePinsComment(line)) {
+            return suggestions;
+        }
+
         for (QualityRule rule : QUALITY_RULES) {
             Matcher matcher = rule.pattern.matcher(line);
             if (matcher.find()) {
@@ -192,7 +197,31 @@ public class CodeQualityAnalyzer {
         
         return suggestions;
     }
-    
+
+    /**
+     * 检查是否为CodePins特殊注释指令
+     */
+    private boolean isCodePinsComment(String line) {
+        String trimmed = line.trim();
+
+        // 检查CodePins的特殊注释格式
+        // 格式: //@cp... 或 //@cpb... 或 //@cpr...
+        if (trimmed.matches("^//\\s*@cp[br]?\\d+.*")) {
+            return true;
+        }
+
+        // 检查包含CodePins标签的注释
+        if (trimmed.startsWith("//") && (
+            trimmed.contains("#") ||  // 包含标签
+            trimmed.contains("@cp") || // CodePins指令
+            trimmed.matches(".*\\d+-\\d+.*") // 包含范围格式
+        )) {
+            return true;
+        }
+
+        return false;
+    }
+
     /**
      * 分析整体代码质量
      */
