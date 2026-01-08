@@ -110,16 +110,18 @@ public class PinsToolWindow implements ToolWindowFactory {
             }
         });
 
-        // 添加鼠标监听器，处理双击导航和悬停预览
+        // 添加鼠标监听器，处理单击选中和双击导航
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
+                PinEntry selected = list.getSelectedValue();
+                if (selected == null) return;
+
                 if (e.getClickCount() == 2) {
-                    PinEntry selected = list.getSelectedValue();
-                    if (selected != null) {
-                        selected.navigate(project);
-                    }
+                    // 双击：导航到代码位置
+                    selected.navigate(project);
                 }
+                // 单击不做任何操作，只用于选中
             }
 
             @Override

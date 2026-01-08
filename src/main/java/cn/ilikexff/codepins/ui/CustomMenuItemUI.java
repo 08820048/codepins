@@ -6,6 +6,7 @@ import com.intellij.util.ui.JBUI;
 import javax.swing.*;
 import javax.swing.plaf.basic.BasicMenuItemUI;
 import java.awt.*;
+import java.util.WeakHashMap;
 
 /**
  * 自定义菜单项UI，为菜单项添加更明显的悬停效果
@@ -30,6 +31,9 @@ public class CustomMenuItemUI extends BasicMenuItemUI {
             new Color(220, 220, 220) // 暗色主题
     );
 
+    // 状态跟踪：避免重复绘制背景
+    private static final WeakHashMap<JMenuItem, Boolean> armedStateMap = new WeakHashMap<>();
+
     /**
      * 应用自定义UI到菜单项
      *
@@ -50,20 +54,32 @@ public class CustomMenuItemUI extends BasicMenuItemUI {
         int width = menuItem.getWidth();
         int height = menuItem.getHeight();
 
-        // 设置背景颜色
-        if (menuItem.isArmed() || (menuItem instanceof JMenu && menuItem.isSelected())) {
-            // 选中或悬停状态
-            g2.setColor(SELECTED_BG);
-        } else if (menuItem.getModel().isPressed()) {
-            // 按下状态
-            g2.setColor(SELECTED_BG.darker());
-        } else {
-            // 正常状态 - 透明背景
-            g2.setColor(new Color(0, 0, 0, 0));
-        }
+        // 获取当前状态
+        boolean isArmed = menuItem.isArmed() || (menuItem instanceof JMenu && menuItem.isSelected());
+        boolean isPressed = menuItem.getModel().isPressed();
 
-        // 绘制圆角矩形背景
-        g2.fillRoundRect(2, 1, width - 4, height - 2, 6, 6);
+        // 检查状态是否改变，避免重复绘制
+        Boolean lastState = armedStateMap.get(menuItem);
+        boolean shouldDraw = (lastState == null || lastState != isArmed);
+
+        if (shouldDraw) {
+            armedStateMap.put(menuItem, isArmed);
+
+            // 设置背景颜色
+            if (isArmed) {
+                // 选中或悬停状态
+                g2.setColor(SELECTED_BG);
+            } else if (isPressed) {
+                // 按下状态
+                g2.setColor(SELECTED_BG.darker());
+            } else {
+                // 正常状态 - 透明背景
+                g2.setColor(new Color(0, 0, 0, 0));
+            }
+
+            // 绘制圆角矩形背景
+            g2.fillRoundRect(2, 1, width - 4, height - 2, 6, 6);
+        }
 
         g2.dispose();
     }

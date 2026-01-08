@@ -4,7 +4,7 @@ plugins {
 }
 
 group = "cn.cn.codepins"
-version = "2.2.0" // 新增Git集成功能和智能建议优化
+version = "2.2.1" // 修复单击弹出问题和版本兼容性
 
 repositories {
     mavenCentral()
@@ -39,7 +39,7 @@ tasks.withType<JavaCompile> {
 tasks {
     patchPluginXml {
         sinceBuild.set("241") // 支持 IntelliJ 2024.1 起
-        untilBuild.set("252.*") // 支持到 IntelliJ 2025.2
+        untilBuild.set("253.*") // 支持到 IntelliJ 2025.3+
     }
 
     // 禁用buildSearchableOptions任务以提高构建性能

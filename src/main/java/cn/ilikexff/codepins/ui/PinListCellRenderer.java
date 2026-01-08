@@ -146,32 +146,32 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
         contentPanel.setOpaque(false);
 
         try {
-            // 文件名
-            String fileName = getFileName(entry.filePath);
-            JLabel fileNameLabel = new JLabel(fileName);
-            fileNameLabel.setFont(fileNameLabel.getFont().deriveFont(Font.BOLD, 13f));
-            // 文件名颜色：亮色主题下使用深色，暗色主题下使用浅色
-            fileNameLabel.setForeground(new JBColor(new Color(30, 30, 30), new Color(220, 220, 220)));
-            fileNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-            // 备注（如果有）
+            // 备注作为主标题（如果有）
             JPanel notePanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
             notePanel.setOpaque(false);
             notePanel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             if (entry.note != null && !entry.note.isEmpty()) {
                 JLabel noteLabel = new JLabel(entry.note);
-                noteLabel.setFont(noteLabel.getFont().deriveFont(Font.ITALIC, 12f));
-                // 备注颜色：亮色主题下使用深绿色，暗色主题下使用浅绿色
-                noteLabel.setForeground(new JBColor(new Color(0, 120, 0), new Color(120, 220, 120)));
+                noteLabel.setFont(noteLabel.getFont().deriveFont(Font.BOLD, 14f));
+                // 备注颜色：亮色主题下使用深色，暗色主题下使用浅色
+                noteLabel.setForeground(new JBColor(new Color(30, 30, 30), new Color(220, 220, 220)));
                 notePanel.add(noteLabel);
             } else {
                 JLabel emptyNoteLabel = new JLabel("(无备注)");
-                emptyNoteLabel.setFont(emptyNoteLabel.getFont().deriveFont(Font.ITALIC, 12f));
+                emptyNoteLabel.setFont(emptyNoteLabel.getFont().deriveFont(Font.ITALIC, 14f));
                 // 无备注提示颜色：亮色主题下使用深灰色，暗色主题下使用浅灰色
                 emptyNoteLabel.setForeground(new JBColor(new Color(120, 120, 120), new Color(150, 150, 150)));
                 notePanel.add(emptyNoteLabel);
             }
+
+            // 文件名（变小，作为次要信息）
+            String fileName = getFileName(entry.filePath);
+            JLabel fileNameLabel = new JLabel(fileName);
+            fileNameLabel.setFont(fileNameLabel.getFont().deriveFont(Font.PLAIN, 11f));
+            // 文件名颜色：亮色主题下使用深灰色，暗色主题下使用浅灰色
+            fileNameLabel.setForeground(new JBColor(new Color(100, 100, 100), new Color(150, 150, 150)));
+            fileNameLabel.setAlignmentX(Component.LEFT_ALIGNMENT);
 
             // 标签面板
             JPanel tagsPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 4, 0));
@@ -186,10 +186,10 @@ public class PinListCellRenderer extends DefaultListCellRenderer {
                 }
             }
 
-            // 添加到内容面板
-            contentPanel.add(fileNameLabel);
-            contentPanel.add(Box.createVerticalStrut(3));
+            // 添加到内容面板（调整顺序：备注为主，文件名变小）
             contentPanel.add(notePanel);
+            contentPanel.add(Box.createVerticalStrut(3));
+            contentPanel.add(fileNameLabel);
 
             if (!tags.isEmpty()) {
                 contentPanel.add(Box.createVerticalStrut(5));

@@ -3,12 +3,12 @@
     <id>cn.ilikexff.codepins</id>
     <name>CodePins - Code Bookmarks</name>
     <vendor email="ilikexff@gmail.com" url="https://github.com/08820048/codepins">ilikexff</vendor>
-    <version>2.2.0</version>
+    <version>2.2.1</version>
 
     <!-- 插件现在完全免费开源，移除产品描述符 -->
 
-    <!-- 插件兼容性信息 -->
-    <idea-version since-build="241" until-build="252.*"/>
+    <!-- 插件兼容性信息：支持 IntelliJ IDEA 2024.1 到 2025.3+ -->
+    <idea-version since-build="241" until-build="253.*"/>
 
     <!-- 插件分类标签 -->
     <category>Navigation</category>
@@ -73,6 +73,14 @@
 
     <!-- Plugin Change Notes -->
     <change-notes><![CDATA[
+<h2>Version 2.2.1</h2>
+<ul>
+    <li><b>🐛 Bug Fix:</b> Fixed click behavior - clicking on pins no longer shows popup immediately</li>
+    <li><b>✨ Improved UX:</b> Single-click selects pin, double-click navigates to code location</li>
+    <li><b>🔧 Compatibility:</b> Updated to support IntelliJ IDEA 2025.3.1 and later</li>
+    <li><b>📏 Version Range:</b> Now supports IntelliJ IDEA 2024.1 through 2025.3+</li>
+</ul>
+
 <h2>Version 2.2.0</h2>
 <ul>
     <li><b>🤖 AI-Powered Smart Suggestions:</b> Intelligent code analysis with context-aware suggestions</li>
@@ -190,14 +198,12 @@
     </extensions>
 
     <actions>
-        <!-- Right-click menu add pin -->
+        <!-- Right-click menu add pin - 已整合到 CodePins.ActionGroup 中，避免菜单重复 -->
         <action id="CodePins.PinAction"
                 class="cn.ilikexff.codepins.PinAction"
                 text="Add CodePin Here"
                 description="Pin current line for later reference"
-                icon="/icons/pin-here.svg">
-            <add-to-group group-id="EditorPopupMenu" anchor="last"/>
-        </action>
+                icon="/icons/pin-here.svg"/>
 
         <!-- Shortcut key add pin -->
         <action id="CodePins.AddPinAction"
